@@ -167,12 +167,12 @@ never executed, and no installed user app or live hook configuration was changed
 
 ## Remaining validation
 
-- **Live Codex desktop and Claude Code in VS Code delivery remains unverified.** Global hook config and
-  Codex trust records were not changed during the isolated validation above. The later user-authorized local
-  installation enabled both hook configurations; see [LOCAL-INSTALLATION.md](LOCAL-INSTALLATION.md).
-  Codex trust and fresh-host delivery checks are still pending. The installed CLI reports `hooks stable true`;
-  the shared app-server control socket was absent, so it is not used. Codex requires review/trust through
-  `/hooks`; a fresh session will exercise each host's startup delivery. Managed/project policy may prevent user hooks.
+- **Live Codex tool activity and Claude Code in VS Code session startup are verified** after the later
+  user-authorized installation and manual Codex `/hooks` trust review. Exact native observations and
+  configuration preservation checks: [LOCAL-INSTALLATION.md](LOCAL-INSTALLATION.md). Claude tool activity
+  and a real host PermissionRequest/decision remain unverified; synthetic decision coverage is separate.
+  The shared app-server control socket was absent, so it is not used. Managed/project policy can restrict
+  user hooks in other workspaces.
 - Codex deep links and Claude workspace links are implemented with escaped URLs; actual live chat/terminal
   navigation was not exercised. Claude opens/focuses its workspace, not one exact integrated terminal.
 - Multi-monitor, full-screen and a full VoiceOver session were not exercised on this machine.
@@ -186,5 +186,7 @@ external messages, production mutation or global agent activation. Synthetic too
 ## Decision
 
 Local code/build/synthetic-flow acceptance and the extracted archive pass. The synced workspace copy
-has the observed metadata limitation above. The ZIP is the deliverable for a local trial, with live activation
-still explicit, consistent with the pre-registered partial-result rule in `SPEC.md`.
+has the observed metadata limitation above. The ZIP remains the portable deliverable. The subsequent
+authorized local installation is running with both providers' live startup/activity evidence above;
+real permission decisions retain the stated verification limit, consistent with the pre-registered
+partial-result rule in `SPEC.md`.

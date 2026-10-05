@@ -19,17 +19,27 @@ connections. This follow-up supersedes the earlier build-only boundary for local
 - A synthetic session reached the installed app and rendered a session row. It was marked ended;
   no prompt, model call or proposed tool was executed. This proves local relay delivery, not live host delivery.
 
-## Remaining user step and live check
+## Trust and live host check
 
 Codex requires review/trust of the exact definitions through `/hooks` before non-managed hooks run.
-Trust records were not edited or bypassed. The computer-use tool refuses access to Terminal, so the user
-must perform this review. `outputs/Trust-Lantern.command` is a syntax-checked launcher for the installed
+Lantern and this agent did not edit or bypass trust records. The computer-use tool refuses access to
+Terminal, so the user performed the review. `outputs/Trust-Lantern.command` is a syntax-checked launcher for the installed
 Codex CLI; it submits no prompt and changes no trust or agent settings itself.
 
-Open that launcher in Finder, type `/hooks`, and trust only the Lantern definitions pointing to
-`/Users/imad/Applications/Lantern.app/Contents/MacOS/lantern-hook`. Then start a new Codex desktop chat
-and a new Claude Code session in VS Code. Keep Lantern open. Live session/tool events and a real permission
-request still need observation; they are not claimed verified from the synthetic row.
+The user confirmed completion of the Codex `/hooks` review. Fresh native inspection then observed:
+
+- **Codex desktop:** this actual Building Tools chat appeared as Working, naming the current
+  `mcp__cua_repl__js` tool and reporting last activity 0–1 seconds ago.
+- **Claude Code in VS Code:** a new empty Claude tab was visible, and Lantern received a real
+  Trak Football session as Ready. No prompt was submitted by this agent, and existing VS Code sessions
+  were not closed or edited.
+- **Handoff:** the installed app remained running with Local connection ready and was confirmed in its
+  compact notch presentation. No paid API call or agent task was started for verification.
+
+Live Codex tool activity and Claude session startup are therefore verified. A real host permission request
+and Claude tool activity still need observation; the packaged Allow/Deny/Delegate paths have separate
+synthetic coverage in `VERIFICATION.md`. Keep Lantern open while using either agent. Open the installed
+`~/Applications/Lantern.app` again after quitting it; no login item was requested or added.
 
 Sources: [Codex hook review/trust](https://learn.chatgpt.com/docs/hooks#review-and-trust-hooks),
 [Claude Code hooks](https://code.claude.com/docs/en/hooks). Claude's current documentation describes

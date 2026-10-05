@@ -67,8 +67,9 @@ until the later user-authorized installation recorded at the end of this file.
 - [x] Install and launch verified 0.1.3/build 4 at `~/Applications/Lantern.app`.
 - [x] Prepare both native previews, obtain explicit activation approval, and apply both connections.
 - [x] Verify Claude's exact backup, preserved settings/hooks, stable relay paths and private socket/config modes.
-- [ ] User reviews/trusts Codex Lantern definitions through `/hooks` and starts fresh host sessions.
-- [ ] Observe real Codex desktop and Claude Code in VS Code activity/permission delivery.
+- [x] User reviews/trusts Codex Lantern definitions through `/hooks`; fresh host sessions are observed.
+- [x] Observe actual Codex desktop tool activity and Claude Code in VS Code session startup in Lantern.
+- [ ] Observe Claude tool activity and a real host PermissionRequest/decision; synthetic decision checks pass.
 
 Machine-specific evidence and handoff: `docs/LOCAL-INSTALLATION.md`. Terminal access is blocked by the
 computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was prepared for the user.
