@@ -30,7 +30,8 @@
 - [ ] User reloads Claude Code in VS Code and verifies live delivery/navigation.
 - [ ] Optional wider-device verification: multi-monitor/full-screen/VoiceOver/reduced motion.
 
-Local acceptance and evidence: `docs/VERIFICATION.md`. No global agent configuration was changed.
+Initial isolated acceptance and evidence: `docs/VERIFICATION.md`. Global configuration was unchanged
+until the later user-authorized installation recorded at the end of this file.
 
 ## 0.1.1 local component library refinement
 
@@ -60,3 +61,14 @@ Local acceptance and evidence: `docs/VERIFICATION.md`. No global agent configura
 - [x] After manual unlock, repeat the clean-release onscreen check and confirm physical left/right mouse tracking.
   - Final 0.1.3/build 4 extraction: user confirmed both pupils follow; native compact clicks, working/attention,
     matching synthetic Deny and static process-local Reduce Motion passed. Isolated reviews quit cleanly.
+
+## Local installation and activation
+
+- [x] Install and launch verified 0.1.3/build 4 at `~/Applications/Lantern.app`.
+- [x] Prepare both native previews, obtain explicit activation approval, and apply both connections.
+- [x] Verify Claude's exact backup, preserved settings/hooks, stable relay paths and private socket/config modes.
+- [ ] User reviews/trusts Codex Lantern definitions through `/hooks` and starts fresh host sessions.
+- [ ] Observe real Codex desktop and Claude Code in VS Code activity/permission delivery.
+
+Machine-specific evidence and handoff: `docs/LOCAL-INSTALLATION.md`. Terminal access is blocked by the
+computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was prepared for the user.

@@ -168,9 +168,11 @@ never executed, and no installed user app or live hook configuration was changed
 ## Remaining validation
 
 - **Live Codex desktop and Claude Code in VS Code delivery remains unverified.** Global hook config and
-  Codex trust records were not changed. The installed CLI reports `hooks stable true`; the shared app-server
-  control socket was absent, so it is not used. Codex requires review/trust through `/hooks`; both hosts
-  require a new/reloaded session. Managed/project policy may prevent user hooks.
+  Codex trust records were not changed during the isolated validation above. The later user-authorized local
+  installation enabled both hook configurations; see [LOCAL-INSTALLATION.md](LOCAL-INSTALLATION.md).
+  Codex trust and fresh-host delivery checks are still pending. The installed CLI reports `hooks stable true`;
+  the shared app-server control socket was absent, so it is not used. Codex requires review/trust through
+  `/hooks`; a fresh session will exercise each host's startup delivery. Managed/project policy may prevent user hooks.
 - Codex deep links and Claude workspace links are implemented with escaped URLs; actual live chat/terminal
   navigation was not exercised. Claude opens/focuses its workspace, not one exact integrated terminal.
 - Multi-monitor, full-screen and a full VoiceOver session were not exercised on this machine.
@@ -178,8 +180,8 @@ never executed, and no installed user app or live hook configuration was changed
   system accessibility preference was not tested.
 - GitHub CI was authored; it has not run remotely. Bundle is ad-hoc signed, not notarized/Developer ID signed.
 
-No credential-file reads, third-party package installation, external messages,
-production mutation or global agent activation were used. Synthetic tool proposals were never executed.
+The build and isolated validation used no credential-file reads, third-party package installation,
+external messages, production mutation or global agent activation. Synthetic tool proposals were never executed.
 
 ## Decision
 
