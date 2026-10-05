@@ -1,0 +1,19 @@
+name: Lantern checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Domain, config and real transport tests
+        run: bash scripts/swift.sh test
+      - name: Release bundle
+        run: bash scripts/package.sh
+      - name: Packaged hook contract
+        run: bash scripts/smoke.sh
+      - name: Whitespace integrity
+        run: git show --format= --check HEAD
