@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.6 — 2026-10-06
+
+Use Imad's supplied blue Codex icon in the existing session-row tile. Remove the attachment's baked
+checkerboard with a transparent cutout, bundle it locally and retain the gradient with smooth scaling.
+Claude's supplied icon, the green companion and all row/agent behavior remain unchanged.
+
 ## 0.1.5 — 2026-10-06
 
 Use Imad's supplied transparent orange Claude Code icon in the existing session-row tile, replacing

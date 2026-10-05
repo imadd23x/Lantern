@@ -201,6 +201,25 @@ paths below retain their limits; synthetic routing and geometry tests do not ver
 
 ## Remaining validation
 
+### 0.1.6 supplied Codex icon — 2026-10-06
+
+Release build/package passed; strict/deep signing passed on the unmodified extracted archive and
+installed app. Both bundled provider assets exactly matched their workspace sources. The Codex PNG
+has real alpha (0–255), with no checkerboard visible in the native row. An isolated, separately named
+demo app displayed both icons at actual size and quit normally, exit 0, removing its private socket.
+The demo request was dismissed only in that isolated app; no real approval was decided.
+
+Installed 0.1.6/build 7 at the existing relay path with a 0.1.5 rollback copy. Native live inspection
+showed the blue icon on the real Building Tools Codex row, ongoing tool activity and Local connection
+ready. The installed process owned the listening endpoint. Both agent files were byte-for-byte
+unchanged across upgrade. Before upgrade, the old app again showed an occupied socket; inspection
+found no lsof owner and ECONNREFUSED. After native Quit, only that same confirmed current-user socket
+inode was removed. Automatic stale-socket recovery is unchanged and was not added in this icon patch.
+
+No new logic tests or full-suite rerun were needed for this static asset substitution. Existing CLT
+linker search-path warnings remain. Asset provenance and the exact built-in edit prompt are recorded
+in `UI-REFERENCES.md`; installation/rollback evidence is in `LOCAL-INSTALLATION.md`.
+
 ### 0.1.5 supplied icon — 2026-10-06
 
 Release build/package passed. Native decoding confirmed NSImage/ImageIO can read the 512×512

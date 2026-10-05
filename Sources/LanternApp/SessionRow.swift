@@ -6,6 +6,8 @@ struct SessionRow: View {
     // SwiftUI's named-image lookup does not resolve this WebP; AppKit loads its bundled URL directly.
     private static let claudeCodeIcon: NSImage? = Bundle.module.url(forResource: "ClaudeCode", withExtension: "webp")
         .flatMap { NSImage(contentsOf: $0) }
+    private static let codexIcon: NSImage? = Bundle.module.url(forResource: "Codex", withExtension: "png")
+        .flatMap { NSImage(contentsOf: $0) }
     let session: AgentSession
     let now: TimeInterval
     let open: () -> Void
@@ -15,10 +17,11 @@ struct SessionRow: View {
             HStack(spacing: 11) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 11).fill(providerColor.opacity(0.10))
-                    if session.id.provider == .claude, let icon = Self.claudeCodeIcon {
+                    if let icon = providerIcon {
                         Image(nsImage: icon)
-                            .renderingMode(.original).resizable().interpolation(.none).scaledToFit()
-                            .frame(width: 26, height: 26)
+                            .renderingMode(.original).resizable()
+                            .interpolation(session.id.provider == .codex ? .high : .none).scaledToFit()
+                            .frame(width: iconSize, height: iconSize)
                     } else {
                         Image(systemName: session.id.provider == .codex ? "terminal" : "asterisk")
                             .font(.system(size: 15, weight: .medium)).foregroundStyle(providerColor)
@@ -42,6 +45,9 @@ struct SessionRow: View {
             .accessibilityLabel("\(session.project), \(session.id.provider.title), \(phaseLabel), \(session.summary). Open agent.")
     }
 
+    private var providerIcon: NSImage? { session.id.provider == .codex ? Self.codexIcon : Self.claudeCodeIcon }
+    // The Codex attachment retains transparent margins; compensate within the same 36-point tile.
+    private var iconSize: CGFloat { session.id.provider == .codex ? 32 : 26 }
     private var providerColor: Color { session.id.provider == .codex ? .init(red: 0.65, green: 0.82, blue: 1) : .init(red: 0.91, green: 0.61, blue: 0.47) }
     private var phaseLabel: String {
         SessionStatusBadge.label(for: session.phase)

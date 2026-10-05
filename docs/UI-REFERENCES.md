@@ -1,5 +1,25 @@
 # Native UI refinement — local component library
 
+## 0.1.6 Codex row icon
+
+User-supplied attachment: `/Users/imad/Downloads/codex-logo.webp`, 320×320 opaque WebP with a baked
+checkerboard (SHA-256 `2be8eb405110c4ce899fca2e7289fe04e15590ba09d10d0d9d0921bf1531dd55`).
+The built-in imagegen editor produced `Sources/LanternApp/Resources/Codex.png`, a 1254×1254 PNG with
+real alpha and transparent terminal cutouts (SHA-256
+`3e1f8aa7e3f3d9f15d84afec454f04b6f9c9c638c9cfa904fb7a2b76a87e6be8`). No CLI/API fallback was used.
+It is a raster cutout of the supplied art, not an SVG. Native bundled-URL loading is cached like the
+Claude image. Codex uses smooth interpolation at 32 points, compensating for its transparent margins
+inside the same 36-point tile. Claude retains its original bytes and pixel-art scaling.
+
+Final built-in edit prompt:
+
+> Use case: background-extraction.
+> Asset type: Codex provider icon in a native macOS session row.
+> Input image: edit target, supplied Codex icon.
+> Primary request: remove the baked gray-and-white checkerboard from the image. Make the exterior background and the checkerboard visible inside the > and _ terminal cutouts truly alpha-transparent. Preserve the supplied smooth blue-to-purple gradient, exact rounded cloud/blob silhouette, proportions, orientation, and the shape and arrangement of the terminal >_ cutouts.
+> Composition: square canvas, centered icon, tightly framed with a small transparent margin, no clipping.
+> Constraints: change only background transparency and framing; keep the artwork faithful to the supplied icon. No redesign, new text, shadows, glow, border, checkerboard or opaque background.
+
 ## 0.1.5 Claude Code row icon
 
 User-supplied attachment: `/Users/imad/Downloads/claude-code-icon.png.webp`, 512×512 transparent WebP.

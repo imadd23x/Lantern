@@ -13,7 +13,7 @@ let package = Package(
         .target(name: "LanternTransport", dependencies: ["LanternCore"]),
         .executableTarget(name: "LanternHook", dependencies: ["LanternCore", "LanternTransport"]),
         .executableTarget(name: "LanternApp", dependencies: ["LanternCore", "LanternTransport"],
-                          resources: [.copy("Resources/ClaudeCode.webp")]),
+                          resources: [.copy("Resources/ClaudeCode.webp"), .copy("Resources/Codex.png")]),
         .testTarget(name: "LanternCoreTests", dependencies: ["LanternCore", "LanternTransport"]),
         .testTarget(name: "LanternAppTests", dependencies: ["LanternApp", "LanternCore", "LanternTransport"]),
     ]

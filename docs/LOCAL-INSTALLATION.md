@@ -84,3 +84,17 @@ An unowned stale runtime socket was found before upgrade (inode 100138359, curre
 no lsof owner, ECONNREFUSED). It was removed only after the unavailable app had quit and those checks
 were repeated. The new installed process owns the working endpoint. Normal occupied-socket refusal
 remains unchanged in the source; no automatic unlink or singleton policy change was added.
+
+## 0.1.6 Codex icon upgrade — 2026-10-06
+
+Installed verified 0.1.6/build 7 at `/Users/imad/Applications/Lantern.app`. Rollback copy:
+`/Users/imad/Applications/Lantern Backups/0.1.5-build6-e2281328/Lantern.app`.
+Both packaged icon bytes match the sources. Native inspection showed the transparent blue Codex
+icon on the real Building Tools row with live tool activity and Local connection ready; lsof identified
+the installed process as the socket owner. Hook hashes remain exactly those listed for 0.1.4 above.
+No connection transaction, trust change or live approval decision was performed.
+
+The prior instance reported an occupied endpoint again. The exact current-user socket inode
+100143200 had no lsof owner and refused connections. After native Quit and repeated identity/owner/
+connection checks, only that stale socket was removed. This is operational cleanup, not a fix for
+abnormal-exit recovery. Rollback restores the saved app at the stable installed path after quitting.

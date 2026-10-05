@@ -90,3 +90,10 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Fix the blank named-image lookup with native bundled-URL loading and review at actual row size.
 - [x] Verify extracted signing/resources, install with rollback, and observe the icon on a real Claude row.
 - [x] Confirm unchanged hook files and record the safely confirmed stale-socket cleanup.
+
+## 0.1.6 supplied Codex icon
+
+- [x] Inspect the opaque attachment and extract a transparent PNG with the built-in image editor.
+- [x] Bundle the asset, retain smooth Codex scaling and original Claude pixel-art rendering.
+- [x] Verify extracted signatures/resources and both provider icons in an isolated native review.
+- [x] Upgrade with rollback and unchanged hook files; observe the icon on a real Codex session row.

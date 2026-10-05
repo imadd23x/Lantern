@@ -96,3 +96,16 @@ Acceptance: the extracted app loads the icon without Downloads/build-cache acces
 onscreen in the session row, and installed hook configuration remains unchanged. Verify the release
 build, bundled asset hash/signature and an isolated synthetic Claude row; no new logic tests are
 needed for this asset substitution. Deliver 0.1.5 and retain 0.1.4 for rollback.
+
+## 0.1.6 supplied Codex row icon — 2026-10-06
+
+Replace the Codex session row's terminal symbol with the supplied blue-gradient icon. The attachment
+is an opaque WebP with a baked checkerboard, so use the built-in image editor to extract a transparent
+PNG, preserving the silhouette and terminal cutouts. Bundle the resulting asset and load it through
+the existing native resource path. Use smooth interpolation for Codex and retain Claude's pixel-art
+interpolation. Keep the existing row actions, approval interface and green companion unchanged.
+
+Acceptance: no checkerboard rectangle appears at actual row size; both provider icons load from an
+extracted app with no Downloads/build-cache dependency. Verify release packaging/signatures and native
+rows. No new logic tests are needed for this static asset change. Upgrade the existing app with a
+0.1.5 rollback copy and unchanged hook configuration; deliver app/source 0.1.6 archives.
