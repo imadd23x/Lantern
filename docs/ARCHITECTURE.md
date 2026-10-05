@@ -58,6 +58,8 @@ Swift package builds without external dependencies or full Xcode. Build products
 temporary directories. The package script renders the app icon from the same SwiftUI character,
 ad-hoc signs nested relay then app, and verifies both staging and delivered bundles. It removes only
 FinderInfo added to the generated bundle root by File Provider; provenance attributes are preserved.
+File Provider reapplies this metadata later on this synced volume, so the ZIP from unsynced staging
+is the handoff artifact. Extract it to a stable local folder before activating full-path hook commands.
 This build is local-use software, not notarized distribution. No install/update daemon or login item.
 Do not move the app after connecting without regenerating hook commands from its new stable location.
 

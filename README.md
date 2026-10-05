@@ -21,7 +21,10 @@ Alerts expand the panel without activating your app. Quiet mode turns off the at
 The character animates while an agent works; reduced motion uses a static character.
 
 The bundle is ad-hoc signed for local use, **not Developer ID signed or notarized for distribution**.
-Keep the app at a stable location before connecting: hook commands contain its full executable path.
+Extract the release ZIP to a stable, unsynced local folder (for example `~/Applications`) before connecting:
+hook commands contain its full executable path. This workspace is in synced Documents; File Provider
+reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
+The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
 `outputs/Lantern-0.1.0.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
@@ -89,6 +92,7 @@ Lantern refuses to unlink an existing endpoint. Events/session state are memory-
 The wrapper stages build/signing products in a project-specific temporary directory to avoid File Provider
 metadata interfering with codesign. `LANTERN_BUILD_DIR` can choose another unsynced directory.
 Packaging removes generated FinderInfo from the copied bundle root and verifies its signature again.
+File Provider may add it back later; use the release ZIP for installation outside the synced folder.
 The icon is rendered from the same original SwiftUI character as the panel.
 `ViewState` is a typealias of the system SwiftUI `State` property wrapper; it avoids an SDK macro absent
 from Swift 6.4 Command Line Tools and introduces no custom state implementation.

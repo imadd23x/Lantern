@@ -9,7 +9,7 @@
 | Platform | macOS 27.0.1, Apple silicon, Swift 6.4 Command Line Tools | Native build supported |
 | Domain/config/transport | `bash scripts/swift.sh test` | **20/20 passed** |
 | Release app | `bash scripts/package.sh` | Release build, icon rendering and packaging passed |
-| Delivered signature | `codesign --verify --deep --strict outputs/Lantern.app` | Passed |
+| Workspace signature | `codesign --verify --deep --strict outputs/Lantern.app` | Passed immediately after packaging; **later recheck failed** when File Provider reapplied FinderInfo |
 | Archive | Extract ZIP in a temporary directory; strict/deep signature check; icon exists | Passed |
 | Packaged relay | `bash scripts/smoke.sh` | Absent app/malformed input fallback plus Allow/Deny/Delegate for both agents passed |
 | Native approvals | Two compiled relay processes → actual app → select Claude request 2/Deny → Codex request 1/Allow once | Correct identities and exact documented JSON returned; no proposed command executed |
@@ -29,7 +29,9 @@ and telemetry callback ordering. The first 12-test slice also passed before UI i
 - Swift 6.4 CLT stores Testing macros in a nested directory: the build wrapper supplies its plugin path.
 - This SDK exposes a State macro unavailable in CLT: `ViewState` aliases the existing system property wrapper.
 - File Provider adds FinderInfo in Documents: signing occurs in temporary staging; copied-root FinderInfo
-  is removed and the delivered signature reverified. Archive extraction/signature verification also passed.
+  is removed and the delivered signature reverified. **The metadata returns later, failing strict checks on
+  the workspace copy.** Archive extraction/signature verification passed in unsynced temporary storage.
+  Deliver the ZIP and extract to a stable unsynced local folder before connection; no sync policy was changed.
 - Installed CLT emits linker warnings for absent Developer framework/library search directories.
   These warnings did not prevent successful compilation, linking, packaging or tests.
 - Unix socket tests and release symbol generation required execution outside the filesystem sandbox;
@@ -52,5 +54,6 @@ production mutation or global agent activation were used. Synthetic tool proposa
 
 ## Decision
 
-Local code/build/synthetic-flow acceptance passes. This is a reviewable local trial with live activation
+Local code/build/synthetic-flow acceptance and the extracted archive pass. The synced workspace copy
+has the observed metadata limitation above. The ZIP is the deliverable for a local trial, with live activation
 still explicit, consistent with the pre-registered partial-result rule in `SPEC.md`.
