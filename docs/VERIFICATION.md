@@ -201,6 +201,23 @@ paths below retain their limits; synthetic routing and geometry tests do not ver
 
 ## Remaining validation
 
+### 0.1.5 supplied icon — 2026-10-06
+
+Release build/package passed. Native decoding confirmed NSImage/ImageIO can read the 512×512
+transparent WebP; the first named-image implementation rendered a blank tile onscreen and was
+replaced with direct bundled-URL loading. The corrected extracted app displayed the orange icon in
+a clearly marked demo Claude row. Resource bytes exactly matched the attachment; the generated
+resource lookup has no build-cache or Downloads fallback. Strict/deep signing passed after extraction
+and installation. Existing CLT linker warnings remain. No new logic tests were added for this static
+asset change; the 30-test result above belongs to 0.1.4, rather than being claimed as rerun here.
+
+Installed 0.1.5/build 6 at the existing app path with a 0.1.4 rollback copy. Native live inspection then
+showed the new icon on a real Claude Code session row, real Codex activity and Local connection ready.
+Both agent configuration files were byte-for-byte unchanged across upgrade. Before the upgrade,
+the old app reported an occupied socket: lsof found no owner, and a connection probe returned
+ECONNREFUSED. After stopping the unavailable instance, only that same owner-matching socket inode
+was removed; no active endpoint was removed. The isolated review quit normally, exit 0.
+
 - **Live Codex tool activity and Claude Code in VS Code session startup are verified** after the later
   user-authorized installation and manual Codex `/hooks` trust review. Exact native observations and
   configuration preservation checks: [LOCAL-INSTALLATION.md](LOCAL-INSTALLATION.md). Claude tool activity

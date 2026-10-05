@@ -1,7 +1,11 @@
 import SwiftUI
+import AppKit
 import LanternCore
 
 struct SessionRow: View {
+    // SwiftUI's named-image lookup does not resolve this WebP; AppKit loads its bundled URL directly.
+    private static let claudeCodeIcon: NSImage? = Bundle.module.url(forResource: "ClaudeCode", withExtension: "webp")
+        .flatMap { NSImage(contentsOf: $0) }
     let session: AgentSession
     let now: TimeInterval
     let open: () -> Void
@@ -11,8 +15,14 @@ struct SessionRow: View {
             HStack(spacing: 11) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 11).fill(providerColor.opacity(0.10))
-                    Image(systemName: session.id.provider == .codex ? "terminal" : "asterisk")
-                        .font(.system(size: 15, weight: .medium)).foregroundStyle(providerColor)
+                    if session.id.provider == .claude, let icon = Self.claudeCodeIcon {
+                        Image(nsImage: icon)
+                            .renderingMode(.original).resizable().interpolation(.none).scaledToFit()
+                            .frame(width: 26, height: 26)
+                    } else {
+                        Image(systemName: session.id.provider == .codex ? "terminal" : "asterisk")
+                            .font(.system(size: 15, weight: .medium)).foregroundStyle(providerColor)
+                    }
                 }.frame(width: 36, height: 36)
                 VStack(alignment: .leading, spacing: 5) {
                     HStack(spacing: 7) {

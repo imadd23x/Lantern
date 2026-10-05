@@ -83,3 +83,10 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Adapt Arc Segmented Control and Expandable Card with reduced-motion behavior.
 - [x] Verify 30 tests, packaged relay, native interactions and static reduced-motion captures.
 - [x] Package/upgrade at the existing path, preserve rollback and record observed evidence.
+
+## 0.1.5 supplied Claude icon
+
+- [x] Inspect supplied alpha/color and bundle original WebP bytes; replace the Claude row asterisk.
+- [x] Fix the blank named-image lookup with native bundled-URL loading and review at actual row size.
+- [x] Verify extracted signing/resources, install with rollback, and observe the icon on a real Claude row.
+- [x] Confirm unchanged hook files and record the safely confirmed stale-socket cleanup.

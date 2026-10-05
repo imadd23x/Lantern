@@ -1,5 +1,15 @@
 # Native UI refinement — local component library
 
+## 0.1.5 Claude Code row icon
+
+User-supplied attachment: `/Users/imad/Downloads/claude-code-icon.png.webp`, 512×512 transparent WebP.
+Source bytes are copied unchanged to `Sources/LanternApp/Resources/ClaudeCode.webp` (SHA-256
+`0fddbf948efaf0b2b06ef9bae6dbf464c6b1b78192089f397e7ca80ecc4aaf94`). SwiftPM bundles the asset;
+packaging copies that resource bundle into the app. AppKit loads its URL once, because SwiftUI's
+named-image lookup displayed a blank tile for this WebP. The original orange/alpha image is drawn
+at 26×26 within the existing 36×36 row tile, with no recoloring. This is the supplied raster attachment,
+not an SVG conversion or newly generated artwork. Codex and the green companion are unchanged.
+
 ## 0.1.4 Arc card and segmented control
 
 The requested pair is in Arc, snapshot `7238f98196b147a8d50ce467abcbad310d4d8414`:

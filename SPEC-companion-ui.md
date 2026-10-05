@@ -85,3 +85,14 @@ incorrect routing, invisible expanded hit area when compact/hidden, settings wri
 Mixed result: keep fixes that pass; report any unavailable physical-input check explicitly.
 Rollout: verified 0.1.4 archive and upgrade at the existing relay path; preserve the previous app/archive.
 Rollback: restore 0.1.3 at that same path. Presentation preferences may remain and are harmless to 0.1.3.
+
+## 0.1.5 supplied Claude Code row icon — 2026-10-06
+
+Replace only the Claude session row's asterisk with the attached transparent
+`claude-code-icon.png.webp` (the attachment is WebP, despite the request calling it SVG).
+Bundle the original bytes, retain its orange color and transparent eyes/background, and size it
+within the existing 36-point tile. Keep Codex's symbol, row labels/actions and the green pet intact.
+Acceptance: the extracted app loads the icon without Downloads/build-cache access, it is legible
+onscreen in the session row, and installed hook configuration remains unchanged. Verify the release
+build, bundled asset hash/signature and an isolated synthetic Claude row; no new logic tests are
+needed for this asset substitution. Deliver 0.1.5 and retain 0.1.4 for rollback.

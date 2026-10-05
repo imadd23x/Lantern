@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5 — 2026-10-06
+
+Use Imad's supplied transparent orange Claude Code icon in the existing session-row tile, replacing
+the asterisk. Bundle the original WebP with the app; retain Codex's symbol and all row/agent behavior.
+
 ## 0.1.4 — 2026-10-05
 
 Recognize installed local hooks after reopening; empty sessions now wait for activity instead of

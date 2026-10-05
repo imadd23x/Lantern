@@ -71,3 +71,16 @@ clears it from the screen; **Show Lantern** restores it and **Reset position** r
 Quit stops the listener, but installed hooks persist; reopening waits for fresh activity.
 Rollback: quit 0.1.4 and restore the saved 0.1.3 app to the existing path. Do not activate the backup at
 its backup path or rewrite hooks just to roll back.
+
+## 0.1.5 icon upgrade — 2026-10-06
+
+Installed verified 0.1.5/build 6 at the same path. Previous app:
+`/Users/imad/Applications/Lantern Backups/0.1.4-build5-007f0948/Lantern.app`.
+The supplied transparent Claude icon is bundled unchanged; onscreen it renders in an actual Claude
+session row. Both Codex and Claude activity arrived after launch. Configuration hashes remain exactly
+those listed for 0.1.4 above. No hook transaction or trust change was performed.
+
+An unowned stale runtime socket was found before upgrade (inode 100138359, current-user owned,
+no lsof owner, ECONNREFUSED). It was removed only after the unavailable app had quit and those checks
+were repeated. The new installed process owns the working endpoint. Normal occupied-socket refusal
+remains unchanged in the source; no automatic unlink or singleton policy change was added.
