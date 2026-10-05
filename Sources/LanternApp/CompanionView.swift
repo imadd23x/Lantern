@@ -1,19 +1,11 @@
 import SwiftUI
 import LanternCore
 
-enum Palette {
-    static let amber = Color(red: 1, green: 0.77, blue: 0.43)
-    static let background = Color(red: 0.065, green: 0.07, blue: 0.08)
-    static let card = Color.white.opacity(0.045)
-    static let subtle = Color.white.opacity(0.5)
-    static let border = Color.white.opacity(0.09)
-}
-
 struct CompanionView: View {
     @ObservedObject var model: AppModel
     @ViewState private var filter: AgentProvider?
     @ViewState private var selectedRequest: String?
-    @Environment(\.accessibilityReduceMotion) private var reducedMotion
+    @LanternReducedMotion private var reducedMotion
 
     private var request: PendingApproval? {
         model.state.approvals.first(where: { $0.id == selectedRequest }) ?? model.state.approvals.first
@@ -58,7 +50,10 @@ struct CompanionView: View {
                 Text(error).font(.system(size: 11)).foregroundStyle(.orange)
                     .padding(12).background(Palette.card).clipShape(RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 20)
             }
-            providerTabs.padding(.horizontal, 20).padding(.bottom, 12)
+            HStack {
+                ProviderFilter(selection: $filter, sessions: model.sessions)
+                Spacer(minLength: 0)
+            }.padding(.horizontal, 20).padding(.bottom, 12)
             ScrollView {
                 LazyVStack(spacing: 7) {
                     let sessions = model.sessions.filter { filter == nil || $0.id.provider == filter }
@@ -74,7 +69,7 @@ struct CompanionView: View {
                     let session = model.state.sessions[request.event.key]
                     model.decide(request.id, .delegate)
                     if let session { model.openAgent(session) }
-                }).padding(.horizontal, 20).padding(.top, 9)
+                }).id(request.id).padding(.horizontal, 20).padding(.top, 9)
             }
             Spacer(minLength: 10)
             footer
@@ -96,28 +91,8 @@ struct CompanionView: View {
                     .help("Collapse Lantern").accessibilityLabel("Collapse Lantern")
                 Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
                     .help("Connections").accessibilityLabel("Open connections")
-            }.font(.system(size: 12)).foregroundStyle(Palette.subtle).buttonStyle(.plain)
+            }.font(.system(size: 12)).buttonStyle(LanternButtonStyle(kind: .toolbar))
         }.padding(.horizontal, 20).padding(.top, 10).padding(.bottom, 12)
-    }
-
-    private var providerTabs: some View {
-        HStack(spacing: 5) {
-            tab("All agents", provider: nil)
-            tab("Codex", provider: .codex)
-            tab("Claude Code", provider: .claude)
-            Spacer(minLength: 0)
-            Text("\(model.sessions.count)").font(.system(size: 11, design: .monospaced)).foregroundStyle(Palette.subtle)
-        }
-    }
-
-    private func tab(_ label: String, provider: AgentProvider?) -> some View {
-        Button { filter = provider } label: {
-            Text(label).font(.system(size: 11, weight: .medium))
-                .padding(.horizontal, 11).padding(.vertical, 7)
-                .background(filter == provider ? Color.white.opacity(0.10) : .clear)
-                .clipShape(Capsule())
-        }.buttonStyle(.plain).foregroundStyle(filter == provider ? .white : Palette.subtle)
-            .accessibilityAddTraits(filter == provider ? .isSelected : [])
     }
 
     private var approvalQueue: some View {
@@ -147,7 +122,7 @@ struct CompanionView: View {
             Text("A quiet place for busy agents.").font(.system(size: 15, weight: .medium, design: .rounded))
             Text("Connect Codex and Claude Code to see their progress and answer permission requests here.")
                 .font(.system(size: 12)).foregroundStyle(Palette.subtle).multilineTextAlignment(.center).lineSpacing(4)
-            Button("Set up connections") { model.showConnections = true }.buttonStyle(.bordered).tint(Palette.amber)
+            Button("Set up connections") { model.showConnections = true }.buttonStyle(LanternButtonStyle(kind: .secondary))
         }.padding(.horizontal, 34).frame(height: 250)
     }
 

@@ -13,7 +13,11 @@ struct ApprovalCard: View {
                 Image(systemName: "hand.raised").foregroundStyle(Palette.amber)
                 Text(request.event.summary).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                 Spacer()
-                Text("\(max(0, Int(request.expiresAt - now)))s").font(.system(size: 10, design: .monospaced)).foregroundStyle(Palette.subtle)
+                Label("\(max(0, Int(request.expiresAt - now)))s", systemImage: "clock")
+                    .font(.system(size: 10, design: .monospaced)).monospacedDigit()
+                    .foregroundStyle(Palette.subtle).padding(.horizontal, 7).padding(.vertical, 4)
+                    .background(Color.white.opacity(0.04), in: Capsule())
+                    .accessibilityLabel("\(max(0, Int(request.expiresAt - now))) seconds remaining")
             }
             Text("\(request.event.provider.title) · session \(request.event.sessionID.suffix(8))")
                 .font(.system(size: 10)).foregroundStyle(Palette.subtle)
@@ -28,9 +32,9 @@ struct ApprovalCard: View {
             }.frame(height: 122).background(.black.opacity(0.22)).clipShape(RoundedRectangle(cornerRadius: 10))
             HStack(spacing: 8) {
                 Button { decide(.allow) } label: { Label("Allow once", systemImage: "checkmark").frame(maxWidth: .infinity) }
-                    .buttonStyle(.borderedProminent).tint(Palette.amber).foregroundStyle(.black)
+                    .buttonStyle(LanternButtonStyle(kind: .primary))
                     .disabled(request.event.detail.isEmpty || now >= request.expiresAt)
-                Button("Deny") { decide(.deny) }.buttonStyle(.bordered)
+                Button("Deny") { decide(.deny) }.buttonStyle(LanternButtonStyle(kind: .secondary))
                     .disabled(now >= request.expiresAt)
             }.controlSize(.regular).font(.system(size: 12, weight: .medium))
             Button("Answer in agent ↗", action: answerInAgent).buttonStyle(.plain)

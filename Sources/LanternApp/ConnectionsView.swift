@@ -37,7 +37,7 @@ struct ConnectionsView: View {
             HStack {
                 Button("Preview connection") { makePreview(remove: false) }
                 Button("Preview removal") { makePreview(remove: true) }
-            }.controlSize(.small)
+            }.controlSize(.small).buttonStyle(LanternButtonStyle(kind: .secondary))
             if let preview {
                 Picker("View", selection: $showingBefore) {
                     Text("Proposed settings").tag(false)
@@ -48,7 +48,7 @@ struct ConnectionsView: View {
                         .font(.system(size: 10, design: .monospaced)).textSelection(.enabled).padding(10)
                 }.frame(height: 165).background(.black.opacity(0.2)).clipShape(RoundedRectangle(cornerRadius: 10))
                 Button(removing ? "Apply removal" : "Back up and connect") { apply(preview) }
-                    .buttonStyle(.borderedProminent).tint(Palette.amber).foregroundStyle(.black)
+                    .buttonStyle(LanternButtonStyle(kind: .primary)).controlSize(.small)
                     .disabled(model.isDemo)
             } else {
                 Spacer(minLength: 0)

@@ -5,7 +5,7 @@ import LanternCore
 struct LanternAvatar: View {
     let busy: Bool
     let attention: Bool
-    @Environment(\.accessibilityReduceMotion) private var reducedMotion
+    @LanternReducedMotion private var reducedMotion
 
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 24, paused: reducedMotion || !busy)) { timeline in

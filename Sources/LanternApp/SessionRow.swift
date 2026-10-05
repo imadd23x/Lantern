@@ -23,35 +23,17 @@ struct SessionRow: View {
                 }
                 Spacer(minLength: 5)
                 VStack(alignment: .trailing, spacing: 5) {
-                    Text(phaseLabel).font(.system(size: 9, weight: .medium)).foregroundStyle(phaseColor)
+                    SessionStatusBadge(phase: session.phase)
                     Text("·\(session.id.id.suffix(6))").font(.system(size: 9, design: .monospaced)).foregroundStyle(Palette.subtle)
                 }
                 Image(systemName: "arrow.up.right").font(.system(size: 8)).foregroundStyle(Palette.subtle)
-            }.padding(11).background(Palette.card).clipShape(RoundedRectangle(cornerRadius: 15))
-                .overlay(RoundedRectangle(cornerRadius: 15).stroke(Palette.border.opacity(0.55), lineWidth: 1))
-        }.buttonStyle(.plain).help("Open \(session.id.provider.title) · last seen \(Int(max(0, now - session.updatedAt)))s ago")
+            }.padding(11)
+        }.buttonStyle(LanternButtonStyle(kind: .row)).help("Open \(session.id.provider.title) · last seen \(Int(max(0, now - session.updatedAt)))s ago")
             .accessibilityLabel("\(session.project), \(session.id.provider.title), \(phaseLabel), \(session.summary). Open agent.")
     }
 
     private var providerColor: Color { session.id.provider == .codex ? .init(red: 0.65, green: 0.82, blue: 1) : .init(red: 0.91, green: 0.61, blue: 0.47) }
-    private var phaseColor: Color {
-        switch session.phase {
-        case .approval, .attention: Palette.amber
-        case .failed: .red
-        case .finished: .mint
-        default: Palette.subtle
-        }
-    }
     private var phaseLabel: String {
-        switch session.phase {
-        case .idle: "Ready"
-        case .thinking: "Thinking"
-        case .working: "Working"
-        case .approval: "Approval"
-        case .attention: "Needs you"
-        case .finished: "Complete"
-        case .failed: "Error"
-        case .ended: "Ended"
-        }
+        SessionStatusBadge.label(for: session.phase)
     }
 }

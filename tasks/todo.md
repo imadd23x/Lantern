@@ -31,3 +31,13 @@
 - [ ] Optional wider-device verification: multi-monitor/full-screen/VoiceOver/reduced motion.
 
 Local acceptance and evidence: `docs/VERIFICATION.md`. No global agent configuration was changed.
+
+## 0.1.1 local component library refinement
+
+- [x] Read catalog/metadata, selected source and notices from Arc, Space UI, Componentry and free Planes.
+- [x] Register presentation acceptance and omitted effects in `docs/UI-REFERENCES.md`.
+- [x] Add shared native styles, keyboard provider filters/counts and event-driven status badges.
+- [x] Preserve model/actions/transport/configuration and panel geometry; bundle license notices.
+- [x] Verify 20 tests, packaged relay, isolated queue routing, disabled/cancelled presses,
+  full proposal scrolling, connection previews, compact state and normal/reduced motion.
+- [x] Package version 0.1.1 and record observed evidence and live limitations.

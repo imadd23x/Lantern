@@ -20,12 +20,16 @@ Click the chevron to collapse; click the compact companion or **Show Lantern** i
 Alerts expand the panel without activating your app. Quiet mode turns off the attention sound.
 The character animates while an agent works; reduced motion uses a static character.
 
+Provider filters include session counts and keyboard navigation. Status badges follow real agent events;
+only active work pulses. Selection, hover and press feedback respect reduced motion. These native
+adaptations of the downloaded UI libraries are documented in [docs/UI-REFERENCES.md](docs/UI-REFERENCES.md).
+
 The bundle is ad-hoc signed for local use, **not Developer ID signed or notarized for distribution**.
 Extract the release ZIP to a stable, unsynced local folder (for example `~/Applications`) before connecting:
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.0.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.1.1.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
 

@@ -18,7 +18,8 @@ final class PanelController {
         panel.hasShadow = true
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
-        panel.contentView = NSHostingView(rootView: CompanionView(model: model))
+        panel.contentView = NSHostingView(rootView: CompanionView(model: model)
+            .environment(\.lanternReduceMotion, CommandLine.arguments.contains("--reduce-motion")))
         model.onPresentationChange = { [weak self] in self?.layout() }
         screenObserver = NotificationCenter.default.addObserver(forName: NSApplication.didChangeScreenParametersNotification,
             object: nil, queue: .main) { [weak self] _ in

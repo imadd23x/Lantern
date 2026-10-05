@@ -1,4 +1,4 @@
-# Verification evidence — Lantern 0.1.0
+# Verification evidence — Lantern
 
 2026-10-05. Results below distinguish observed local behavior from live host activation.
 
@@ -37,6 +37,43 @@ and telemetry callback ordering. The first 12-test slice also passed before UI i
 - Unix socket tests and release symbol generation required execution outside the filesystem sandbox;
   they used isolated temporary paths. No live agent settings were changed by those checks.
 
+## 0.1.1 native UI refinement
+
+2026-10-05. Source selection and acceptance were registered in `docs/UI-REFERENCES.md` before edits.
+No React source/runtime or new production dependencies were embedded. Three MIT notices are included
+in the source and bundled Resources. The downloaded `component-library/` remains user-owned and untracked.
+
+| Check | Observed result |
+|---|---|
+| Final source tests | `bash scripts/swift.sh test`: **20/20 passed**; release build also passed |
+| Packaged relay | Absent app/malformed input and Allow/Deny/Delegate for both providers passed |
+| Archive and notices | Strict/deep signature verification passed after ZIP extraction in unsynced temporary storage; bundled `ThirdPartyNotices.txt` exists |
+| Isolation | Distinct `LanternReview.app` identity, same compiled binaries, socket/config paths under `/private/tmp/ln-ui-gvjrgm_k`; existing user app was not stopped |
+| Filtering/focus | Accurate All/Codex/Claude counts, selected AX traits, native click and Arrow/Home/End navigation; rapid reversals settled on the chosen provider |
+| Queue routing | Two actual packaged relays: select Claude request 2/Deny, then Codex request 1/Allow once; each exited 0 with its exact provider response |
+| No default approval | Return while the filter was focused left both queued proposals pending |
+| Disabled approval | Missing tool input exposed a disabled Allow once; an activation attempt left the proposal pending, then Deny returned only deny |
+| Cancellation | Dragging from Allow once to outside the button left the complete proposal pending; explicit Deny returned only deny |
+| Full proposal | Long input remained scrollable; the final `END OF COMPLETE PROPOSAL` marker was visibly reachable |
+| Compact/expanded | 246×46 and 460×584 layouts retained attention and all five session identities after collapse/expand |
+| Connections | 520×510 sheet, proposed/current comparison and provider switch remained readable; preview-only checks wrote no settings |
+| Normal motion | Final archive's decoded consecutive screenshots: avatar 2,801 changed pixels, working badge 176, completed badge 0 in their bounded regions |
+| Reduced motion | `--reduce-motion` in the review process: avatar, status badges, filter and main content each had **0 changed pixels** between decoded captures; keyboard filtering still worked |
+| Clean exit | Review app exited 0; its socket was removed; temporary agent config directories stayed empty |
+| Scope/scripts | No diff in Core, Transport, Hook or AppModel; panel sizing/screen path, sounds and action callbacks unchanged; shell syntax checks passed |
+
+Native tests exposed absent keyboard focus on plain filter buttons; explicit SwiftUI focusability fixed it.
+The filter supplies its own amber focus outline rather than adding the platform's default focus effect.
+Reduced-motion frame verification excludes the computer-use cursor overlay in empty space below the
+main content: raw screenshot bytes differed there; decoded content pixels were identical. This is a
+short observed rendering check, not a frame-rate or CPU benchmark. The OS preference itself was not changed.
+Expiry/session-end invariants remain covered by the existing tests; native expiry was not timed again.
+
+Shared `UIChrome.swift` owns presentation timing/styles and the system-or-local reduced-motion value;
+`ProviderFilter.swift` and `SessionStatusBadge.swift` receive typed domain values without owning agent
+actions. Filter animation is scoped to its own control so parent session filtering remains immediate.
+Each approval card is keyed by request ID to reset scrolling when a different proposal is selected.
+
 ## Remaining validation
 
 - **Live Codex desktop and Claude Code in VS Code delivery remains unverified.** Global hook config and
@@ -45,8 +82,9 @@ and telemetry callback ordering. The first 12-test slice also passed before UI i
   require a new/reloaded session. Managed/project policy may prevent user hooks.
 - Codex deep links and Claude workspace links are implemented with escaped URLs; actual live chat/terminal
   navigation was not exercised. Claude opens/focuses its workspace, not one exact integrated terminal.
-- Screen-change and reduced-motion paths are implemented but multi-monitor, full-screen, reduced-motion
-  settings and a full VoiceOver session were not exercised on this machine.
+- Multi-monitor, full-screen and a full VoiceOver session were not exercised on this machine.
+  The reduced-motion rendering path was verified with the process-local override; toggling the actual
+  system accessibility preference was not tested.
 - GitHub CI was authored; it has not run remotely. Bundle is ad-hoc signed, not notarized/Developer ID signed.
 
 No paid model turns, credential-file reads, third-party package installation, external messages,
