@@ -41,3 +41,11 @@ Local acceptance and evidence: `docs/VERIFICATION.md`. No global agent configura
 - [x] Verify 20 tests, packaged relay, isolated queue routing, disabled/cancelled presses,
   full proposal scrolling, connection previews, compact state and normal/reduced motion.
 - [x] Package version 0.1.1 and record observed evidence and live limitations.
+
+## 0.1.2 supplied Rick portrait
+
+- [x] Register avatar scope; copy the supplied bitmap unchanged into SwiftPM resources.
+- [x] Replace procedural artwork, retain working/reduced-motion/attention states and regenerate icon.
+- [x] Verify 20 tests, packaged relay, rendered artwork, relocated signature and no build-cache fallback.
+- [x] Package 0.1.2 and preserve prior ZIPs for rollback.
+- [x] After manual unlock, verify expanded/compact portrait, attention/deny control and reduced motion onscreen.

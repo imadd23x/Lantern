@@ -11,24 +11,35 @@ cp "$binary_dir/Lantern" "$app/Contents/MacOS/Lantern"
 cp "$binary_dir/lantern-hook" "$app/Contents/MacOS/lantern-hook"
 cp Resources/Info.plist "$app/Contents/Info.plist"
 cp Resources/ThirdPartyNotices.txt "$app/Contents/Resources/ThirdPartyNotices.txt"
+ditto "$binary_dir/Lantern_LanternApp.bundle" "$app/Contents/Resources/Lantern_LanternApp.bundle"
 release_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)"
 if [[ ! "$release_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   printf 'Invalid release version: %s\n' "$release_version" >&2
   exit 1
 fi
-"$binary_dir/Lantern" --render-icon "$stage/Lantern.iconset"
+"$app/Contents/MacOS/Lantern" --render-icon "$stage/Lantern.iconset"
 iconutil -c icns -o "$app/Contents/Resources/Lantern.icns" "$stage/Lantern.iconset"
 codesign --force --sign - "$app/Contents/MacOS/lantern-hook"
 codesign --force --sign - "$app"
 codesign --verify --deep --strict "$app"
+# The release archive must come from verified unsynced staging, not the volatile workspace copy.
+ditto -c -k --keepParent "$app" "outputs/Lantern-$release_version.zip"
+shasum -a 256 "outputs/Lantern-$release_version.zip" > outputs/SHA256SUMS
 # Copy an already signed bundle; File Provider metadata on Documents can block signing in place.
 ditto "$app" outputs/Lantern.app
 # This synced Documents volume adds FinderInfo to new bundle roots. Remove only
 # that generated metadata, preserving provenance and any other extended attributes.
-if xattr -p com.apple.FinderInfo outputs/Lantern.app >/dev/null 2>&1; then
-  xattr -d com.apple.FinderInfo outputs/Lantern.app
+for bundle in outputs/Lantern.app outputs/Lantern.app/Contents/Resources/Lantern_LanternApp.bundle; do
+  if xattr -p com.apple.FinderInfo "$bundle" >/dev/null 2>&1; then
+    xattr -d com.apple.FinderInfo "$bundle"
+  fi
+done
+if ! workspace_verification="$(codesign --verify --deep --strict outputs/Lantern.app 2>&1)"; then
+  if [[ "$workspace_verification" == *'resource fork, Finder information, or similar detritus not allowed'* ]]; then
+    printf 'File Provider reapplied metadata to the workspace app. Extract the verified release ZIP to an unsynced folder.\n' >&2
+  else
+    printf '%s\n' "$workspace_verification" >&2
+    exit 1
+  fi
 fi
-codesign --verify --deep --strict outputs/Lantern.app
-ditto -c -k --keepParent "$app" "outputs/Lantern-$release_version.zip"
-shasum -a 256 "outputs/Lantern-$release_version.zip" > outputs/SHA256SUMS
-printf 'Built %s/outputs/Lantern.app\n' "$PWD"
+printf 'Built %s/outputs/Lantern-%s.zip\n' "$PWD" "$release_version"

@@ -63,3 +63,7 @@ Planes' simulated thinking phases and rolling labels cannot report real agent pr
 wipe/curtain/3D effects would obscure proposals or move controls. Large Space UI orb/particle animations
 and Arc confirmation morphs add distraction or change approval semantics. Planes Pro has no local source
 and was not accessed. Window resizing stays on its existing AppKit path.
+
+Version 0.1.2 replaces the original character under a subsequent explicit user request with the supplied
+Rick portrait. This supersedes the original-character criterion above; the amber identity, state-driven
+motion, reduced-motion handling and all agent controls remain in scope unchanged.

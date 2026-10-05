@@ -8,7 +8,8 @@ The confirmed integrations and approval feature settle the consequential directi
 
 Imad can see which of his coding sessions needs attention and answer one exact permission request
 without switching apps. Swift 6, SwiftUI/AppKit, Foundation/Darwin, Swift Testing;
-macOS 15+, zero external dependencies. The character/branding are independently designed.
+macOS 15+, zero external runtime dependencies. Lantern branding is independently designed;
+the companion uses the user-supplied Rick portrait as requested for version 0.1.2.
 
 ## Commands / structure
 

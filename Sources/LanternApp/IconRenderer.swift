@@ -1,10 +1,14 @@
 import AppKit
 import SwiftUI
 
-/// Packaging renders the same original character used in the panel, so artwork has one source.
+/// Packaging renders the same bundled portrait used in the panel, so artwork has one source.
 @MainActor
 enum IconRenderer {
     static func writeIconset(to directory: URL) throws {
+        guard CompanionArtwork.portrait != nil else {
+            throw CocoaError(.fileReadCorruptFile,
+                userInfo: [NSLocalizedDescriptionKey: "The bundled companion portrait is missing or unreadable."])
+        }
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let artwork = LanternAvatar(busy: false, attention: false)
             .frame(width: 80, height: 80).frame(width: 100, height: 100)

@@ -74,6 +74,35 @@ Shared `UIChrome.swift` owns presentation timing/styles and the system-or-local 
 actions. Filter animation is scoped to its own control so parent session filtering remains immediate.
 Each approval card is keyed by request ID to reset scrolling when a different proposal is selected.
 
+## 0.1.2 supplied portrait
+
+2026-10-05. The avatar request supersedes the original procedural-artwork choice. The attached
+`Young_Adult_Rick.webp` is copied unchanged into the app's SwiftPM resource bundle. Source and extracted
+bundle bytes match SHA256 `d99e5d7853e6c0434827cd7386bb33ca05020a64d34c78bc27d134e2ad498438`.
+
+| Check | Observed result |
+|---|---|
+| Regression suite | **20/20 passed** after the avatar/resource change |
+| Packaged relay | Missing app, malformed input and Allow/Deny/Delegate for both providers passed |
+| Release | 0.1.2 build and icon rendering passed; ZIP extracted into another temporary folder passed strict/deep signature verification |
+| Actual artwork rendering | Relocated app's `--render-icon` renders the same SwiftUI avatar; PNG visually inspected and shows the supplied Rick portrait |
+| Portable resource lookup | With only a disposable copy's embedded resource bundle renamed, `--render-icon` exits 1 with the explicit missing-portrait error; no build-cache fallback |
+| Scope | No changes in Core, Transport, Hook, AppModel, approval/card/filter actions or panel geometry; source bitmap remains unchanged |
+| Native panels | After the user unlocked the Mac, the relocated review app displayed Rick in both 460×584 expanded and 246×46 compact states; collapse/expand preserved the working session |
+| Attention/approval | Synthetic Claude approval visibly added the amber portrait outline/glow; native Deny returned the documented deny response, executing no tool |
+| Portrait motion | Working portrait changed by 5,693 pixels across separate observations; with process-local `--reduce-motion`, portrait and main content both had 0 changed pixels across captures |
+
+Two initial packaging attempts hit the previously observed File Provider metadata error immediately
+after copying the app into synced Documents. Signing in unsynced staging passed both times. Packaging
+now creates the ZIP from that verified staging first, then removes only FinderInfo from generated app
+and resource-bundle roots. It reports the known workspace metadata error separately; other signature
+errors remain fatal. The subsequent package command and relocated archive verification passed.
+
+Working-only bobbing, static reduced motion and attention indication are preserved in the avatar view.
+The photograph's facial expression remains the supplied one; there is no generated face animation.
+No Downloads dependency, source-image edit, global hook activation or system preference change was made.
+The Mac was initially locked; native checks resumed after the user manually unlocked it.
+
 ## Remaining validation
 
 - **Live Codex desktop and Claude Code in VS Code delivery remains unverified.** Global hook config and

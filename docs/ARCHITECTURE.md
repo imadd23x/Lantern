@@ -34,6 +34,8 @@ approval UI deadline 110 seconds; client wait 115 seconds; agent hook deadline 1
 Idle hook exchanges wait ≤0.3 seconds. Unknown/oversized/malformed events produce no allow.
 Sessions prune to 100 entries excluding pending approvals, and discard hour-old entries on subsequent events.
 No timer-driven idle character animation; active character is capped at 24 fps and honors reduced motion.
+Portrait artwork is cached once by the main-actor UI. SwiftPM supplies development resources; a packaged
+app resolves only its embedded resource bundle, with no absolute build-cache or Downloads fallback.
 
 ## Approval lifecycle
 
@@ -57,7 +59,7 @@ The lock protects other Lantern writers, not arbitrary editors; this final race 
 Swift package builds without external dependencies or full Xcode. Build products and signing staging use unsynced
 temporary directories. The package script renders the app icon from the same SwiftUI character,
 ad-hoc signs nested relay then app, and verifies both staging and delivered bundles. It removes only
-FinderInfo added to the generated bundle root by File Provider; provenance attributes are preserved.
+FinderInfo added to the generated app/resource bundle roots by File Provider; provenance attributes are preserved.
 File Provider reapplies this metadata later on this synced volume, so the ZIP from unsynced staging
 is the handoff artifact. Extract it to a stable local folder before activating full-path hook commands.
 This build is local-use software, not notarized distribution. No install/update daemon or login item.
@@ -68,7 +70,7 @@ Do not move the app after connecting without regenerating hook commands from its
 - Native Swift package: installed Swift tools can build without Homebrew/XcodeGen; SwiftUI/AppKit fit the Mac workflow.
 - Hooks: installed Codex reports stable enabled hooks; shared app-server control socket did not exist.
 - Separate sessions/queued approvals: avoids Coucou's one-slot pending approval behavior.
-- Original procedural character: no dependency on protected Coucou assets.
+- User-selected portrait in 0.1.2 replaces the original procedural character; no Coucou assets are copied.
 - No persistent allow: keeps the approval surface deliberate and narrow.
 - No built-in chat/API integrations: not needed for the confirmed workflow and would add credentials/cost.
 - CLI trust / host reload stays explicit: never bypass the user's agent policy.

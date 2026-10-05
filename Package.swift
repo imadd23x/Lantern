@@ -12,7 +12,8 @@ let package = Package(
         .target(name: "LanternCore"),
         .target(name: "LanternTransport", dependencies: ["LanternCore"]),
         .executableTarget(name: "LanternHook", dependencies: ["LanternCore", "LanternTransport"]),
-        .executableTarget(name: "LanternApp", dependencies: ["LanternCore", "LanternTransport"]),
+        .executableTarget(name: "LanternApp", dependencies: ["LanternCore", "LanternTransport"],
+                          resources: [.copy("Resources/CompanionPortrait.webp")]),
         .testTarget(name: "LanternCoreTests", dependencies: ["LanternCore", "LanternTransport"]),
     ]
 )

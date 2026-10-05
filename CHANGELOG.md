@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2 — 2026-10-05
+
+Replace the companion and generated icon with Imad's supplied Rick portrait, bundled unchanged.
+Retain working-only bobbing and reduced-motion behavior; attention uses an amber outline/glow.
+The resource travels inside the app and cannot fall back to Downloads or an absolute build-cache path.
+Session, approval, navigation, sound and configuration behavior are unchanged.
+
 ## 0.1.1 — 2026-10-05
 
 Native SwiftUI adaptations of the downloaded Arc, Space UI, Componentry and Planes references:
