@@ -135,14 +135,35 @@ exact window exposed the visible bit (8194), started the sampler and allowed act
 Initial identical normal-mode frames therefore did not establish working motion; the raised-window
 check above did. This is a short rendering observation, not a frame-rate or CPU benchmark.
 
-Temporary frame/window/cursor traces were removed before handoff packaging. The last clean-release
+Temporary frame/window/cursor traces were removed before handoff packaging. The first clean-release
 onscreen recheck was blocked when the Mac locked again; no automatic unlock/bypass was attempted.
-The user was asked to unlock and to manually check physical left/right mouse movement. That directional
-hardware check remains pending; the direction/bounds math, cursor delivery and native pupil rendering
-were verified separately. Source/archive checks continue independently. No live agent config changed.
+The user was asked to unlock and to manually check physical left/right mouse movement.
 While locked, only the disposable review PID was terminated; after confirming it exited, its owned
 temporary socket was removed. Both isolated agent configuration directories remained empty. Earlier
 review instances quit normally through the native menu shortcut. No existing user app was stopped.
+
+### Clean-release recheck after manual unlock
+
+2026-10-05. Re-extracted the final 0.1.3/build 4 app ZIP into unsynced temporary storage and verified
+its strict/deep signature. Refreshed the disposable review from that extraction, changing only its
+temporary bundle identity and signing it locally. Runtime and both agent configuration paths remained
+isolated. Raised each review window before observing its rendering.
+
+| Check | Fresh observed result |
+|---|---|
+| Physical cursor tracking | User moved the physical mouse left and right and confirmed **both pupils follow** |
+| Artwork and compact interaction | Expanded and compact panels show the green native silhouette with no photo tile; clicking the compact avatar itself expands sessions |
+| Normal motion | Synthetic Codex working event reached the released app; separate decoded screenshots showed **3,631 changed avatar pixels** |
+| Attention and decision routing | Synthetic Claude permission request showed the amber attention glow and full proposal; native Deny removed its card and the packaged relay returned the matching `behavior: deny` response, exit 0 |
+| Reduced motion | A second launch with process-local `--reduce-motion` and an active synthetic session produced **0 changed avatar pixels and 0 changed main-content pixels**; gaze was neutral and compact avatar click still expanded the panel |
+| Cleanup | Both reviews quit through the native shortcut, exit 0; no review process or owned socket remained, and both isolated agent configuration directories were empty |
+| Archives | App/source checksum verification passed; source ZIP CRC and file content matched, with no component-library, output, Git or portrait files |
+
+The final hardware-direction check is now complete. No source changes or app rebuild were required
+for this recheck. The 25-test implementation result above was not rerun for this documentation-only
+follow-up. The actual macOS Reduce Motion preference and live agent integrations remain untested as
+listed below; the process-local override does not change system settings. Synthetic proposals were
+never executed, and no installed user app or live hook configuration was changed.
 
 ## Remaining validation
 

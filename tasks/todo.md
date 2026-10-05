@@ -57,5 +57,6 @@ Local acceptance and evidence: `docs/VERIFICATION.md`. No global agent configura
 - [x] Integrate the green avatar at both sizes and static icon; preserve agent actions and working/attention states.
 - [x] Verify 25 tests/relay, relocated resource/signature, native cursor delivery and compact/expanded states.
 - [x] Record provenance/evidence and package 0.1.3; retain earlier releases.
-- [ ] After manual unlock, repeat the clean-release onscreen check and confirm physical left/right mouse tracking.
-  - Blocking condition: computer-use tool reports the Mac locked; its virtual cursor does not move the physical mouse.
+- [x] After manual unlock, repeat the clean-release onscreen check and confirm physical left/right mouse tracking.
+  - Final 0.1.3/build 4 extraction: user confirmed both pupils follow; native compact clicks, working/attention,
+    matching synthetic Deny and static process-local Reduce Motion passed. Isolated reviews quit cleanly.
