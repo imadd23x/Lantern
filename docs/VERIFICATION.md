@@ -165,6 +165,40 @@ follow-up. The actual macOS Reduce Motion preference and live agent integrations
 listed below; the process-local override does not change system settings. Synthetic proposals were
 never executed, and no installed user app or live hook configuration was changed.
 
+## 0.1.4 restart and presentation verification — 2026-10-06
+
+Baseline 0.1.3 was exercised in isolation: a working row appeared, native Quit exited 0, and reopening
+returned to the unconditional setup screen. The user confirmed new activity already resumed normally.
+The correction recognizes installed hooks; no session cache or reconnection transaction is needed.
+
+- **30 tests passed** (21 Core/Transport + 9 App): complete/partial/other-relay/disabled hook inspection,
+  bounded placement with offscreen/invalid coordinates, and a real proposal while hidden followed by
+  Show and explicit Deny. Hide dismisses setup; stop removes the owned socket. New regression tests
+  first failed for missing APIs. Existing CLT linker search-path warnings remain, with no Swift concurrency
+  warnings. `git diff --check` passed.
+- Final release packaging and strict/deep signing passed in unsynced staging and on the unmodified
+  extracted archive. Packaged relays passed absent-app, malformed-input and Allow/Deny/Delegate smoke.
+- Native queue review displayed two full synthetic proposals. Selecting Codex and Deny returned only
+  Codex's `behavior: deny`; Allow once returned Claude's `behavior: allow`. No proposed command ran.
+- Native card review passed compact (288×46), expanded (460×584), Escape, rapid toggle reversal,
+  filter keyboard selection/wrapping and stationary segment labels/counts. Dragging wrote the review's
+  position preference; restart retained it. Reset removed it. Menu Show/Hide/Reset were exposed.
+- Hide removed the review window from the enabled inventory. Its process stayed alive and its private
+  socket acknowledged another event with `delegate`. The UI tool cannot inspect a windowless app's menu,
+  so hidden-to-Show is covered by the lifecycle test rather than an onscreen menu click. One disposable
+  hidden review was stopped by SIGTERM, leaving its stale socket in isolation; later reviews used new
+  runtime paths and exited 0 through native Quit with their owned sockets removed.
+- The final extracted build with process-local `--reduce-motion` received a working event. Decoded
+  460×584 captures had **0 changed avatar pixels and 0 changed body pixels**; Escape restored compact
+  bounds. The system accessibility setting was not changed.
+- **Installed 0.1.4/build 5** at the existing path with a rollback copy. Real Codex tool activity returned
+  immediately. The empty Claude filter recognized installed hooks and awaited activity. Both agent
+  files were unchanged across upgrade, and trust records were not edited.
+
+App ZIP SHA-256: `9c9fd3f9473f61481c8e44cd0115156cc870afb207056b9ea2aee64c5adeabad`.
+Machine-specific evidence: `LOCAL-INSTALLATION.md`. The unobserved live Claude/permission and hardware
+paths below retain their limits; synthetic routing and geometry tests do not verify those paths.
+
 ## Remaining validation
 
 - **Live Codex tool activity and Claude Code in VS Code session startup are verified** after the later

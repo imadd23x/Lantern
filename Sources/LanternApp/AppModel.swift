@@ -6,10 +6,13 @@ import LanternTransport
 @MainActor
 final class AppModel: ObservableObject {
     @Published private(set) var state = SessionState()
-    @Published var expanded = true
+    @Published private(set) var expanded = false
+    @Published private(set) var companionHidden = false
     @Published var showConnections = false
     @Published var errorMessage: String?
     @Published private(set) var isListening = false
+    @Published private(set) var installedProviders: Set<AgentProvider> = []
+    @Published private(set) var connectionWarnings: [AgentProvider: String] = [:]
     @Published var quiet = false
     @Published private(set) var now = Date().timeIntervalSince1970
     let isDemo: Bool
@@ -17,6 +20,7 @@ final class AppModel: ObservableObject {
     private var timer: Timer?
     private var disconnected: Set<String> = []
     var onPresentationChange: (() -> Void)?
+    var onResetPosition: (() -> Void)?
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current) {
         isDemo = demo; server = HookServer(directory: directory)
@@ -33,7 +37,33 @@ final class AppModel: ObservableObject {
     var relayPath: String { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lantern-hook").path }
     var socketPath: String { server.socketPath }
 
+    func configurationURL(for provider: AgentProvider) -> URL {
+        let env = ProcessInfo.processInfo.environment
+        let home = FileManager.default.homeDirectoryForCurrentUser
+        let directory = provider == .codex
+            ? env["CODEX_HOME"] ?? home.appendingPathComponent(".codex").path
+            : env["CLAUDE_CONFIG_DIR"] ?? home.appendingPathComponent(".claude").path
+        return URL(fileURLWithPath: directory).appendingPathComponent(provider == .codex ? "hooks.json" : "settings.json")
+    }
+
+    func refreshConnections() {
+        var installed: Set<AgentProvider> = []
+        var warnings: [AgentProvider: String] = [:]
+        for provider in AgentProvider.allCases {
+            do {
+                switch try HookConfiguration.installation(original: ConfigurationTransaction.read(configurationURL(for: provider)),
+                                                          provider: provider, relayPath: relayPath) {
+                case .installed: installed.insert(provider)
+                case .incomplete: warnings[provider] = "Hooks need review"
+                case .absent: break
+                }
+            } catch { warnings[provider] = "Settings could not be read" }
+        }
+        installedProviders = installed; connectionWarnings = warnings
+    }
+
     func start() {
+        refreshConnections()
         do {
             try server.start(onEvent: { [weak self] event, id in
                 Task { @MainActor [weak self] in self?.receive(event, id: id) }
@@ -51,8 +81,19 @@ final class AppModel: ObservableObject {
     func stop() { timer?.invalidate(); timer = nil; server.stop(); isListening = false }
 
     func setExpanded(_ value: Bool) {
+        if value && !expanded { refreshConnections() }
         expanded = value; onPresentationChange?()
     }
+
+    func hideCompanion() {
+        showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
+    }
+
+    func showCompanion() {
+        companionHidden = false; setExpanded(true)
+    }
+
+    func resetPosition() { onResetPosition?() }
 
     func decide(_ id: String, _ decision: HookDecision) {
         guard state.resolve(id, now: Date().timeIntervalSince1970) != nil else {
@@ -82,7 +123,7 @@ final class AppModel: ObservableObject {
         let cleared = state.apply(event, requestID: event.kind == .approval ? id : nil, now: now)
         for request in cleared { server.respond(to: request, with: .delegate) }
         if [.approval, .attention, .failed].contains(event.kind) {
-            setExpanded(true)
+            if !companionHidden { setExpanded(true) }
             if !quiet { NSSound(named: "Tink")?.play() }
         }
     }

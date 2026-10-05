@@ -2,6 +2,31 @@ import Foundation
 import Testing
 @testable import LanternCore
 
+@Test func installationInspectionDistinguishesCompletePartialAndOtherRelays() throws {
+    let path = "/Applications/Lantern.app/Contents/MacOS/lantern-hook"
+    for provider in AgentProvider.allCases {
+        #expect(try HookConfiguration.installation(original: nil, provider: provider, relayPath: path) == .absent)
+        let installed = try HookConfiguration.preview(original: nil, provider: provider, relayPath: path, remove: false).updated
+        #expect(try HookConfiguration.installation(original: installed, provider: provider, relayPath: path) == .installed)
+        #expect(try HookConfiguration.installation(original: installed, provider: provider, relayPath: "/other/hook") == .absent)
+        var root = try #require(JSONSerialization.jsonObject(with: installed) as? [String: Any])
+        var hooks = try #require(root["hooks"] as? [String: Any])
+        hooks.removeValue(forKey: "PermissionRequest")
+        root["hooks"] = hooks
+        let partial = try JSONSerialization.data(withJSONObject: root)
+        #expect(try HookConfiguration.installation(original: partial, provider: provider, relayPath: path) == .incomplete)
+        if provider == .claude {
+            root = try #require(JSONSerialization.jsonObject(with: installed) as? [String: Any])
+            root["disableAllHooks"] = true
+            #expect(try HookConfiguration.installation(original: JSONSerialization.data(withJSONObject: root),
+                                                      provider: provider, relayPath: path) == .incomplete)
+        }
+    }
+    #expect(throws: (any Error).self) {
+        try HookConfiguration.installation(original: Data("bad json".utf8), provider: .codex, relayPath: path)
+    }
+}
+
 @Test func hookMergePreservesSettingsAndNeighborHandlers() throws {
     let original = Data(#"{"theme":"dark","hooks":{"PreToolUse":[{"matcher":"Bash","hooks":[{"type":"command","command":"custom-lint"}]}]}}"#.utf8)
     let plan = try HookConfiguration.preview(original: original, provider: .claude, relayPath: "/tmp/Lantern.app/Contents/MacOS/lantern-hook", remove: false)

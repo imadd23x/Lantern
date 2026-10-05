@@ -73,3 +73,13 @@ until the later user-authorized installation recorded at the end of this file.
 
 Machine-specific evidence and handoff: `docs/LOCAL-INSTALLATION.md`. Terminal access is blocked by the
 computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was prepared for the user.
+
+## 0.1.4 restart messaging and panel presentation
+
+- [x] Reproduce empty restart UI and confirm existing hooks resume on activity; inspect exact Arc components.
+- [x] Register acceptance, rollback and implementation sequence before code.
+- [x] Implement read-only installation detection and correct empty/filter messaging.
+- [x] Implement move/hide/reset, remembered bounded placement and menu fallback.
+- [x] Adapt Arc Segmented Control and Expandable Card with reduced-motion behavior.
+- [x] Verify 30 tests, packaged relay, native interactions and static reduced-motion captures.
+- [x] Package/upgrade at the existing path, preserve rollback and record observed evidence.

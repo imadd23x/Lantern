@@ -8,8 +8,8 @@ The confirmed integrations and approval feature settle the consequential directi
 
 Imad can see which of his coding sessions needs attention and answer one exact permission request
 without switching apps. Swift 6, SwiftUI/AppKit, Foundation/Darwin, Swift Testing;
-macOS 15+, zero external runtime dependencies. Lantern branding is independently designed;
-the companion uses the user-supplied Rick portrait as requested for version 0.1.2.
+macOS 15+, zero external runtime dependencies. Lantern branding and its green procedural companion
+are independently designed. Componentry gaze and Arc control/card interactions are adapted natively.
 
 ## Commands / structure
 
@@ -21,7 +21,7 @@ the companion uses the user-supplied Rick portrait as requested for version 0.1.
 
 `Sources/LanternCore` owns session-state and hook-configuration; `Sources/LanternTransport`
 owns hook-connection with the `LanternHook` executable. `Sources/LanternApp` owns companion-ui.
-Tests live in `Tests/LanternCoreTests`; `work/` and `outputs/` are ignored generated material.
+Tests live in `Tests/LanternCoreTests` and `Tests/LanternAppTests`; `work/` and `outputs/` are ignored generated material.
 `tasks/plan.md` and `tasks/todo.md` are the implementation index.
 
 ## Code style

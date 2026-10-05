@@ -15,9 +15,13 @@ bash scripts/smoke.sh
 open outputs/Lantern.app
 ```
 
-The app stays in the menu bar and places a compact panel immediately below the notch or menu bar.
-Click the chevron to collapse; click the compact companion or **Show Lantern** in the menu to expand.
-Alerts expand the panel without activating your app. Quiet mode turns off the attention sound.
+The app starts compact below the notch/menu bar. Click the companion to expand or collapse; Escape
+also collapses. Drag the dotted grip to move it; its position is remembered and kept on a visible screen.
+Click **×** to hide it while it keeps listening. **Show Lantern** in the menu brings it back;
+**Reset position** returns it below the notch. Alerts expand a visible panel without activating your app,
+and a deliberately hidden panel stays hidden (pending requests appear on the menu-bar icon/menu).
+Quiet mode turns off the attention sound. Installed hooks are recognized after reopening; session
+rows appear on fresh activity. Installation is distinct from agent trust/reload and live hook delivery.
 The transparent lantern gently bobs while an agent works; its eyes follow the cursor with bounded,
 spring-settled movement adapted from Componentry. Reduced motion uses a static neutral gaze.
 An amber glass outline/glow indicates attention. Artwork is drawn natively, with no photo tile or

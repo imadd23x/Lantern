@@ -1,5 +1,26 @@
 # Native UI refinement — local component library
 
+## 0.1.4 Arc card and segmented control
+
+The requested pair is in Arc, snapshot `7238f98196b147a8d50ce467abcbad310d4d8414`:
+`registry/components/segmented-control/{segmented-control.tsx,segmented-control.module.css}` and
+`registry/components/expandable-card/{expandable-card.tsx,expandable-card.module.css}`, plus
+`registry/motion-tokens.ts`. Read the actual source/CSS and MIT notice before implementation.
+
+SwiftUI retains stationary segment labels/counts, a rounded moving selection, roving keyboard focus,
+all directional arrows/Home/End and selected accessibility state. The expandable card retains a
+persistent trigger/avatar and mounted but inert details, real width/height changes, a fixed-width
+detail layout, staged opacity, chevron rotation and Escape. AppKit owns actual window bounds and
+native dragging; a shared 0.32s curve is used rather than equating web and native spring constants.
+Reduced Motion removes the morph and fades. No web runtime/dependency is shipped. Existing MIT
+notices cover the additional Arc references.
+
+The move grip hands the original mouse-down to AppKit's documented
+[performDrag(with:)](https://developer.apple.com/documentation/appkit/nswindow/performdrag(with:)).
+Hide orders the window out; it does not leave an invisible expanded window over other applications.
+Geometry and filtering changes are explicitly authorized by the 0.1.4 request, superseding the earlier
+presentation-only geometry constraint below.
+
 2026-10-05. Scope: adapt suitable visual and interaction ideas to Lantern's existing SwiftUI views.
 The user authorized implementation while preserving existing behavior. This is a presentation change.
 

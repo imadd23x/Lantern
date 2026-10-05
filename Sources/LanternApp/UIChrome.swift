@@ -29,6 +29,9 @@ enum Palette {
 
 /// Native timing choices inspired by Arc/Planes; web spring constants are not interchangeable.
 enum LanternMotion {
+    static func card(reduced: Bool) -> Animation? {
+        reduced ? nil : .timingCurve(0.22, 1, 0.36, 1, duration: 0.32)
+    }
     static func selection(reduced: Bool) -> Animation? {
         reduced ? nil : .spring(response: 0.32, dampingFraction: 0.92)
     }

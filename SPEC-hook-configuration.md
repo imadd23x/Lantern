@@ -14,3 +14,8 @@ same-directory atomic rename. Refuse symlink targets. Removal preserves unrelate
 Config gets no writes until user accepts its preview. Codex trust is never altered.
 Tests: preservation, shared groups, malformed config, idempotency, shell quoting, stale preview, exact backup.
 Verify: `bash scripts/swift.sh test --filter Configuration` in temporary directories only.
+
+0.1.4 adds read-only installation inspection: every expected Lantern event must point to this app's
+exact relay command; partial installations, other app paths and disabled Claude hooks cannot count
+as installed. Reuse the existing bounded, symlink-refusing reader. Installation does not prove trust
+or live delivery. The Connections sheet and empty session state share this information and paths.

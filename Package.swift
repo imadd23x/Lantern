@@ -14,6 +14,6 @@ let package = Package(
         .executableTarget(name: "LanternHook", dependencies: ["LanternCore", "LanternTransport"]),
         .executableTarget(name: "LanternApp", dependencies: ["LanternCore", "LanternTransport"]),
         .testTarget(name: "LanternCoreTests", dependencies: ["LanternCore", "LanternTransport"]),
-        .testTarget(name: "LanternAppTests", dependencies: ["LanternApp"]),
+        .testTarget(name: "LanternAppTests", dependencies: ["LanternApp", "LanternCore", "LanternTransport"]),
     ]
 )

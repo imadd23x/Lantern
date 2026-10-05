@@ -1,7 +1,7 @@
 import SwiftUI
 import LanternCore
 
-/// A moving selection surface with stationary labels, adapted from Arc/Planes design references.
+/// Arc Segmented Control: stationary labels/counts and a shared rounded selection surface.
 struct ProviderFilter: View {
     @Binding var selection: AgentProvider?
     let sessions: [AgentSession]
@@ -18,7 +18,7 @@ struct ProviderFilter: View {
     }
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: 4) {
             ForEach(Option.allCases, id: \.self) { option in
                 let selected = selection == option.provider
                 let count = sessions.filter { option.provider == nil || $0.id.provider == option.provider }.count
@@ -28,7 +28,7 @@ struct ProviderFilter: View {
                         Text("\(count)").font(.system(size: 9, design: .monospaced)).monospacedDigit()
                             .foregroundStyle(selected ? .white.opacity(0.8) : Palette.subtle)
                     }
-                    .padding(.horizontal, 11).frame(height: 30)
+                    .padding(.horizontal, 8).frame(maxWidth: .infinity).frame(height: 32)
                     .foregroundStyle(selected ? .white : Palette.subtle)
                     .background {
                         if selected {
@@ -36,24 +36,24 @@ struct ProviderFilter: View {
                             else { selectionSurface.matchedGeometryEffect(id: "filter", in: highlight) }
                         }
                     }
-                    .overlay(Capsule().stroke(Palette.amber.opacity(focused == option ? 0.65 : 0), lineWidth: 1))
-                    .contentShape(Capsule())
+                    .overlay(RoundedRectangle(cornerRadius: 9).stroke(Palette.amber.opacity(focused == option ? 0.65 : 0), lineWidth: 1))
+                    .contentShape(RoundedRectangle(cornerRadius: 9))
                 }
-                .buttonStyle(.plain).focusable().focusEffectDisabled().focused($focused, equals: option)
+                .buttonStyle(.plain).focusable(selected).focusEffectDisabled().focused($focused, equals: option)
                 .accessibilityLabel(option.label).accessibilityValue("\(count) \(count == 1 ? "session" : "sessions")")
                 .accessibilityAddTraits(selected ? .isSelected : [])
             }
         }
-        .padding(3).background(.black.opacity(0.2), in: Capsule())
-        .overlay(Capsule().stroke(Palette.border, lineWidth: 1))
+        .padding(4).background(.black.opacity(0.2), in: RoundedRectangle(cornerRadius: 13))
+        .overlay(RoundedRectangle(cornerRadius: 13).stroke(Palette.border, lineWidth: 1))
         .animation(LanternMotion.selection(reduced: reducedMotion), value: selection)
-        .onKeyPress(keys: [.leftArrow, .rightArrow, .home, .end]) { key in
+        .onKeyPress(keys: [.leftArrow, .rightArrow, .upArrow, .downArrow, .home, .end]) { key in
             let current = Option.allCases.first { $0.provider == selection } ?? .all
             let index: Int
             switch key.key {
             case .home: index = 0
             case .end: index = Option.allCases.count - 1
-            case .leftArrow: index = (current.rawValue + Option.allCases.count - 1) % Option.allCases.count
+            case .leftArrow, .upArrow: index = (current.rawValue + Option.allCases.count - 1) % Option.allCases.count
             default: index = (current.rawValue + 1) % Option.allCases.count
             }
             select(Option.allCases[index])
@@ -62,8 +62,9 @@ struct ProviderFilter: View {
     }
 
     private var selectionSurface: some View {
-        Capsule().fill(Color.white.opacity(0.10))
-            .overlay(Capsule().stroke(Color.white.opacity(0.10), lineWidth: 1))
+        RoundedRectangle(cornerRadius: 9).fill(Color.white.opacity(0.10))
+            .overlay(RoundedRectangle(cornerRadius: 9).stroke(Color.white.opacity(0.10), lineWidth: 1))
+            .shadow(color: .black.opacity(0.18), radius: 2, y: 1)
             .allowsHitTesting(false)
     }
 

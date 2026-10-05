@@ -55,3 +55,33 @@ recolor its glass/light green, and adapt Componentry's bounded spring gaze to na
 The acceptance bar above applies to the transparent lantern instead of a Rick head. No image-editing
 CLI/API fallback or separate paid generation is authorized or used. The unused portrait is removed
 from the production resource bundle; earlier archives retain the previous artwork for rollback.
+
+## 0.1.4 presentation and restart correction — 2026-10-05
+
+Reproduced: quitting clears in-memory rows; reopening successfully listens again but displays
+"Set up connections" regardless of installed hooks. The user confirms fresh agent activity works.
+Fix the misleading setup state by inspecting existing configuration read-only. No session cache,
+daemon, login item, hook rewrite, trust change or replay of old approval requests is needed.
+
+Acceptance registered before implementation:
+- With installed hooks and no activity, show which providers have hooks installed and that Lantern
+  is waiting for activity. Distinguish installation from agent trust/reload and live delivery.
+- Incomplete, absent or unreadable settings offer review/setup without claiming they are connected.
+  Empty provider filters say there is no activity for that provider, rather than asking to reconnect.
+- Start compact. A dedicated grip moves the panel; remember the position, constrain it to a visible
+  display, and expand at that position. Hide removes the window while the listener keeps running.
+  Menu-bar Show restores it; Reset position returns it below the notch. Escape collapses the card.
+- Arc Segmented Control: stationary labels/counts, moving rounded selection, keyboard arrows/Home/End,
+  selected accessibility state, no animation with Reduce Motion.
+- Arc Expandable Card: one persistent card, animated actual window bounds, clipped content at its final
+  width, staged detail fade, reversible transitions and an unchanged safe approval interface.
+- A deliberately hidden companion stays hidden on incoming activity, including approvals. The menu
+  identifies pending requests; the original agent remains the fallback. Quit still delegates requests.
+
+Verify configuration detection and placement with focused regression tests, then the full suite/relay
+smoke and a relocated isolated native app: restart, hidden-listener delivery, drag/restore, rapid card
+reversal, keyboard filtering, full proposals/decisions and reduced motion. Reject any unclicked Allow,
+incorrect routing, invisible expanded hit area when compact/hidden, settings writes or lost grip.
+Mixed result: keep fixes that pass; report any unavailable physical-input check explicitly.
+Rollout: verified 0.1.4 archive and upgrade at the existing relay path; preserve the previous app/archive.
+Rollback: restore 0.1.3 at that same path. Presentation preferences may remain and are harmless to 0.1.3.

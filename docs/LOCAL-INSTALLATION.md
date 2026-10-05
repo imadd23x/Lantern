@@ -48,3 +48,26 @@ automatic settings-file watching; starting a fresh session also exercises its Se
 No login item or background daemon was added. To disconnect, use Lantern's **Connections → Preview
 removal → Apply removal** for each provider; this removes only Lantern-marked handlers and keeps unrelated
 settings. The app's location must stay stable while these absolute-path hooks are installed.
+
+## 0.1.4 upgrade — 2026-10-06
+
+Strict/deep signatures passed on the final extracted archive and installed 0.1.4/build 5. The live card
+had no pending approval before native Quit. The stopped old app was moved to
+`/Users/imad/Applications/Lantern Backups/0.1.3-build4-66de45d5/Lantern.app`; the new release occupies
+the existing `/Users/imad/Applications/Lantern.app` relay path and is running again.
+
+Both configuration files were byte-for-byte unchanged before/after this upgrade:
+
+- Codex `hooks.json`: `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`
+- Claude `settings.json`: `c5eefd580bab15712e8f580351933f1d2be7cb0398ea4491a0c513d7b2191fa0`
+
+Claude's hash differs from the earlier activation record; that file changed independently before
+this upgrade. No connection transaction was applied during this correction. Native inspection
+recognizes Claude's complete hooks, and real Codex tool activity resumed without another trust edit.
+The relay binary changed with the build; hook definitions, paths and trust records stayed intact.
+
+Drag the dotted grip to move Lantern (position is remembered). × or **Hide Lantern (keep listening)**
+clears it from the screen; **Show Lantern** restores it and **Reset position** returns it below the notch.
+Quit stops the listener, but installed hooks persist; reopening waits for fresh activity.
+Rollback: quit 0.1.4 and restore the saved 0.1.3 app to the existing path. Do not activate the backup at
+its backup path or rewrite hooks just to roll back.

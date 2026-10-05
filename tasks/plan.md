@@ -25,3 +25,16 @@ Source edits and local build artifacts are reversible. Activation is a separatel
 
 The risky assumption is that Rick's narrow eyelids remain legible at compact size. Inspect actual
 native rendering before accepting the asset; the user's green procedural fallback is already authorized.
+
+## 0.1.4 restart messaging and panel presentation
+
+1. Add exact read-only hook inspection and regression tests; replace unconditional setup messaging.
+2. Add native move/hide/reset, bounded placement and position preferences; preserve the listening socket.
+3. Adapt Arc's Segmented Control and Expandable Card into SwiftUI/AppKit; verify real window bounds,
+   interruption, keyboard behavior and Reduce Motion rather than scaling a hidden large window.
+4. Build/test/package, review in isolated runtime/configuration directories, then upgrade the existing
+   app with a rollback copy and confirm unchanged agent configuration/relay identity.
+
+Key assumptions: hooks remain installed (verified and confirmed by the user); Hide is preferable to
+Quit for clearing click obstruction; no sessions/proposals need to be persisted. Specifications above
+define pass/kill/mixed rules before coding. Keep the existing green pet and approval/transport policy.

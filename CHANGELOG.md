@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.4 — 2026-10-05
+
+Recognize installed local hooks after reopening; empty sessions now wait for activity instead of
+asking to reconnect. Add a native drag grip, remembered position, Hide while listening, menu-bar
+Show/Reset and Escape collapse. Start compact and keep deliberate hiding in effect during alerts.
+Adapt Arc's Segmented Control and Expandable Card into native controls and real animated window
+bounds, with fixed-width details, staged fades, keyboard selection and Reduce Motion support.
+Existing green gaze and explicit approval decisions remain; no agent settings or trust are rewritten.
+
 ## 0.1.3 — 2026-10-05
 
 Restore the original transparent lantern avatar in green, using Imad's authorized fallback after the

@@ -5,6 +5,7 @@ struct CompanionView: View {
     @ObservedObject var model: AppModel
     @ViewState private var filter: AgentProvider?
     @ViewState private var selectedRequest: String?
+    @FocusState private var triggerFocused: Bool
     @LanternReducedMotion private var reducedMotion
 
     private var request: PendingApproval? {
@@ -12,35 +13,37 @@ struct CompanionView: View {
     }
 
     var body: some View {
-        Group {
-            if model.expanded { expanded }
-            else { compact }
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                header.frame(width: geometry.size.width, height: model.expanded ? 100 : 46)
+                details.frame(width: PanelPlacement.expanded.width, height: PanelPlacement.expanded.height - 100)
+                    .opacity(model.expanded ? 1 : 0)
+                    .animation(reducedMotion ? nil : model.expanded
+                               ? .easeOut(duration: 0.24).delay(0.12) : .easeOut(duration: 0.1), value: model.expanded)
+                    .allowsHitTesting(model.expanded)
+                    .accessibilityHidden(!model.expanded)
+            }
+            .frame(width: geometry.size.width, alignment: .top)
         }
         .foregroundStyle(.white)
         .preferredColorScheme(.dark)
         .background(Palette.background)
         .clipShape(RoundedRectangle(cornerRadius: model.expanded ? 27 : 23))
         .overlay(RoundedRectangle(cornerRadius: model.expanded ? 27 : 23).stroke(Palette.border, lineWidth: 1))
-        .animation(reducedMotion ? nil : .easeOut(duration: 0.18), value: model.expanded)
+        .animation(LanternMotion.card(reduced: reducedMotion), value: model.expanded)
         .sheet(isPresented: $model.showConnections) { ConnectionsView(model: model) }
+        .onChange(of: model.showConnections) { _, shown in if !shown { model.refreshConnections() } }
+        .onChange(of: model.expanded) { _, expanded in if !expanded { triggerFocused = true } }
+        .onExitCommand { if model.expanded { model.setExpanded(false) } else { model.hideCompanion() } }
     }
 
-    private var compact: some View {
-        Button { model.setExpanded(true) } label: {
-            HStack(spacing: 9) {
-                LanternAvatar(busy: model.workingCount > 0, attention: model.needsAttention).frame(width: 37, height: 37)
-                Text(model.needsAttention ? "Needs your attention" : model.workingCount > 0 ? "\(model.workingCount) working" : "Lantern is ready")
-                    .font(.system(size: 12, weight: .medium))
-                Spacer(minLength: 0)
-                if model.needsAttention { Circle().fill(Palette.amber).frame(width: 6, height: 6) }
-                else { Image(systemName: "chevron.down").font(.system(size: 9, weight: .semibold)).foregroundStyle(Palette.subtle) }
-            }.padding(.horizontal, 12).frame(width: 246, height: 46)
-        }.buttonStyle(.plain).accessibilityLabel("Open Lantern agent sessions")
+    private var compactSummary: String {
+        model.needsAttention ? "Needs your attention" : model.workingCount > 0 ? "\(model.workingCount) working" : "Lantern is ready"
     }
 
-    private var expanded: some View {
+    // Keep detail text at its final width throughout the morph, without stretching or reflowing it.
+    private var details: some View {
         VStack(alignment: .leading, spacing: 0) {
-            header
             if model.isDemo {
                 Text("DEMO · Sample sessions, no agent actions")
                     .font(.system(size: 10, weight: .medium)).foregroundStyle(Palette.amber)
@@ -50,10 +53,8 @@ struct CompanionView: View {
                 Text(error).font(.system(size: 11)).foregroundStyle(.orange)
                     .padding(12).background(Palette.card).clipShape(RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 20)
             }
-            HStack {
-                ProviderFilter(selection: $filter, sessions: model.sessions)
-                Spacer(minLength: 0)
-            }.padding(.horizontal, 20).padding(.bottom, 12)
+            ProviderFilter(selection: $filter, sessions: model.sessions)
+                .padding(.horizontal, 20).padding(.bottom, 12)
             ScrollView {
                 LazyVStack(spacing: 7) {
                     let sessions = model.sessions.filter { filter == nil || $0.id.provider == filter }
@@ -74,25 +75,38 @@ struct CompanionView: View {
             Spacer(minLength: 10)
             footer
         }
-        .frame(width: 460, height: 584)
     }
 
     private var header: some View {
-        HStack(alignment: .center, spacing: 10) {
-            LanternAvatar(busy: model.workingCount > 0, attention: model.needsAttention).frame(width: 72, height: 80)
-            VStack(alignment: .leading, spacing: 6) {
-                Text("L A N T E R N").font(.system(size: 9, weight: .semibold)).foregroundStyle(Palette.amber)
-                Text(request != nil ? "A little attention.\nThen back to flow." : "Your agents,\nin view.")
-                    .font(.system(size: 21, weight: .semibold, design: .rounded)).lineSpacing(1)
-            }
-            Spacer()
-            VStack(spacing: 14) {
-                Button { model.setExpanded(false) } label: { Image(systemName: "chevron.up") }
-                    .help("Collapse Lantern").accessibilityLabel("Collapse Lantern")
+        HStack(spacing: model.expanded ? 10 : 6) {
+            WindowGrip().frame(width: 14, height: model.expanded ? 54 : 28)
+            Button { model.setExpanded(!model.expanded) } label: {
+                HStack(spacing: model.expanded ? 12 : 8) {
+                    LanternAvatar(busy: model.workingCount > 0, attention: model.needsAttention)
+                        .frame(width: model.expanded ? 60 : 37, height: model.expanded ? 70 : 37)
+                    VStack(alignment: .leading, spacing: 5) {
+                        if model.expanded {
+                            Text("L A N T E R N").font(.system(size: 9, weight: .semibold)).foregroundStyle(Palette.amber)
+                        }
+                        Text(model.expanded ? (request != nil ? "A little attention.\nThen back to flow." : "Your agents,\nin view.") : compactSummary)
+                            .font(.system(size: model.expanded ? 21 : 12, weight: .medium, design: .rounded))
+                            .lineLimit(model.expanded ? 2 : 1).multilineTextAlignment(.leading)
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.down").font(.system(size: 10, weight: .semibold))
+                        .rotationEffect(.degrees(model.expanded ? 180 : 0)).foregroundStyle(Palette.subtle)
+                }.contentShape(Rectangle())
+            }.buttonStyle(.plain).focused($triggerFocused)
+                .accessibilityLabel(model.expanded ? "Collapse Lantern" : "Open Lantern agent sessions")
+                .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
+            if model.expanded {
                 Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
-                    .help("Connections").accessibilityLabel("Open connections")
-            }.font(.system(size: 12)).buttonStyle(LanternButtonStyle(kind: .toolbar))
-        }.padding(.horizontal, 20).padding(.top, 10).padding(.bottom, 12)
+                    .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open connections").help("Connections")
+            }
+            Button { model.hideCompanion() } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .medium)) }
+                .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Hide Lantern and keep listening")
+                .help("Hide Lantern · the menu bar brings it back")
+        }.padding(.horizontal, model.expanded ? 16 : 10)
     }
 
     private var approvalQueue: some View {
@@ -119,11 +133,23 @@ struct CompanionView: View {
     private var emptyState: some View {
         VStack(spacing: 12) {
             Image(systemName: "sparkle").font(.system(size: 28)).foregroundStyle(Palette.amber.opacity(0.7))
-            Text("A quiet place for busy agents.").font(.system(size: 15, weight: .medium, design: .rounded))
-            Text("Connect Codex and Claude Code to see their progress and answer permission requests here.")
+            Text(filter.map { "No activity from \($0.title) yet." } ?? "Waiting for agent activity.")
+                .font(.system(size: 15, weight: .medium, design: .rounded))
+            Text(emptyExplanation)
                 .font(.system(size: 12)).foregroundStyle(Palette.subtle).multilineTextAlignment(.center).lineSpacing(4)
-            Button("Set up connections") { model.showConnections = true }.buttonStyle(LanternButtonStyle(kind: .secondary))
+            Button(needsSetup ? "Review connections" : "Connection details") { model.showConnections = true }
+                .buttonStyle(LanternButtonStyle(kind: .secondary))
         }.padding(.horizontal, 34).frame(height: 250)
+    }
+
+    private var relevantProviders: [AgentProvider] { filter.map { [$0] } ?? AgentProvider.allCases }
+    private var needsSetup: Bool { relevantProviders.contains { !model.installedProviders.contains($0) } }
+    private var emptyExplanation: String {
+        let installed = relevantProviders.filter { model.installedProviders.contains($0) }.map(\.title)
+        if !installed.isEmpty {
+            return "\(installed.joined(separator: " and ")) hooks are installed. New activity appears here when an agent starts working."
+        }
+        return "Review your hooks to receive activity from \(relevantProviders.map(\.title).joined(separator: " and "))."
     }
 
     private var footer: some View {

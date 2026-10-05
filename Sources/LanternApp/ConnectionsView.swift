@@ -12,14 +12,7 @@ struct ConnectionsView: View {
     @ViewState private var error = ""
     @ViewState private var showingBefore = false
 
-    private var target: URL {
-        let env = ProcessInfo.processInfo.environment
-        let home = FileManager.default.homeDirectoryForCurrentUser
-        if provider == .codex {
-            return URL(fileURLWithPath: env["CODEX_HOME"] ?? home.appendingPathComponent(".codex").path).appendingPathComponent("hooks.json")
-        }
-        return URL(fileURLWithPath: env["CLAUDE_CONFIG_DIR"] ?? home.appendingPathComponent(".claude").path).appendingPathComponent("settings.json")
-    }
+    private var target: URL { model.configurationURL(for: provider) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 13) {
@@ -33,6 +26,9 @@ struct ConnectionsView: View {
             Picker("Agent", selection: $provider) {
                 ForEach(AgentProvider.allCases, id: \.self) { Text($0.title).tag($0) }
             }.pickerStyle(.segmented).onChange(of: provider) { _, _ in preview = nil; error = ""; message = "" }
+            Text(model.installedProviders.contains(provider) ? "Hooks installed · Waiting for agent activity"
+                 : model.connectionWarnings[provider] ?? "Hooks not installed for this Lantern app")
+                .font(.system(size: 11)).foregroundStyle(model.installedProviders.contains(provider) ? .mint : .secondary)
             Text(target.path).font(.system(size: 10, design: .monospaced)).textSelection(.enabled)
             HStack {
                 Button("Preview connection") { makePreview(remove: false) }
@@ -82,6 +78,7 @@ struct ConnectionsView: View {
             let backup = try ConfigurationTransaction.apply(preview, to: target)
             message = "\(removing ? "Removed Lantern hooks." : "Connected. Follow the reload steps below.")" + (backup.map { "\nBackup: \($0.path)" } ?? "")
             self.preview = nil; error = ""
+            model.refreshConnections()
         } catch { self.error = error.localizedDescription }
     }
 }

@@ -1,5 +1,19 @@
 # Architecture and operational contract
 
+## 0.1.4 presentation and installation status
+
+`HookConfiguration.installation` inspects exact provider/event commands through the existing bounded
+configuration reader. Installation is separate from trust and live delivery; setup and the card share
+provider paths. No session/proposal cache, daemon or hook rewrite is added.
+
+`PanelController` owns real bounds, visibility and AppKit dragging. `PanelPlacement` clamps a top-center
+anchor to the usable display, including the notch with hidden menus. Only position is remembered in
+the app's UserDefaults. One persistent trigger/avatar and fixed-width inert details form the card.
+Settled closes hold 60ms for the detail fade; quick reversals cancel that hold. Reduce Motion jumps
+to the target dimensions. Hide dismisses setup and orders the panel out while keeping the listener
+running. Alerts respect hiding; pending requests appear on the menu icon/title. Show, Finder reopen
+and Reset share presentation state. Quit still delegates requests and stops the server.
+
 ## Data path
 
 `agent hook stdin → lantern-hook → HookNormalizer → versioned AgentEvent → Unix socket`
