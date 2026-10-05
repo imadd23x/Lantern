@@ -11,7 +11,6 @@ cp "$binary_dir/Lantern" "$app/Contents/MacOS/Lantern"
 cp "$binary_dir/lantern-hook" "$app/Contents/MacOS/lantern-hook"
 cp Resources/Info.plist "$app/Contents/Info.plist"
 cp Resources/ThirdPartyNotices.txt "$app/Contents/Resources/ThirdPartyNotices.txt"
-ditto "$binary_dir/Lantern_LanternApp.bundle" "$app/Contents/Resources/Lantern_LanternApp.bundle"
 release_version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)"
 if [[ ! "$release_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   printf 'Invalid release version: %s\n' "$release_version" >&2
@@ -26,10 +25,15 @@ codesign --verify --deep --strict "$app"
 ditto -c -k --keepParent "$app" "outputs/Lantern-$release_version.zip"
 shasum -a 256 "outputs/Lantern-$release_version.zip" > outputs/SHA256SUMS
 # Copy an already signed bundle; File Provider metadata on Documents can block signing in place.
+# ditto merges directories: discard the obsolete 0.1.2 portrait bundle from this generated app.
+# Earlier release ZIPs are retained; this prevents an unsigned stale resource surviving the update.
+if [[ -d outputs/Lantern.app/Contents/Resources/Lantern_LanternApp.bundle ]]; then
+  mv outputs/Lantern.app/Contents/Resources/Lantern_LanternApp.bundle "$stage/obsolete-portrait.bundle"
+fi
 ditto "$app" outputs/Lantern.app
 # This synced Documents volume adds FinderInfo to new bundle roots. Remove only
 # that generated metadata, preserving provenance and any other extended attributes.
-for bundle in outputs/Lantern.app outputs/Lantern.app/Contents/Resources/Lantern_LanternApp.bundle; do
+for bundle in outputs/Lantern.app; do
   if xattr -p com.apple.FinderInfo "$bundle" >/dev/null 2>&1; then
     xattr -d com.apple.FinderInfo "$bundle"
   fi

@@ -33,9 +33,19 @@ Maximum 32 active connections and 256 KB frame. Hook input ≤200 KB. Initial re
 approval UI deadline 110 seconds; client wait 115 seconds; agent hook deadline 120 seconds.
 Idle hook exchanges wait ≤0.3 seconds. Unknown/oversized/malformed events produce no allow.
 Sessions prune to 100 entries excluding pending approvals, and discard hour-old entries on subsequent events.
-No timer-driven idle character animation; active character is capped at 24 fps and honors reduced motion.
-Portrait artwork is cached once by the main-actor UI. SwiftPM supplies development resources; a packaged
-app resolves only its embedded resource bundle, with no absolute build-cache or Downloads fallback.
+No random idle character animation; active bobbing is capped at 24 fps and honors reduced motion.
+`LanternAvatar(busy:attention:interactive:)` hides green drawing, cursor conversion, sampling,
+bounded pupil geometry and spring presentation behind one small interface. Its native reader samples
+`NSEvent.mouseLocation` at 30 Hz only in a visible window and publishes changed coordinates only.
+Coordinates are reconverted from screen to flipped local view on every sample, including after resize;
+the avatar subtracts centering/bobbing offsets before passing them to `TrackingEyes(pointer:)`.
+Window occlusion suspends sampling; detach/dismantle invalidates the timer and removes the observer.
+The tracker cannot hit-test, installs no event tap or global input monitor, and adds no permission prompt.
+Reduce Motion disables tracking/bobbing; icon rendering explicitly disables tracking. There are no
+external image resources. `EyeGaze.offset` is the pure test seam for direction and elliptical limits;
+the visible pupil is also clipped to its eye opening during spring interruption.
+The AppKit reader sits outside the animation timeline and rechecks visibility after initial layout,
+which can attach before the panel is ordered. Static icons/reduced motion omit it entirely.
 
 ## Approval lifecycle
 
@@ -59,7 +69,7 @@ The lock protects other Lantern writers, not arbitrary editors; this final race 
 Swift package builds without external dependencies or full Xcode. Build products and signing staging use unsynced
 temporary directories. The package script renders the app icon from the same SwiftUI character,
 ad-hoc signs nested relay then app, and verifies both staging and delivered bundles. It removes only
-FinderInfo added to the generated app/resource bundle roots by File Provider; provenance attributes are preserved.
+FinderInfo added to the generated app root by File Provider; provenance attributes are preserved.
 File Provider reapplies this metadata later on this synced volume, so the ZIP from unsynced staging
 is the handoff artifact. Extract it to a stable local folder before activating full-path hook commands.
 This build is local-use software, not notarized distribution. No install/update daemon or login item.
@@ -70,7 +80,8 @@ Do not move the app after connecting without regenerating hook commands from its
 - Native Swift package: installed Swift tools can build without Homebrew/XcodeGen; SwiftUI/AppKit fit the Mac workflow.
 - Hooks: installed Codex reports stable enabled hooks; shared app-server control socket did not exist.
 - Separate sessions/queued approvals: avoids Coucou's one-slot pending approval behavior.
-- User-selected portrait in 0.1.2 replaces the original procedural character; no Coucou assets are copied.
+- 0.1.3 restores the original silhouette in green with Componentry gaze after the Rick head edit failed;
+  the user explicitly authorized this fallback. The old portrait is absent from new release resources.
 - No persistent allow: keeps the approval surface deliberate and narrow.
 - No built-in chat/API integrations: not needed for the confirmed workflow and would add credentials/cost.
 - CLI trust / host reload stays explicit: never bypass the user's agent policy.

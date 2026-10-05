@@ -4,8 +4,9 @@ SwiftUI implementations use design references from the local downloaded librarie
 No React source or third-party runtime dependencies are embedded.
 The upstream MIT notices are retained below. Planes free components were design references only; no Planes source is copied.
 
-CompanionPortrait.webp is the user-provided Young_Adult_Rick.webp attachment, preserved unchanged.
-It is separate from the UI-library code covered by the notices below.
+The green companion is Lantern's original procedural artwork. Its native eye-tracking behavior is
+adapted from Componentry's eye-tracking design/geometry; the Componentry notice is retained below.
+The user-provided Rick portrait from 0.1.2 is no longer included in this release.
 
 
 Arc

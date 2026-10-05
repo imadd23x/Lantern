@@ -103,6 +103,47 @@ The photograph's facial expression remains the supplied one; there is no generat
 No Downloads dependency, source-image edit, global hook activation or system preference change was made.
 The Mac was initially locked; native checks resumed after the user manually unlocked it.
 
+## 0.1.3 transparent green companion and gaze
+
+2026-10-05. The built-in image editor rejected the Rick head cutout; the user's explicit green
+fallback was used. The supplied attachment remains unchanged in Downloads. The new app has no photo
+tile, bitmap/resource bundle, or build-cache image dependency. Prompt/provenance: `docs/AVATAR.md`.
+
+| Check | Observed result |
+|---|---|
+| Regression and gaze tests | **25/25 passed**: 20 existing tests plus 5 app tests for neutral/near direction, far-pointer elliptical bounds, invalid input and native attach/detach/dismantle ownership |
+| Sampler teardown | A non-presented test window exercises real NSView attachment and removal; dismantling clears its callback and prevents an already queued visibility recheck from restarting it |
+| Packaging | 0.1.3 ZIP built from strictly verified unsynced staging; relocated app passed strict/deep signature verification, had matching notices and no portrait resource bundle |
+| Icon | Same green SwiftUI avatar with static neutral gaze; two relocated `--render-icon` exports were byte-identical and visually inspected |
+| Packaged adapters | Absent app/malformed input and Allow/Deny/Delegate for both providers passed |
+| Native panels | Expanded 460×584 and compact 246×46 show the transparent green silhouette; clicking the compact avatar itself opens the expanded panel |
+| Attention/approval | Green glass retains its color with amber attention outline/glow; native Deny returned only the matching synthetic Claude deny response and executed no tool |
+| Native motion | Raised, visible diagnostic review: avatar changed by 3,631 pixels across separate captures; working timeline trace advanced in 1/24-second increments |
+| Reduced motion | Process-local override with an active synthetic session: avatar and main content had 0 changed pixels across captures |
+| Real cursor input | Diagnostic reader sampled flipped local cursor coordinates in the actual CompanionPanel, and recomputed coordinates across collapse/expand; pupils visibly differed from neutral |
+| Scope | No source changes in Core, Transport, Hook, AppModel, CompanionView, ApprovalCard or PanelController; shell syntax and diff whitespace checks passed |
+
+Verification found two defects and fixed them: the unsupported AppKit reader must be absent from
+static ImageRenderer exports, and disabling hit testing on the whole avatar excluded it from the
+compact button's hit area. Only the transparent cursor reader/eyes now disable hit testing. The reader
+sits outside the animation timeline, rechecks presentation after initial layout, and owns one timer
+per attached avatar. AppKit timer/run-loop ownership follows [Apple's Timer documentation](https://developer.apple.com/documentation/foundation/timer).
+
+The test tool uses a virtual cursor: coordinate clicks did not change the physical coordinates read
+by NSEvent. Also, its review window initially reported itself occluded (raw state 8192). Raising that
+exact window exposed the visible bit (8194), started the sampler and allowed actual motion capture.
+Initial identical normal-mode frames therefore did not establish working motion; the raised-window
+check above did. This is a short rendering observation, not a frame-rate or CPU benchmark.
+
+Temporary frame/window/cursor traces were removed before handoff packaging. The last clean-release
+onscreen recheck was blocked when the Mac locked again; no automatic unlock/bypass was attempted.
+The user was asked to unlock and to manually check physical left/right mouse movement. That directional
+hardware check remains pending; the direction/bounds math, cursor delivery and native pupil rendering
+were verified separately. Source/archive checks continue independently. No live agent config changed.
+While locked, only the disposable review PID was terminated; after confirming it exited, its owned
+temporary socket was removed. Both isolated agent configuration directories remained empty. Earlier
+review instances quit normally through the native menu shortcut. No existing user app was stopped.
+
 ## Remaining validation
 
 - **Live Codex desktop and Claude Code in VS Code delivery remains unverified.** Global hook config and
@@ -116,7 +157,7 @@ The Mac was initially locked; native checks resumed after the user manually unlo
   system accessibility preference was not tested.
 - GitHub CI was authored; it has not run remotely. Bundle is ad-hoc signed, not notarized/Developer ID signed.
 
-No paid model turns, credential-file reads, third-party package installation, external messages,
+No credential-file reads, third-party package installation, external messages,
 production mutation or global agent activation were used. Synthetic tool proposals were never executed.
 
 ## Decision

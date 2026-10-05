@@ -67,3 +67,24 @@ and was not accessed. Window resizing stays on its existing AppKit path.
 Version 0.1.2 replaces the original character under a subsequent explicit user request with the supplied
 Rick portrait. This supersedes the original-character criterion above; the amber identity, state-driven
 motion, reduced-motion handling and all agent controls remain in scope unchanged.
+
+## 0.1.3 Componentry eye tracking
+
+Reviewed `sources/componentry/apps/web/public/r/eye-tracking.json`, specifically the embedded
+`components/ui/eye-tracking.tsx` at the same Componentry snapshot above. The registry's runtime
+dependencies are React, Motion and its class-name helper; these remain web references.
+
+The source computes angle/distance from each eye center, caps travel and follows via a spring
+(stiffness 300, damping 25, mass 0.5). Lantern adapts the distance/3 near-cursor falloff, an elliptical
+travel cap, independently centered pupils and a SwiftUI spring (response 0.26, damping 0.98).
+Native coordinate conversion replaces DOM bounds; clipped eye openings bound interrupted motion.
+The MIT notice is already bundled. No React runtime is added.
+
+The source's random idle micro-movements and blink loops are deliberately omitted: their nested
+interval/timeout ownership does not reliably clean up every timer, and Lantern should stay still
+when the cursor and agents are still. A single lifecycle-owned native sampler publishes changes,
+stops on window occlusion/detach, and is absent under Reduce Motion or icon rendering. No event tap.
+
+The built-in image-editing tool rejected the Rick head cutout. Per the user's explicit instruction,
+the original native lantern is restored in green; this supersedes the 0.1.2 portrait choice and the
+original amber-avatar criterion. Amber attention controls and all agent behavior remain unchanged.

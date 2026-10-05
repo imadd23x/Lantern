@@ -1,7 +1,7 @@
 # Lantern
 
 A small native macOS companion for **Imad's Codex desktop and Claude Code in VS Code**.
-Independent sessions, a queue of permission requests, and Imad's selected Rick portrait as the companion.
+Independent sessions, a queue of permission requests, and a green lantern companion with cursor-following eyes.
 Runs locally with no API key, telemetry, paid model calls, or third-party dependencies.
 
 ## Build and run
@@ -18,9 +18,10 @@ open outputs/Lantern.app
 The app stays in the menu bar and places a compact panel immediately below the notch or menu bar.
 Click the chevron to collapse; click the compact companion or **Show Lantern** in the menu to expand.
 Alerts expand the panel without activating your app. Quiet mode turns off the attention sound.
-The portrait gently bobs while an agent works; reduced motion uses a static portrait.
-An amber outline indicates attention. The supplied image is bundled unchanged in
-`Sources/LanternApp/Resources/CompanionPortrait.webp`, so it stays available when the app is moved.
+The transparent lantern gently bobs while an agent works; its eyes follow the cursor with bounded,
+spring-settled movement adapted from Componentry. Reduced motion uses a static neutral gaze.
+An amber glass outline/glow indicates attention. Artwork is drawn natively, with no photo tile or
+external image dependency. This is Imad's authorized green fallback after the Rick head edit failed.
 
 Provider filters include session counts and keyboard navigation. Status badges follow real agent events;
 only active work pulses. Selection, hover and press feedback respect reduced motion. These native
@@ -31,7 +32,7 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.2.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.1.3.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
 
@@ -97,11 +98,11 @@ Lantern refuses to unlink an existing endpoint. Events/session state are memory-
 
 The wrapper stages build/signing products in a project-specific temporary directory to avoid File Provider
 metadata interfering with codesign. `LANTERN_BUILD_DIR` can choose another unsynced directory.
-Packaging removes generated FinderInfo from the copied app/resource bundle roots and checks the workspace
+Packaging removes generated FinderInfo from the copied app root and checks the workspace
 signature. A recurring File Provider metadata failure is reported separately; other signature failures stop
 packaging. The release ZIP always comes from verified unsynced staging. Use it outside the synced folder.
-The icon is rendered from the same bundled portrait as the panel. The app loads its own resource bundle;
-it does not depend on Downloads or a development build-cache location.
+The icon is rendered from the same procedural avatar as the panel, with tracking disabled for a
+deterministic neutral gaze. The app needs no Downloads or development build-cache image resource.
 `ViewState` is a typealias of the system SwiftUI `State` property wrapper; it avoids an SDK macro absent
 from Swift 6.4 Command Line Tools and introduces no custom state implementation.
 

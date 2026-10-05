@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3 — 2026-10-05
+
+Restore the original transparent lantern avatar in green, using Imad's authorized fallback after the
+Rick head edit failed. Remove the portrait tile and its bundled bitmap. Adapt Componentry eye tracking
+into native bounded, spring-settled pupils; suspend sampling when occluded and disable it under Reduce
+Motion. Icons use a static neutral gaze. Working-only bobbing, attention and all agent behavior remain.
+Packaging discards the obsolete generated 0.1.2 resource bundle rather than merging it into the new app.
+
 ## 0.1.2 — 2026-10-05
 
 Replace the companion and generated icon with Imad's supplied Rick portrait, bundled unchanged.

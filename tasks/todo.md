@@ -49,3 +49,13 @@ Local acceptance and evidence: `docs/VERIFICATION.md`. No global agent configura
 - [x] Verify 20 tests, packaged relay, rendered artwork, relocated signature and no build-cache fallback.
 - [x] Package 0.1.2 and preserve prior ZIPs for rollback.
 - [x] After manual unlock, verify expanded/compact portrait, attention/deny control and reduced motion onscreen.
+
+## 0.1.3 transparent head and Componentry gaze
+
+- [x] Inspect Componentry source; attempt the Rick edit, then apply the authorized green fallback after rejection.
+- [x] Implement bounded native pupils and lifecycle-owned tracking; verify geometry and sampler cleanup.
+- [x] Integrate the green avatar at both sizes and static icon; preserve agent actions and working/attention states.
+- [x] Verify 25 tests/relay, relocated resource/signature, native cursor delivery and compact/expanded states.
+- [x] Record provenance/evidence and package 0.1.3; retain earlier releases.
+- [ ] After manual unlock, repeat the clean-release onscreen check and confirm physical left/right mouse tracking.
+  - Blocking condition: computer-use tool reports the Mac locked; its virtual cursor does not move the physical mouse.
