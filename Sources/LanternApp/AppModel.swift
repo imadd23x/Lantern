@@ -24,6 +24,8 @@ final class AppModel: ObservableObject {
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
     private let navigator: AgentNavigator
+    private let attentionSound = Bundle.module.url(forResource: "A-Train", withExtension: "mp3")
+        .flatMap { NSSound(contentsOf: $0, byReference: false) }
     var onPresentationChange: (() -> Void)?
     var onApprovalDecision: ((HookDecision) -> Void)?
 
@@ -155,7 +157,7 @@ final class AppModel: ObservableObject {
                 refreshConnections()
                 expanded = true; onPresentationChange?()
             }
-            if !quiet { NSSound(named: "Tink")?.play() }
+            if !quiet { (attentionSound ?? NSSound(named: "Tink"))?.play() }
         }
     }
 

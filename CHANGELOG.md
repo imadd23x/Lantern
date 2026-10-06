@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.14 — 2026-10-07
+
+Use the supplied A-Train.mp3 clip for attention alerts. Bundle the original audio locally,
+retain native playback between events, and preserve the existing alert triggers and mute control.
+
 ## 0.1.13 — 2026-10-07
 
 Replace footer connection text with a status dot: green when the local listener is connected,

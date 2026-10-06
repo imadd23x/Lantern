@@ -9,6 +9,8 @@ The original green procedural companion remains a missing-asset fallback. Its na
 is adapted from Componentry's eye-tracking design/geometry; the Componentry notice is retained below.
 The user-provided Rick portrait from 0.1.2 is no longer included in this release.
 
+The custom A-Train.mp3 alert clip is supplied by the user for this personal installation.
+
 
 Arc
 ===

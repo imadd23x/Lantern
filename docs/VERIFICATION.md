@@ -432,3 +432,18 @@ Yellow is mapped to the tested Connecting state; synchronous startup is too brie
 onscreen yellow capture. Failed/disconnected map to red; real failure/recovery were verified
 through tests, without disrupting the user's listener. Final app is compact. Both hook hashes
 and Enabled sound remain unchanged. No new relay/config behavior or artificial startup delay.
+
+### 0.1.14 A-Train alert resource — 2026-10-07
+
+Bundled the exact supplied MP3, SHA256
+`02f4c9c109616020623e0f66d08eefb11799282cf34cfb7e9385da6f0e37a07b`.
+Resource bytes match Downloads, extracted package and installed bundle. Native NSSound decoded
+the packaged asset (0.32 seconds of valid audio; afinfo container estimate is 0.36 seconds),
+returned true from play, completed playback and exited 0. This checks the native playback API,
+not an observed real agent attention alert or a claim about what the user heard.
+
+The model retains one decoded sound and the existing approval/attention/failure triggers and
+quiet guard. Tink is a missing/undecodable-asset fallback. Static resource swap: no new or repeated
+logic tests. Release build, diff check and strict extracted/staged/installed signatures passed.
+Installed bundle files match the package. Native restart showed live Codex delivery, Connected
+status and unchanged Enabled sound; final app is compact. Both hook hashes are unchanged.

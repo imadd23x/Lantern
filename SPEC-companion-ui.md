@@ -257,3 +257,12 @@ an explicit lifecycle state, preserve the existing isListening API as a derived 
 cover startup transitions, shutdown, occupied socket failure and recovery with real local I/O.
 Do not add artificial connecting delays, background retries or hook/config changes. Package,
 inspect the connected footer and verify failure/recovery tests; retain 0.1.12 for rollback.
+
+## 0.1.14 supplied alert sound — 2026-10-07
+
+Bundle the exact `/Users/imad/Downloads/A-Train.mp3` (0.36-second clip) and use a retained
+native NSSound for the existing approval/attention/failure alert triggers. Preserve quiet-mode
+gating and use the previous system cue only if the bundled asset cannot load. No trimming,
+looping, Downloads runtime dependency or new trigger policy. Verify native decoding, exact
+resource bytes in the package/installation and current agent delivery. No new tests for this
+static resource swap. Install with a 0.1.13 rollback and unchanged hooks.

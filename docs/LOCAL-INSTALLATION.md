@@ -188,3 +188,12 @@ Native Quit had no pending approval cards; socket removed normally. Hook hashes 
 Restart/expansion showed live Codex activity and a green connected footer dot without wording.
 Sound remained Enabled; final app is compact. New listener lifecycle tests verify startup,
 failure and recovery independently of the installed live sessions.
+
+## 0.1.14 supplied alert sound — 2026-10-07
+
+Installed 0.1.14/build 15, rollback:
+`/Users/imad/Applications/Lantern Backups/0.1.13-build14-7be5ae90/Lantern.app`.
+No pending approval cards at Quit; owned socket removed normally. Hook hashes remain unchanged.
+A-Train.mp3 is bundled and matches the original file; Downloads is not used at runtime. Native
+decoding/playback check passed. Live Codex delivery and Enabled sound confirmed after restart;
+final app is compact. No agent restart/config/trust transaction or live decision was performed.
