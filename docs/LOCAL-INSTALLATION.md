@@ -163,3 +163,12 @@ await user confirmation; the isolated demo is closed, so use the installed app f
 
 Show Lantern now restores compact; Connections explicitly opens expanded setup. Roll back by
 quitting and restoring the saved 0.1.9 app at the same path; hook definitions need no changes.
+
+## 0.1.11 drag icon removal — 2026-10-07
+
+Installed 0.1.11/build 12 at `/Users/imad/Applications/Lantern.app`, with rollback at
+`/Users/imad/Applications/Lantern Backups/0.1.10-build11-7e5ccd8c/Lantern.app`. Native Quit
+was performed with no live approval cards pending, and the socket removed normally. Hook
+files retain their recorded hashes; no agent/config/trust action occurred. The installed
+header has no drag dots; the same native drag target and compact pan remain. Restart showed
+live Codex delivery and Local connection ready; sound stayed Enabled and the app was left compact.

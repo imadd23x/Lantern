@@ -396,3 +396,14 @@ Final app is compact. The isolated review exited 0 and removed its owned socket.
 “Window move completed without beginning” during the synthetic native grip attempt; physical
 drag behavior remains unconfirmed rather than being inferred from that attempt.
 Rollback: `/Users/imad/Applications/Lantern Backups/0.1.9-build10-7fdae2e6/Lantern.app`.
+
+### 0.1.11 drag icon removal — 2026-10-07
+
+The only production UI change removes `GripView.draw`; its native mouseDown/performDrag,
+frame, cursor, tooltip and compact pan are unchanged. No new or repeated logic tests were
+needed for deleting static drawing code. Release build/package and diff whitespace checks
+passed, as did strict/deep signatures on extracted, staged and installed bundles. Installed
+files match the extracted package byte-for-byte; hook hashes are unchanged. Native expansion
+confirmed no dots to the left of the avatar, retained accessible drag target, Enabled sound,
+live Codex delivery and Local connection ready. Final presentation is compact. This verifies
+the visual removal; no new physical drag-smoothness claim is made.

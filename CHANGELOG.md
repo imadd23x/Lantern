@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.11 — 2026-10-07
+
+Remove the visible drag dots beside the expanded avatar. Retain the same native drag target,
+cursor and tooltip, header spacing, and compact-pill dragging.
+
 ## 0.1.10 — 2026-10-06
 
 Track compact-pill drags in screen coordinates, preserving the original grab offset and removing

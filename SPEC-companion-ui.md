@@ -232,3 +232,10 @@ then isolated native directional/reversed drags, bell clicks, menu policy and Co
 feel with an unsteered physical check if automated captures cannot measure continuous motion. Reject
 vibration, accidental embedded actions, collapsed Connections, lost requests or settings writes.
 Rollout 0.1.10/build 11 with 0.1.9 rollback and unchanged hook files at the same installed app path.
+
+## 0.1.11 invisible drag target — 2026-10-07
+
+Remove only the expanded grip's dot drawing. Preserve its frame, mouseDown/performDrag,
+open-hand cursor, tooltip and compact pan. Acceptance: no dots beside the avatar in the
+packaged native app, unchanged drag handlers and hook files. Build/sign and inspect the
+installed header; retain 0.1.10 for rollback. No new tests for a static drawing removal.
