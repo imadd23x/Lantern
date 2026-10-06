@@ -9,7 +9,7 @@ struct SessionStatusBadge: View {
     private var active: Bool { phase == .thinking || phase == .working }
     private var color: Color {
         switch phase {
-        case .approval, .attention: Palette.amber
+        case .approval, .attention: Palette.accent
         case .failed: Color(red: 1, green: 0.5, blue: 0.48)
         case .finished: .mint
         case .thinking, .working: Color(red: 0.65, green: 0.82, blue: 1)

@@ -169,3 +169,43 @@ physical typing resumption requires an unsteered user check if targeted UI autom
 keyboard routing. Reject lost queued requests, collapsed manual cards, focus jumps to an old app,
 incorrect decisions or modified hook settings. Package/install 0.1.8 at the stable path with a 0.1.7
 rollback copy. Report each verification layer separately and keep unobserved typing behavior explicit.
+
+## 0.1.9 preserve live Claude navigation — 2026-10-06
+
+Observed source fault: both Claude navigation actions use vscode://file/<cwd>, an openable file/folder
+route rather than a live-session locator. Hook cwd can be a nested worktree; the screenshot's session
+95fdca5d-…-7b013abd670b is already visible in the existing Trak Football Code window. Answer in agent
+also delegates its pending request before navigation succeeds. Do not reproduce the bad folder link
+against the user's running agent.
+
+Acceptance registered before code:
+- Claude navigation activates an already running VS Code with an existing editor window. It never
+  sends a folder/workspace URI, launches Code, opens/resumes a chat, replaces a workspace or sends keys.
+  Preserve the selected live conversation. The existing last-active Code window is the destination;
+  inactive chats in other windows are not resumed or recreated to guess a match.
+- Both row navigation and Answer in agent use one tested navigation interface. Allow/Deny are unchanged.
+- Answer in agent releases only its selected request with Delegate after Code accepts activation.
+  If navigation fails/missing editor, preserve the queued request and show an actionable message.
+- Ended Claude sessions cannot create replacement chats. Codex's escaped chat link remains supported.
+- No VS Code setting, extension, agent config, trust state, Accessibility grant or external service is
+  needed. Native AppKit activation and window metadata replace the dangerous workspace-opening path.
+
+Verify navigation failure/success with real private approval sockets and injected navigation effects,
+pure route tests, then full suite/package/relay. An isolated native review may activate the existing
+Code app, with before/after window count, workspace and selected Claude session checks; never decide
+a live proposal or restart/close a Claude session. Reject new windows, changed workspace/chat,
+premature delegation or changed hooks. Report last-active-window limitations explicitly if relevant.
+Rollout: same-path 0.1.9/build 10 with 0.1.8 rollback, preserved hooks and quiet mode, matching archives.
+
+### Additional 0.1.9 steering — head edges and green accent
+
+The user reports checkerboard remnants at the bottom-left cheek and left side of the top hair edge.
+Tighten those two segments of the existing native outline against the supplied screenshot; preserve
+hair/face, white eyes and the original raster bytes. Do not introduce a generated or rectangular avatar.
+Replace the former gold design token with the requested sRGB #069b2e accent throughout brand,
+approval actions/content, focus borders, attention badges and head outline/glow. Keep black primary
+button text for legibility, provider logos and independent work/error status colors.
+Verify the large native-rendered icon and compact/expanded head for residual background at both
+locations; check the green approval card and focus feedback. No geometry-mirroring tests are needed
+for the static mask/color adjustment. The current writable source is Documents/Codex/Lantern; it is a
+local working copy with the pending navigation changes, and the original folder/library are preserved.

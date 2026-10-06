@@ -41,7 +41,8 @@ struct SessionRow: View {
                 }
                 Image(systemName: "arrow.up.right").font(.system(size: 8)).foregroundStyle(Palette.subtle)
             }.padding(11)
-        }.buttonStyle(LanternButtonStyle(kind: .row)).help("Open \(session.id.provider.title) · last seen \(Int(max(0, now - session.updatedAt)))s ago")
+        }.buttonStyle(LanternButtonStyle(kind: .row))
+            .help("\(session.id.provider == .claude ? "Show existing VS Code window" : "Open Codex chat") · last seen \(Int(max(0, now - session.updatedAt)))s ago")
             .accessibilityLabel("\(session.project), \(session.id.provider.title), \(phaseLabel), \(session.summary). Open agent.")
     }
 

@@ -23,10 +23,13 @@ becomes **Show Lantern** while hidden. Alerts expand a visible panel without act
 and a deliberately hidden panel stays hidden (pending requests appear on the menu-bar icon).
 Quiet mode turns off the attention sound. Installed hooks are recognized after reopening; session
 rows appear on fresh activity. Installation is distinct from agent trust/reload and live hook delivery.
-The head gently bobs while an agent works; an amber outline/glow indicates attention. Its white mask
+The head gently bobs while an agent works; a green outline/glow indicates attention. Its white mask
 eyes remain as supplied, per Imad's choice. Reduce Motion disables decorative movement. The original
 PNG is bundled unchanged and a native outline mask clips away its baked checkerboard. No photo tile
 or external image dependency is displayed. The original procedural green pet is a missing-asset fallback.
+
+The app's accent is #069b2e. Head clipping includes an inward sampling margin so the screenshot's
+antialiased background does not leave a light fringe. Current editable source: `/Users/imad/Documents/Codex/Lantern`.
 
 Provider filters include session counts and keyboard navigation. Status badges follow real agent events;
 only active work pulses. Selection, hover and press feedback respect reduced motion. These native
@@ -37,7 +40,7 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.8.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.1.9.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
 
@@ -62,15 +65,18 @@ There is no persistent always-allow, automatic approval, or Return-key default.
 If attention opened Lantern from a pill, answering the last queued request returns it to the pill.
 A card you opened yourself stays expanded. Automatic popups preserve your current application's
 keyboard focus, so clicking Allow/Deny lets you keep typing there. Explicitly open Lantern to use
-its keyboard controls or Connections. Answer in agent intentionally opens the matching agent.
+its keyboard controls or Connections. Answer in agent intentionally returns to the running agent.
 
-**Deny** returns the agent's documented deny response. **Answer in agent**, timeout, connection loss,
+**Deny** returns the agent's documented deny response. **Answer in agent** first navigates; if navigation
+fails the request stays in Lantern. Successful handoff, timeout, connection loss,
 or quit returns no permission decision, allowing the agent's normal approval path to continue.
 The response window is 110 seconds. A hook's original sandbox/rules remain owned by its agent;
 Lantern does not modify them. Requests with no tool input must be reviewed in the agent.
 
-Click a Codex session to open its chat via the Codex deep link. Claude rows open/focus the matching
-VS Code workspace; this does not select one exact integrated terminal among multiple terminals.
+Click a Codex session to open its chat via the Codex deep link. Claude rows bring the already running
+VS Code window forward, preserving its selected chat and workspace. No folder is opened, no session
+is resumed/recreated and Code is not launched when unavailable. If you use several Code windows or
+inactive Claude tabs, the last-active Code window is shown; select a different existing tab yourself.
 
 ## Disconnect / rollback
 

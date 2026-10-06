@@ -58,7 +58,7 @@ struct ConnectionsView: View {
                  ? "After connecting, open /hooks in Codex CLI to review and trust the Lantern definitions. Start a new desktop session so its host reloads the hooks. Managed policy can restrict hooks."
                  : "After connecting, restart your Claude Code session in VS Code so it loads the hooks. Project or managed settings may disable user hooks.")
                 .font(.system(size: 10)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-            if model.isDemo { Text("Demo mode: configuration writes are disabled.").font(.system(size: 10)).foregroundStyle(Palette.amber) }
+            if model.isDemo { Text("Demo mode: configuration writes are disabled.").font(.system(size: 10)).foregroundStyle(Palette.accent) }
         }.padding(22).frame(width: 520, height: 510).preferredColorScheme(.dark)
     }
 

@@ -19,7 +19,8 @@ and Reset share presentation state. Quit still delegates requests and stops the 
 `agent hook stdin → lantern-hook → HookNormalizer → versioned AgentEvent → Unix socket`
 `→ AppModel → SessionState → SwiftUI → explicit decision → same socket → documented hook output`
 
-No model turns or external requests are made by Lantern. Codex chat and VS Code workspace links are user-triggered.
+No model turns or external requests are made by Lantern. Codex chat links and existing VS Code activation
+are user-triggered. Claude navigation never opens a workspace or resumes/creates a conversation.
 No polling private databases or transcript files is needed. User prompts and tool responses are stripped by normalization.
 Proposed tool inputs remain in app memory while displayed; nothing logs or persists their contents.
 
@@ -62,6 +63,13 @@ The AppKit reader sits outside the animation timeline and rechecks visibility af
 which can attach before the panel is ordered. Static icons/reduced motion omit it entirely.
 
 ## Approval lifecycle
+
+`AgentNavigator` is the shared navigation seam for rows and handoff. The Claude adapter activates only
+a running Code process with an existing editor-sized layer-zero window (owner PID/layer/bounds only).
+It ignores hook cwd, requires no Accessibility grant and cannot launch Code or open folder/session URLs.
+Activation preserves the last-active window's selected chat. It does not claim exact inactive-tab routing.
+`AppModel.answerInAgent` delegates only its selected request after navigation accepts the activation;
+a failure remains visible/actionable in Lantern. Ordinary row navigation never delegates approvals.
 
 Every accepted request has a random per-connection ID. UI resolves this ID once in SessionState before transport sends.
 Finished/failed/ended sessions delegate only their own pending requests. A timeout/EOF cancels the card.

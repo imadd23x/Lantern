@@ -23,12 +23,15 @@ final class AppModel: ObservableObject {
     private var timer: Timer?
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
+    private let navigator: AgentNavigator
     var onPresentationChange: (() -> Void)?
     var onApprovalDecision: ((HookDecision) -> Void)?
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current,
-         clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
+         clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
+         navigator: AgentNavigator = .live) {
         self.clock = clock; now = clock()
+        self.navigator = navigator
         isDemo = demo; server = HookServer(directory: directory)
     }
 
@@ -116,20 +119,20 @@ final class AppModel: ObservableObject {
         onApprovalDecision?(decision)
     }
 
-    func openAgent(_ session: AgentSession) {
-        if session.id.provider == .codex {
-            // Codex deep links are escaped by URLComponents; no shell or arbitrary scheme from hook data.
-            var link = URLComponents()
-            link.scheme = "codex"; link.host = "threads"; link.path = "/" + session.id.id
-            if let url = link.url { NSWorkspace.shared.open(url) }
-        } else if !session.cwd.isEmpty {
-            // VS Code's folder deep link focuses/opens the workspace; no terminal automation permissions.
-            var link = URLComponents()
-            link.scheme = "vscode"; link.host = "file"; link.path = session.cwd
-            if let url = link.url { NSWorkspace.shared.open(url) }
-        } else if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.microsoft.VSCode") {
-            NSWorkspace.shared.openApplication(at: url, configuration: .init())
-        }
+    @discardableResult
+    func openAgent(_ session: AgentSession) -> Bool {
+        let failure = navigator.open(session)
+        if let failure { errorMessage = failure; return false }
+        errorMessage = nil
+        return true
+    }
+
+    func answerInAgent(_ id: String) {
+        guard let request = state.approvals.first(where: { $0.id == id }),
+              let session = state.sessions[request.event.key] else { return }
+        // A navigation failure must leave the selected request actionable in Lantern.
+        guard openAgent(session) else { return }
+        decide(id, .delegate)
     }
 
     private func receive(_ event: AgentEvent, id: String) {

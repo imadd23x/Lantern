@@ -1,5 +1,18 @@
 # Native UI refinement — local component library
 
+## 0.1.9 green accent and head cleanup
+
+The user chose #069b2e as the app accent. `Palette.accent` stores its exact sRGB channels (6,155,46)
+and replaces the former gold token across branding, actions, focus outlines, approval content and
+attention indication. Primary labels stay black; Claude/Codex artwork and independent error/work
+status colors remain as before. Existing Arc/Space UI control behavior stays native and unchanged.
+
+The source screenshot remains byte-identical. `CompanionHead` tightens the left cheek and steeper
+left hair contour and adds a 2-source-pixel inward margin. The latter also excludes screenshot
+antialias pixels that mix hair with the baked checkerboard during smooth image sampling. The first
+large render still showed a light upper fringe and was rejected; the corrected render and native
+compact/expanded review passed. No new raster generation or image-editing CLI was used.
+
 ## 0.1.7 compact-pill controls and supplied head
 
 Reviewed Arc `action-button/{action-button.tsx,action-button.module.css}` and

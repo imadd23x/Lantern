@@ -36,7 +36,7 @@ struct ProviderFilter: View {
                             else { selectionSurface.matchedGeometryEffect(id: "filter", in: highlight) }
                         }
                     }
-                    .overlay(RoundedRectangle(cornerRadius: 9).stroke(Palette.amber.opacity(focused == option ? 0.65 : 0), lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 9).stroke(Palette.accent.opacity(focused == option ? 0.65 : 0), lineWidth: 1))
                     .contentShape(RoundedRectangle(cornerRadius: 9))
                 }
                 .buttonStyle(.plain).focusable(selected).focusEffectDisabled().focused($focused, equals: option)

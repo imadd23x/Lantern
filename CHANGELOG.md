@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.9 — 2026-10-06
+
+Return Claude navigation to the existing VS Code window and its selected chat, preserving live work.
+Remove folder-opening URLs and app-launch fallback, which could replace a workspace for a nested
+worktree. Answer in agent now releases only the selected request after activation succeeds; failed
+navigation leaves it actionable in Lantern. Ended sessions cannot open replacement chats.
+
+Tighten the top-left hair and bottom-left cheek mask, including a small inward sampling margin to
+remove the screenshot's light background fringe. Replace gold accents throughout the native UI with
+the requested #069b2e green, retaining black primary-button text and the original provider artwork.
+
 ## 0.1.8 — 2026-10-06
 
 Return automatically opened approval cards to the pill after the last queued request is answered,

@@ -54,11 +54,11 @@ private struct LanternBody: View {
             context.stroke(handle, with: .color(green.opacity(0.85)), style: StrokeStyle(lineWidth: 5, lineCap: .round))
             let glass = Path(roundedRect: CGRect(x: 21, y: 29, width: 58, height: 53), cornerRadius: 18)
             var glow = context
-            glow.addFilter(.shadow(color: (attention ? Palette.amber : green).opacity(attention ? 0.45 : 0.24),
+            glow.addFilter(.shadow(color: (attention ? Palette.accent : green).opacity(attention ? 0.45 : 0.24),
                                    radius: attention ? 10 : 7))
             glow.fill(glass, with: .linearGradient(Gradient(colors: [Color(red: 0.58, green: 1, blue: 0.72), green]),
                 startPoint: CGPoint(x: 40, y: 29), endPoint: CGPoint(x: 60, y: 82)))
-            context.stroke(glass, with: .color(attention ? Palette.amber : Color.white.opacity(0.65)),
+            context.stroke(glass, with: .color(attention ? Palette.accent : Color.white.opacity(0.65)),
                            lineWidth: attention ? 2 : 1)
             context.fill(Path(roundedRect: CGRect(x: 28, y: 80, width: 44, height: 7), cornerRadius: 3),
                          with: .color(green.opacity(0.8)))

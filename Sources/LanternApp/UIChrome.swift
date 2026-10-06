@@ -20,7 +20,7 @@ struct LanternReducedMotion: DynamicProperty {
 }
 
 enum Palette {
-    static let amber = Color(red: 1, green: 0.77, blue: 0.43)
+    static let accent = Color(.sRGB, red: 6 / 255.0, green: 155 / 255.0, blue: 46 / 255.0, opacity: 1)
     static let background = Color(red: 0.065, green: 0.07, blue: 0.08)
     static let card = Color.white.opacity(0.045)
     static let subtle = Color.white.opacity(0.55)
@@ -65,13 +65,13 @@ private struct ControlSurface: View {
     private var compactControl: Bool { controlSize == .small || controlSize == .mini }
     private var fill: Color {
         switch kind {
-        case .primary: Palette.amber.opacity(highlighted ? 0.88 : 1)
+        case .primary: Palette.accent.opacity(highlighted ? 0.88 : 1)
         case .secondary, .row: highlighted ? Color.white.opacity(0.085) : Palette.card
         case .toolbar: Color.white.opacity(pressed ? 0.14 : highlighted ? 0.09 : 0)
         }
     }
     private var edge: Color {
-        focused && enabled ? Palette.amber.opacity(0.8)
+        focused && enabled ? Palette.accent.opacity(0.8)
             : kind == .toolbar ? Color.white.opacity(highlighted ? 0.12 : 0)
             : Color.white.opacity(highlighted ? 0.18 : 0.09)
     }

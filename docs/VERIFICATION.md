@@ -201,6 +201,45 @@ paths below retain their limits; synthetic routing and geometry tests do not ver
 
 ## Remaining validation
 
+### 0.1.9 Claude navigation and green appearance — 2026-10-06
+
+- Confirmed the user's live Claude extension tab already exists in the Trak Football Code window;
+  the hook's cwd is a changing worktree rather than that window's identity. Inspected installed
+  Anthropic extension 2.1.289 URI registration/createPanel: an unmatched /open session can create a
+  panel, so it is not used as an uncertain fallback. Primary routing references:
+  [VS Code URL routing](https://github.com/microsoft/vscode/blob/main/src/vs/platform/url/electron-main/url.ts)
+  and [Claude VS Code sessions](https://code.claude.com/docs/en/vs-code#resume-past-conversations).
+- The corrected domain-backed regression failed on the legacy vscode://file worktree route before
+  the fix. The full suite passed afterward: 21 core/transport + 20 app tests (41 functions, 45 cases).
+  Private sockets cover navigation failure retaining both requests, selected-only Delegate on success,
+  row navigation not delegating, ended-session rejection and escaped Codex identity. First fixture
+  construction used an inaccessible initializer; it was corrected to use the public SessionState seam.
+- Package and both-provider relay smoke passed. After the workspace moved to Documents/Codex, a local
+  copy preserved all 62 tracked files and both pending navigation files; the full suite/build/smoke
+  passed again there. Original source/library are retained. Current source is Documents/Codex/Lantern.
+- Large native renders identified and then removed the upper light fringe; final head clipping also
+  cleaned the lower-left cheek. Compact and expanded native review showed the supplied white eyes
+  and green attention/brand/action accents. No original bitmap bytes changed. The 2-pixel sampling
+  margin was packaged again; it changes only static drawing, so no geometry-mirroring tests were added.
+- Final isolated native row navigation preserved the Code window title, selected Claude tab and tab
+  count, with the sample approval still queued and no navigation error. Answer in agent then returned
+  exit 0 with empty stdout/stderr (Delegate) from the private packaged relay. The same window/tab state
+  remained unchanged; the native Window menu listed only the existing Review live run 5 tasks window.
+  No live permission decision, prompt, workspace replacement, VS Code restart or new session occurred.
+- The final review quit through its own native menu, exit 0, and released its private socket. An earlier
+  review and native handoff attempt were interrupted by the environment/runtime change; their missing
+  temporary files/results are not used as evidence. Some background-review captures returned invalid
+  capture parameters; subsequent Code identity checks and final sample handoff provide the evidence above.
+- Installed verified 0.1.9/build 10 at the stable relay path with a 0.1.8 rollback. Both hook files were
+  byte-for-byte unchanged, and the fresh app showed live Codex activity and Local connection ready.
+  Before upgrade the old restarted instance found an occupied socket. After native Quit, its exact
+  current-user endpoint had no lsof owner and ECONNREFUSED; the same inode was verified before removal.
+  Only that stale endpoint was cleaned; automatic recovery policy remains outside this update.
+
+Navigation preserves the selected conversation in the last-active existing Code window. It intentionally
+does not recreate/resume or guess another inactive tab/window. Original 0.1.8 physical typing confirmation
+remains unobserved and is not claimed here. Existing CLT linker search-path warnings remain.
+
 ### 0.1.8 approval restoration — 2026-10-06
 
 The original real-socket regression failed because the card remained expanded after Allow. After

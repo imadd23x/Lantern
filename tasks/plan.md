@@ -70,3 +70,18 @@ generation fallback. Park transport recovery and multi-monitor hardware checks o
 The socket-backed tests run in a sequential Swift Testing suite: too many detached blocking clients
 exhausted the cooperative executor required by main-actor callbacks. No assertion/test is skipped and
 timeouts are not increased. The same formerly failing case passed in isolation before serialization.
+
+## 0.1.9 live Claude navigation
+
+1. Inspect both callers and installed Claude/VS Code URI handling; do not reproduce folder opening on
+   the live task. Register that cwd is a worktree, not an editor-window/session identity.
+2. Prove the legacy folder route fails a pure regression. Concentrate live/fake navigation effects in
+   AgentNavigator and move handoff sequencing into AppModel. Reject launches and ended-session resumes.
+3. Verify real private-socket handoff failure/retention, selected-only success, row non-delegation and
+   unchanged Codex links; full suite and release/relay checks. Activate Code only through a native review.
+4. Compare existing window/workspace/selected session before and after navigation; upgrade with rollback
+   and preserved settings/quiet mode, then archive exact matching source.
+
+Decision: preserve the selected live Claude extension tab in the last-active existing Code window.
+Anthropic's /open?session handler can create a panel when it cannot find that session in its target
+window, so it is not used to guess across windows. No new bridge/extension or Accessibility grant is needed.

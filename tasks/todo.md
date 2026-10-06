@@ -120,3 +120,15 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [ ] Verify unsteered physical typing after the private FocusCheck sample.
 - [x] Upgrade with rollback, unchanged hooks/restored quiet mode, live activity and matching binaries.
 - [x] Preserve keyboard controls on explicit opening; native Tab focuses All agents in the final build.
+
+## 0.1.9 live navigation, clean head and green accent
+
+- [x] Trace unsafe worktree folder URLs and premature handoff; inspect the existing Claude extension tab.
+- [x] Register scope and reproduce the folder-route fault without invoking it against the live agent.
+- [x] Share existing-window navigation and preserve pending requests on activation failure.
+- [x] Pass all 41 tests (45 cases), package/signature/resource checks and packaged relay smoke.
+- [x] Carry pending work into the newly writable Documents/Codex/Lantern source, preserving the old tree.
+- [x] Tighten both head edges and reject the first remaining light fringe; verify corrected native renders.
+- [x] Replace gold with #069b2e and inspect the final green approval card, compact and expanded head.
+- [x] Verify native sample row/handoff preserve Code's workspace, selected chat, tabs and existing window.
+- [x] Install with rollback, unchanged hooks and observed live activity; archive matching source/checksums.

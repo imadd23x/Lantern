@@ -48,7 +48,7 @@ struct CompanionView: View {
         VStack(alignment: .leading, spacing: 0) {
             if model.isDemo {
                 Text("DEMO · Sample sessions, no agent actions")
-                    .font(.system(size: 10, weight: .medium)).foregroundStyle(Palette.amber)
+                    .font(.system(size: 10, weight: .medium)).foregroundStyle(Palette.accent)
                     .padding(.horizontal, 22).padding(.bottom, 10)
             }
             if let error = model.errorMessage {
@@ -68,11 +68,8 @@ struct CompanionView: View {
             if let request {
                 approvalQueue.padding(.horizontal, 20).padding(.top, 12)
                 ApprovalCard(request: request, now: model.now, decide: { decision in model.decide(request.id, decision) },
-                             answerInAgent: {
-                    let session = model.state.sessions[request.event.key]
-                    model.decide(request.id, .delegate)
-                    if let session { model.openAgent(session) }
-                }).id(request.id).padding(.horizontal, 20).padding(.top, 9)
+                             answerInAgent: { model.answerInAgent(request.id) })
+                    .id(request.id).padding(.horizontal, 20).padding(.top, 9)
             }
             Spacer(minLength: 10)
             footer
@@ -88,7 +85,7 @@ struct CompanionView: View {
                         .frame(width: model.expanded ? 50 : 36, height: model.expanded ? 54 : 36)
                     Text(model.expanded ? "L A N T E R N" : compactSummary)
                         .font(.system(size: model.expanded ? 10 : 12, weight: .medium, design: .rounded))
-                        .foregroundStyle(model.expanded ? Palette.amber : .white).lineLimit(1)
+                        .foregroundStyle(model.expanded ? Palette.accent : .white).lineLimit(1)
                     Spacer(minLength: 0)
                 }.contentShape(Rectangle())
             }.buttonStyle(.plain)
@@ -114,7 +111,7 @@ struct CompanionView: View {
 
     private var approvalQueue: some View {
         HStack {
-            Text("NEEDS YOU").font(.system(size: 9, weight: .semibold)).tracking(1.3).foregroundStyle(Palette.amber)
+            Text("NEEDS YOU").font(.system(size: 9, weight: .semibold)).tracking(1.3).foregroundStyle(Palette.accent)
             Spacer()
             if model.state.approvals.count > 1 {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -123,7 +120,7 @@ struct CompanionView: View {
                             Button("\(index + 1)") { selectedRequest = approval.id }
                                 .buttonStyle(.plain).font(.system(size: 10, weight: .semibold))
                                 .frame(width: 22, height: 22)
-                                .background(request?.id == approval.id ? Palette.amber.opacity(0.18) : Palette.card)
+                                .background(request?.id == approval.id ? Palette.accent.opacity(0.18) : Palette.card)
                                 .clipShape(Circle()).accessibilityLabel("Show queued request \(index + 1) from \(approval.event.provider.title)")
                         }
                     }
@@ -135,7 +132,7 @@ struct CompanionView: View {
 
     private var emptyState: some View {
         VStack(spacing: 12) {
-            Image(systemName: "sparkle").font(.system(size: 28)).foregroundStyle(Palette.amber.opacity(0.7))
+            Image(systemName: "sparkle").font(.system(size: 28)).foregroundStyle(Palette.accent.opacity(0.7))
             Text(filter.map { "No activity from \($0.title) yet." } ?? "Waiting for agent activity.")
                 .font(.system(size: 15, weight: .medium, design: .rounded))
             Text(emptyExplanation)

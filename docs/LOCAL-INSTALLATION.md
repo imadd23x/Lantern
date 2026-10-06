@@ -130,3 +130,23 @@ Automatically opened cards return to the pill when the queue drains. Explicitly 
 open. Automatic popups preserve external keyboard focus; manual Allow/Deny releases owned focus
 without forcing a switch away from a newer foreground app. Restore the saved 0.1.7 app at the stable
 path after quitting to roll back; hook definitions do not need rewriting.
+
+## 0.1.9 navigation/appearance upgrade — 2026-10-06
+
+Installed verified 0.1.9/build 10 at `/Users/imad/Applications/Lantern.app`. Rollback copy:
+`/Users/imad/Applications/Lantern Backups/0.1.8-build9-c2e3fa4c/Lantern.app`.
+Editable source and final app/source ZIPs are in `/Users/imad/Documents/Codex/Lantern`; the original
+Building Tools source and component library are retained. Native inspection confirmed the cleaned
+head, green brand color, live Codex activity and Local connection ready. All three bitmap resources
+remain byte-for-byte unchanged; strict/deep signatures passed on extraction and installation.
+
+Hook hashes remain exactly the 0.1.4 values recorded above. No settings/trust transaction, VS Code
+restart or live approval decision was performed. The freshly observed old instance had quiet mode
+off; this setting was retained. Before upgrade, the old app reported an occupied endpoint. After
+normal Quit, socket inode 100814435 (UID 501) had no lsof owner and refused connections; only that
+same endpoint was removed after identity checks. No active listener was removed.
+
+Claude navigation now brings the last-active existing Code window forward with its selected chat
+untouched. It never opens cwd as a folder or starts a replacement chat. Answer in agent preserves
+the request if activation fails. Isolated native navigation and handoff left Code's workspace/tab
+state unchanged. Restore the saved 0.1.8 app at the stable installed path after quitting to roll back.
