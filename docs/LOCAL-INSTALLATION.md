@@ -179,3 +179,12 @@ Installed 0.1.12/build 13 with rollback at
 `/Users/imad/Applications/Lantern Backups/0.1.11-build12-f4eb5087/Lantern.app`.
 Native Quit had no pending approval cards; socket removed normally. Hook hashes are unchanged.
 Avatar/title alignment and live Codex delivery verified onscreen; final app is compact.
+
+## 0.1.13 connection dot — 2026-10-07
+
+Installed 0.1.13/build 14 with rollback at
+`/Users/imad/Applications/Lantern Backups/0.1.12-build13-d6d1e630/Lantern.app`.
+Native Quit had no pending approval cards; socket removed normally. Hook hashes are unchanged.
+Restart/expansion showed live Codex activity and a green connected footer dot without wording.
+Sound remained Enabled; final app is compact. New listener lifecycle tests verify startup,
+failure and recovery independently of the installed live sessions.

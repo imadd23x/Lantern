@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.13 — 2026-10-07
+
+Replace footer connection text with a status dot: green when the local listener is connected,
+yellow during startup, red when unavailable or failed. Preserve tooltip and accessible status.
+Idle agents keep the connected state. Startup failure and recovery now publish explicit states.
+
 ## 0.1.12 — 2026-10-07
 
 Close the expanded header's empty grip column: shift the avatar and title 20 points left,

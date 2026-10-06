@@ -159,8 +159,11 @@ struct CompanionView: View {
 
     private var footer: some View {
         HStack(spacing: 6) {
-            Circle().fill(model.isListening ? Color.mint : Color.orange).frame(width: 5, height: 5)
-            Text(model.isListening ? "Local connection ready" : "Connection unavailable").font(.system(size: 10))
+            Circle().fill(model.connectionStatus.indicatorColor).frame(width: 5, height: 5)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Agent connection")
+                .accessibilityValue(model.connectionStatus.title)
+                .help(model.connectionStatus.title)
             Spacer()
             Button { model.quiet.toggle() } label: { Image(systemName: model.quiet ? "bell.slash" : "bell") }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar))

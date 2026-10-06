@@ -416,3 +416,19 @@ Installed files exactly match the package. Native inspection confirmed the avata
 target and live Codex delivery. Drag handlers and compact layout are unchanged; no new logic
 tests or physical-motion claim for this static layout change. Both hook hashes and Enabled
 sound are unchanged. Final app is compact.
+
+### 0.1.13 connection dot — 2026-10-07
+
+Two new real-listener lifecycle tests first failed before wiring the new state. Full Swift suite
+then passed: 46 test functions (50 parameterized cases). Coverage includes Connecting→Connected
+publication, idempotent start, disconnected shutdown, occupied endpoint failure without removing
+its owner, successful retry and cleared startup errors. Existing session/approval/transport tests
+passed. Status reflects the hook listener; idle agents do not imply failure.
+
+Release package/diff checks, ZIP extraction and extracted/staged/installed strict signatures
+passed. Installed bundle files match the extracted package. Native inspection showed a green
+footer dot, no connection wording, Connected tooltip/accessibility help and live Codex activity.
+Yellow is mapped to the tested Connecting state; synchronous startup is too brief to claim an
+onscreen yellow capture. Failed/disconnected map to red; real failure/recovery were verified
+through tests, without disrupting the user's listener. Final app is compact. Both hook hashes
+and Enabled sound remain unchanged. No new relay/config behavior or artificial startup delay.

@@ -1,5 +1,15 @@
 import SwiftUI
 
+extension ConnectionStatus {
+    var indicatorColor: Color {
+        switch self {
+        case .connected: Palette.accent
+        case .connecting: .yellow
+        case .disconnected, .failed: .red
+        }
+    }
+}
+
 private struct ReduceMotionOverride: EnvironmentKey {
     static let defaultValue = false
 }

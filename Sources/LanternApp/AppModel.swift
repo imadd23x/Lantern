@@ -13,7 +13,7 @@ final class AppModel: ObservableObject {
         didSet { if showConnections { presentationIsAutomatic = false } }
     }
     @Published var errorMessage: String?
-    @Published private(set) var isListening = false
+    @Published private(set) var connectionStatus: ConnectionStatus = .disconnected
     @Published private(set) var installedProviders: Set<AgentProvider> = []
     @Published private(set) var connectionWarnings: [AgentProvider: String] = [:]
     @Published var quiet = false
@@ -45,6 +45,7 @@ final class AppModel: ObservableObject {
     var needsAttention: Bool { !state.approvals.isEmpty || sessions.contains { [.attention, .failed].contains($0.phase) } }
     var relayPath: String { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lantern-hook").path }
     var socketPath: String { server.socketPath }
+    var isListening: Bool { connectionStatus == .connected }
 
     func configurationURL(for provider: AgentProvider) -> URL {
         let env = ProcessInfo.processInfo.environment
@@ -72,6 +73,8 @@ final class AppModel: ObservableObject {
     }
 
     func start() {
+        guard !isListening else { return }
+        connectionStatus = .connecting
         refreshConnections()
         do {
             try server.start(onEvent: { [weak self] event, id in
@@ -79,15 +82,20 @@ final class AppModel: ObservableObject {
             }, onDisconnect: { [weak self] id in
                 Task { @MainActor [weak self] in self?.connectionClosed(id) }
             })
-            isListening = true
-        } catch { errorMessage = error.localizedDescription }
+            errorMessage = nil
+            connectionStatus = .connected
+        } catch {
+            errorMessage = error.localizedDescription
+            connectionStatus = .failed
+        }
         if isDemo { loadDemo() }
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor [weak self] in self?.tick() }
         }
     }
 
-    func stop() { timer?.invalidate(); timer = nil; server.stop(); isListening = false }
+    func stop() { timer?.invalidate(); timer = nil; server.stop(); connectionStatus = .disconnected }
 
     func setExpanded(_ value: Bool) {
         presentationIsAutomatic = false

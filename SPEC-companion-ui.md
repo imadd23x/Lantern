@@ -247,3 +247,13 @@ Use a 20-point expanded leading inset, moving avatar/title 20 points left; keep 
 avatar/title spacing, compact layout and drag handlers unchanged. Verify the packaged native
 header's alignment and retained drag target. No new logic tests for a static layout change.
 Install with a 0.1.11 rollback and unchanged hooks.
+
+## 0.1.13 connection dot — 2026-10-07
+
+Remove footer connection wording. Preserve the small dot: green when the local hook listener
+is ready, yellow while starting, red when stopped/unavailable or startup fails. Idle agents do
+not imply a failed listener. Retain status in a tooltip and accessibility label/value. Publish
+an explicit lifecycle state, preserve the existing isListening API as a derived value, and
+cover startup transitions, shutdown, occupied socket failure and recovery with real local I/O.
+Do not add artificial connecting delays, background retries or hook/config changes. Package,
+inspect the connected footer and verify failure/recovery tests; retain 0.1.12 for rollback.
