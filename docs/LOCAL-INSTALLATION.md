@@ -197,3 +197,10 @@ No pending approval cards at Quit; owned socket removed normally. Hook hashes re
 A-Train.mp3 is bundled and matches the original file; Downloads is not used at runtime. Native
 decoding/playback check passed. Live Codex delivery and Enabled sound confirmed after restart;
 final app is compact. No agent restart/config/trust transaction or live decision was performed.
+
+## GitHub source repository — 2026-10-07
+
+Private source repository: https://github.com/imadd23x/Lantern (default branch main).
+The writable checkout uses the new `github` remote and tracks github/main; the existing local
+origin is preserved. Source/history and release tags are uploaded; generated app/ZIP outputs
+remain local. A test-only executor fix accompanies import; installed app/hooks are unchanged.

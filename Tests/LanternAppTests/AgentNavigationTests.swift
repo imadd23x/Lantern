@@ -2,6 +2,7 @@ import Foundation
 import Testing
 import LanternCore
 import LanternTransport
+import LanternTestSupport
 @testable import LanternApp
 
 @Test func claudeWorktreeNavigationCannotOpenAWorkspace() throws {
@@ -47,8 +48,8 @@ struct AgentHandoffTests {
                                   cwd: "/Projects/ChangedWorktree", summary: "Read", detail: "sample only")
         let neighbor = AgentEvent(provider: .codex, sessionID: "neighbor", kind: .approval,
                                   cwd: "/Projects/Neighbor", summary: "Read", detail: "sample only")
-        let selectedRelay = Task.detached { try HookClient.exchange(selected, socketPath: socketPath, timeout: 3) }
-        let neighborRelay = Task.detached { try HookClient.exchange(neighbor, socketPath: socketPath, timeout: 3) }
+        let selectedRelay = startHookExchange(selected, socketPath: socketPath, timeout: 3)
+        let neighborRelay = startHookExchange(neighbor, socketPath: socketPath, timeout: 3)
         for _ in 0..<100 {
             if model.state.approvals.count == 2 { break }
             try await Task.sleep(for: .milliseconds(10))

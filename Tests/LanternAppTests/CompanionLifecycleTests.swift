@@ -2,6 +2,7 @@ import Foundation
 import Testing
 import LanternCore
 import LanternTransport
+import LanternTestSupport
 @testable import LanternApp
 
 /// Hidden UI must keep accepting activity and proposals without exposing the card or deciding for the user.
@@ -24,7 +25,7 @@ import LanternTransport
     let event = AgentEvent(provider: .claude, sessionID: "hidden-request", kind: .approval,
                            cwd: "/Projects/Hidden", summary: "Read", detail: "synthetic proposal")
     let socketPath = model.socketPath
-    let relay = Task.detached { try HookClient.exchange(event, socketPath: socketPath, timeout: 3) }
+    let relay = startHookExchange(event, socketPath: socketPath, timeout: 3)
     for _ in 0..<100 {
         if !model.state.approvals.isEmpty { break }
         try await Task.sleep(for: .milliseconds(10))

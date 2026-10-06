@@ -2,10 +2,11 @@ import Foundation
 import Testing
 import LanternCore
 import LanternTransport
+import LanternTestSupport
 @testable import LanternApp
 
-// These medium tests use blocking socket clients on detached tasks. Run this suite sequentially
-// so those clients cannot exhaust the cooperative executor needed to deliver main-actor callbacks.
+// Keep scenarios ordered within this suite; other suites still run concurrently.
+// LanternTestSupport moves blocking socket clients off the cooperative executor.
 @Suite(.serialized)
 struct ApprovalPresentationTests {
 
@@ -21,7 +22,7 @@ struct ApprovalPresentationTests {
         let event = AgentEvent(provider: .claude, sessionID: "automatic", kind: .approval,
                                cwd: "/Projects/Automatic", summary: "Read", detail: "synthetic proposal")
         let socketPath = model.socketPath
-        let relay = Task.detached { try HookClient.exchange(event, socketPath: socketPath, timeout: 3) }
+        let relay = startHookExchange(event, socketPath: socketPath, timeout: 3)
         for _ in 0..<100 {
             if !model.state.approvals.isEmpty { break }
             try await Task.sleep(for: .milliseconds(10))
@@ -47,7 +48,7 @@ struct ApprovalPresentationTests {
         let event = AgentEvent(provider: .codex, sessionID: "manual", kind: .approval,
                                cwd: "/Projects/Manual", summary: "Read", detail: "synthetic proposal")
         let socketPath = model.socketPath
-        let relay = Task.detached { try HookClient.exchange(event, socketPath: socketPath, timeout: 3) }
+        let relay = startHookExchange(event, socketPath: socketPath, timeout: 3)
         try await waitForApprovals(model, count: 1)
         model.decide(try #require(model.state.approvals.first).id, .allow)
         #expect(try await relay.value == .allow)
@@ -64,8 +65,8 @@ struct ApprovalPresentationTests {
         let socketPath = model.socketPath
         let a = AgentEvent(provider: .claude, sessionID: "a", kind: .approval, cwd: "/Projects/Queue", summary: "Read", detail: "sample A")
         let b = AgentEvent(provider: .codex, sessionID: "b", kind: .approval, cwd: "/Projects/Queue", summary: "Read", detail: "sample B")
-        let relayA = Task.detached { try HookClient.exchange(a, socketPath: socketPath, timeout: 3) }
-        let relayB = Task.detached { try HookClient.exchange(b, socketPath: socketPath, timeout: 3) }
+        let relayA = startHookExchange(a, socketPath: socketPath, timeout: 3)
+        let relayB = startHookExchange(b, socketPath: socketPath, timeout: 3)
         try await waitForApprovals(model, count: 2)
         model.decide(try #require(model.state.approvals.first(where: { $0.event.sessionID == "a" })).id, .deny)
         #expect(try await relayA.value == .deny)
@@ -84,9 +85,9 @@ struct ApprovalPresentationTests {
         defer { model.stop() }
         let socketPath = model.socketPath
         let attention = AgentEvent(provider: .claude, sessionID: "notification", kind: .attention, cwd: "/Projects/Notification", summary: "Needs permission")
-        _ = try await Task.detached { try HookClient.exchange(attention, socketPath: socketPath, timeout: 3) }.value
+        _ = try await startHookExchange(attention, socketPath: socketPath, timeout: 3).value
         let approval = AgentEvent(provider: .claude, sessionID: "notification", kind: .approval, cwd: "/Projects/Notification", summary: "Read", detail: "sample")
-        let relay = Task.detached { try HookClient.exchange(approval, socketPath: socketPath, timeout: 3) }
+        let relay = startHookExchange(approval, socketPath: socketPath, timeout: 3)
         try await waitForApprovals(model, count: 1)
         model.decide(try #require(model.state.approvals.first).id, .allow)
         #expect(try await relay.value == .allow)
@@ -112,7 +113,7 @@ struct ApprovalPresentationTests {
         defer { model.stop() }
         let socketPath = model.socketPath
         let event = AgentEvent(provider: .codex, sessionID: "override", kind: .approval, cwd: "/Projects/Override", summary: "Read", detail: "sample")
-        let relay = Task.detached { try HookClient.exchange(event, socketPath: socketPath, timeout: 3) }
+        let relay = startHookExchange(event, socketPath: socketPath, timeout: 3)
         try await waitForApprovals(model, count: 1)
         if openConnections { model.showConnections = true } else { model.setExpanded(true) }
         model.decide(try #require(model.state.approvals.first).id, .deny)
@@ -129,7 +130,7 @@ struct ApprovalPresentationTests {
         defer { model.stop() }
         let socketPath = model.socketPath
         let event = AgentEvent(provider: .claude, sessionID: "cancel", kind: .approval, cwd: "/Projects/Cancel", summary: "Read", detail: "sample")
-        let relay = Task.detached { try HookClient.exchange(event, socketPath: socketPath, timeout: 0.2) }
+        let relay = startHookExchange(event, socketPath: socketPath, timeout: 0.2)
         try await waitForApprovals(model, count: 1)
         #expect(try await relay.value == .delegate)
         try await waitForApprovals(model, count: 0)
@@ -146,7 +147,7 @@ struct ApprovalPresentationTests {
         defer { model.stop() }
         let socketPath = model.socketPath
         let event = AgentEvent(provider: .claude, sessionID: "expire", kind: .approval, cwd: "/Projects/Expiry", summary: "Read", detail: "sample")
-        let relay = Task.detached { try HookClient.exchange(event, socketPath: socketPath, timeout: 3) }
+        let relay = startHookExchange(event, socketPath: socketPath, timeout: 3)
         try await waitForApprovals(model, count: 1)
         time += SessionState.approvalLifetime + 1
         try await waitForApprovals(model, count: 0)

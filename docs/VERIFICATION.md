@@ -357,7 +357,7 @@ was removed; no active endpoint was removed. The isolated review quit normally, 
 - Multi-monitor, full-screen and a full VoiceOver session were not exercised on this machine.
   The reduced-motion rendering path was verified with the process-local override; toggling the actual
   system accessibility preference was not tested.
-- GitHub CI was authored; it has not run remotely. Bundle is ad-hoc signed, not notarized/Developer ID signed.
+- GitHub CI is enabled on the private repository; the initial import and test-harness fix are recorded below. Bundle is ad-hoc signed, not notarized/Developer ID signed.
 
 The build and isolated validation used no credential-file reads, third-party package installation,
 external messages, production mutation or global agent activation. Synthetic tool proposals were never executed.
@@ -447,3 +447,20 @@ quiet guard. Tink is a missing/undecodable-asset fallback. Static resource swap:
 logic tests. Release build, diff check and strict extracted/staged/installed signatures passed.
 Installed bundle files match the package. Native restart showed live Codex delivery, Connected
 status and unchanged Enabled sound; final app is compact. Both hook hashes are unchanged.
+
+### GitHub import and test executor fix — 2026-10-07
+
+Created private `imadd23x/Lantern`, default main, and uploaded source history plus v0.1.11–v0.1.14.
+The first main SHA matched local `1b60056f55b3742e627664c1b313738ae49830e0`. Scanned 259
+historical blobs for common credential patterns and sensitive config filenames; none matched.
+No runtime agent configuration, generated build output or other project files were uploaded.
+
+Initial Actions run 37532856964 failed two permission-flow tests with delayed delivery/timeouts.
+Unlike the local Swift runtime, the runner executed both test targets together. Detached tasks
+performed blocking socket reads and could starve the cooperative executor required by model
+callbacks. Shared LanternTestSupport now runs that I/O on dedicated threads and resumes an async
+continuation. All 18 exchange sites retain real sockets, decisions and deadlines; all test and
+assertion counts are unchanged. No production executable depends on the test support module.
+Full local suite passes (46 functions / 50 cases); remote checks are the acceptance gate for this fix.
+Current remote results: https://github.com/imadd23x/Lantern/actions/workflows/checks.yml
+The installed 0.1.14 app and hook configuration are unchanged.

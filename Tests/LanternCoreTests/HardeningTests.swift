@@ -2,6 +2,7 @@ import Foundation
 import Testing
 import Darwin
 import LanternTransport
+import LanternTestSupport
 @testable import LanternCore
 
 @Test func removalKeepsOtherHandlersInTheSameGroup() throws {
@@ -53,9 +54,7 @@ import LanternTransport
     let disconnected = AsyncStream<String>.makeStream()
     try server.start(onEvent: { _, _ in }, onDisconnect: { disconnected.continuation.yield($0); disconnected.continuation.finish() })
     defer { server.stop() }
-    let result = try await Task.detached {
-        try HookClient.exchange(.fixture(session: "a", kind: .approval), socketPath: server.socketPath, timeout: 0.1)
-    }.value
+    let result = try await startHookExchange(.fixture(session: "a", kind: .approval), socketPath: server.socketPath, timeout: 0.1).value
     #expect(result == .delegate)
     var iterator = disconnected.stream.makeAsyncIterator()
     #expect(await iterator.next() != nil)
@@ -71,9 +70,7 @@ import LanternTransport
                      onDisconnect: { disconnects.continuation.yield($0) })
     defer { server.stop() }
     for index in 0..<20 {
-        let result = try await Task.detached {
-            try HookClient.exchange(.fixture(session: "telemetry-\(index)", kind: .working), socketPath: server.socketPath)
-        }.value
+        let result = try await startHookExchange(.fixture(session: "telemetry-\(index)", kind: .working), socketPath: server.socketPath).value
         #expect(result == .delegate)
     }
     server.stop()
