@@ -132,3 +132,25 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Replace gold with #069b2e and inspect the final green approval card, compact and expanded head.
 - [x] Verify native sample row/handoff preserve Code's workspace, selected chat, tabs and existing window.
 - [x] Install with rollback, unchanged hooks and observed live activity; archive matching source/checksums.
+
+## Overnight desktop additions — 2026-10-07
+
+- [x] Desktop preferences and safe bindings — two tests failed before implementation, now pass; unsafe/duplicate keys rejected and preferences persist.
+- [ ] Native shortcut driver and Settings — registration errors, user editing, shared selection.
+- [ ] Idle presentation — deterministic deadlines/manual hide/focus/pending-request tests; hotspot.
+- [ ] Native login item — explicit canonical-app control and OS status; no demo registrations.
+- [ ] Usage state — invalid/missing/stale/reset/partial window tests.
+- [ ] Usage transport/relay — isolated no-decision/no-session and previous-command preservation.
+- [ ] Usage configuration — exact ownership/idempotence/restoration/concurrency tests and setup UI.
+- [ ] Runtime/review/package — all tests, native UI, signatures/assets, rollback, safe install.
+- [ ] GitHub checks/archives — source commits, CI success, honest morning handoff; stop heartbeat.
+
+Open live check: installed Claude extension2.1.289 consumes unified usage events internally, but
+no documented public export or statusLine emission has been established for native panel sessions.
+Inspect supported telemetry before claiming live quota integration. Do not scrape auth/log files.
+
+Overnight continuation: heartbeat `finish-lantern-overnight`, every30min until08:00 Dubai,
+stop on completion. Fresh design review completed; its eight substantive findings are accepted.
+Installed extension's `usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET` and private
+panel_usage_update messaging are not used as Lantern integrations. Official status-line telemetry
+remains the supported relay path; native-panel live data is an explicit compatibility check.

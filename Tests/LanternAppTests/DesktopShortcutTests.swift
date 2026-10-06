@@ -1,0 +1,56 @@
+import Foundation
+import Testing
+@testable import LanternApp
+
+@Test func shortcutsRequireIntentionalModifiersAndReadableKeys() {
+    for binding in ShortcutBinding.defaults.values {
+        #expect(binding.isSafe)
+        #expect(binding.label.hasPrefix("⌃⌥⌘"))
+    }
+    for modifiers in [ShortcutModifiers(), .shift, ShortcutModifiers(rawValue: 255)] {
+        #expect(!ShortcutBinding(keyCode: 0, modifiers: modifiers, keyName: "A").isSafe)
+    }
+    #expect(!ShortcutBinding(keyCode: 65535, modifiers: .standard, keyName: "A").isSafe)
+    #expect(!ShortcutBinding(keyCode: 0, modifiers: .standard, keyName: "\n").isSafe)
+    #expect(ShortcutBinding(keyCode: 49, modifiers: [.command, .shift], keyName: "Space").isSafe)
+}
+
+@MainActor
+@Test func failedShortcutReplacementRetainsTheWorkingRegistration() throws {
+    var tokens: Set<Int> = []
+    var next = 0
+    let registry = ShortcutRegistry(register: { _, binding in
+        if binding.keyCode == 99 { return nil }
+        next += 1; tokens.insert(next); return next
+    }, unregister: { tokens.remove($0) })
+    let original = try #require(ShortcutBinding.defaults[.visibility])
+    #expect(registry.apply(original, for: .visibility))
+    #expect(tokens.count == 1)
+    let unavailable = ShortcutBinding(keyCode: 99, modifiers: .standard, keyName: "F3")
+    #expect(!registry.apply(unavailable, for: .visibility))
+    #expect(registry.activeBinding(for: .visibility) == original && tokens.count == 1)
+    #expect(registry.errors[.visibility] != nil)
+    let replacement = ShortcutBinding(keyCode: 1, modifiers: .standard, keyName: "S")
+    #expect(registry.apply(replacement, for: .visibility))
+    #expect(registry.activeBinding(for: .visibility) == replacement && tokens.count == 1)
+    #expect(registry.errors[.visibility] == nil)
+    registry.stop()
+    #expect(tokens.isEmpty)
+}
+
+@MainActor
+@Test func desktopSettingsPersistWithoutAcceptingDuplicateBindings() throws {
+    let name = "lantern-preferences-" + UUID().uuidString
+    let defaults = try #require(UserDefaults(suiteName: name))
+    defer { defaults.removePersistentDomain(forName: name) }
+    let settings = DesktopPreferences(defaults: defaults)
+    settings.autoHideEnabled = false; settings.pinned = true
+    #expect(settings.setIdleDelay(60))
+    #expect(!settings.setIdleDelay(.nan))
+    #expect(!settings.setBinding(try #require(settings.bindings[.mute]), for: .visibility))
+    let custom = ShortcutBinding(keyCode: 1, modifiers: [.command, .option], keyName: "S")
+    #expect(settings.setBinding(custom, for: .visibility))
+    let restored = DesktopPreferences(defaults: defaults)
+    #expect(!restored.autoHideEnabled && restored.pinned && restored.idleDelay == 60)
+    #expect(restored.bindings[.visibility] == custom)
+}
