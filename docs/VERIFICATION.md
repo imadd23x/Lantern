@@ -201,6 +201,39 @@ paths below retain their limits; synthetic routing and geometry tests do not ver
 
 ## Remaining validation
 
+### 0.1.7 avatar and compact-pill controls — 2026-10-06
+
+- Final full suite passed: 21 core/transport tests and 9 native app tests. The hidden-listener test
+  now exercises both visibility toggles, exact Show/Hide titles and preservation of its queued request.
+  Release packaging and packaged relay smoke passed for both providers. Strict/deep signatures passed
+  after extraction and installation; all three packaged bitmap assets exactly match their sources.
+- A cleanup briefly left Connections calling a removed helper; release compilation caught it. The call
+  was corrected and the full test → package → smoke sequence was rerun successfully. The smoke against
+  the previous package before that correction is not used as evidence for this release.
+- The isolated native app displayed the supplied head at compact/expanded sizes without a checkerboard
+  rectangle, retaining the original white eyes. Expanded header had only avatar/brand/controls; no slogan.
+  Native images were 288×46 and 460×584. Both provider icons and the demo proposal still rendered.
+- Native drags from avatar, text, chevron and close button kept the pill collapsed and visible. Saved
+  coordinates changed by the requested displacement, including text (-70,-40), chevron (-60,-57), and
+  close (-65,-67); no embedded action fired. Ordinary arrow clicks and Escape still changed presentation.
+  The visible native menu had exactly one Hide Lantern command and no Reset position.
+- The UI tool cannot reliably inspect a windowless review's menu; it reported invalid capture parameters
+  and sometimes restored its presentation. Hidden Show title/listener/queue behavior is verified at the
+  AppModel interface, rather than claimed as a native hidden-menu click. That disposable hidden review
+  was stopped by identity-checked SIGTERM; only its confirmed unowned/refusing private socket was cleaned.
+- A separate review using process-local Reduce Motion received a synthetic working event through the
+  packaged relay. Two decoded 460×584 captures had 0 changed avatar pixels. It quit normally, exit 0,
+  removing its socket. No OS accessibility preference was changed. Physical hover confirmation is
+  requested separately; source provides hover/focus/press feedback using the shared toolbar style.
+- Installed 0.1.7/build 8 at the stable relay path with a 0.1.6 rollback. Native inspection showed the new
+  head on real Codex activity and Local connection ready. Both hook files were unchanged. The previous
+  app released its live socket on normal Quit; no live stale-endpoint cleanup was needed. Existing quiet
+  mode was restored through the native control and observed as Enable attention sounds.
+
+Multi-monitor hardware, full VoiceOver and physical hover remain distinct from the automated checks.
+Existing linker search-path warnings remain; no new dependency, trust change, paid fallback or real
+approval decision was introduced.
+
 ### 0.1.6 supplied Codex icon — 2026-10-06
 
 Release build/package passed; strict/deep signing passed on the unmodified extracted archive and

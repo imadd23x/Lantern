@@ -38,3 +38,19 @@ native rendering before accepting the asset; the user's green procedural fallbac
 Key assumptions: hooks remain installed (verified and confirmed by the user); Hide is preferable to
 Quit for clearing click obstruction; no sessions/proposals need to be persisted. Specifications above
 define pass/kill/mixed rules before coding. Keep the existing green pet and approval/transport policy.
+
+## 0.1.7 supplied head and pill controls
+
+1. Bundle the supplied head unchanged and encapsulate native outline clipping in the avatar drawing.
+   Keep white eyes per the user's choice; verify both sizes and deterministic icon rendering.
+2. Combine menu visibility at the existing presentation seam, remove Reset and header slogans,
+   and give the chevron Arc-inspired toolbar feedback. Verify hidden-listener/queued-request behavior.
+3. Attach a compact-only native pan recognizer to the hosting view. Delaying primary button events
+   lets a failed pan retain ordinary clicks while a recognized drag cancels control activation.
+   Keep frame movement/constraints/position ownership in PanelController. Check the actual drag path.
+4. Run tests, package/relay checks, isolated native review and Reduce Motion. Upgrade with rollback
+   and unchanged settings, record evidence, then archive the matching source.
+
+Risk: drag arbitration over embedded buttons is judged through real native input, not just unit tests.
+The image editor rejected extraction; native clipping displays the exact supplied bytes without a
+generation fallback. Park transport recovery and multi-monitor hardware checks outside this change.

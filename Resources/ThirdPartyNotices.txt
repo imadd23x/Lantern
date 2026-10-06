@@ -4,8 +4,9 @@ SwiftUI implementations use design references from the local downloaded librarie
 No React source or third-party runtime dependencies are embedded.
 The upstream MIT notices are retained below. Planes free components were design references only; no Planes source is copied.
 
-The green companion is Lantern's original procedural artwork. Its native eye-tracking behavior is
-adapted from Componentry's eye-tracking design/geometry; the Componentry notice is retained below.
+The current companion displays the user's supplied masked toy head through a native outline mask.
+The original green procedural companion remains a missing-asset fallback. Its native eye tracking
+is adapted from Componentry's eye-tracking design/geometry; the Componentry notice is retained below.
 The user-provided Rick portrait from 0.1.2 is no longer included in this release.
 
 

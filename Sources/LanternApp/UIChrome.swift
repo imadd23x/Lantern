@@ -67,12 +67,13 @@ private struct ControlSurface: View {
         switch kind {
         case .primary: Palette.amber.opacity(highlighted ? 0.88 : 1)
         case .secondary, .row: highlighted ? Color.white.opacity(0.085) : Palette.card
-        case .toolbar: Color.white.opacity(highlighted ? 0.08 : 0)
+        case .toolbar: Color.white.opacity(pressed ? 0.14 : highlighted ? 0.09 : 0)
         }
     }
     private var edge: Color {
         focused && enabled ? Palette.amber.opacity(0.8)
-            : kind == .toolbar ? .clear : Color.white.opacity(highlighted ? 0.18 : 0.09)
+            : kind == .toolbar ? Color.white.opacity(highlighted ? 0.12 : 0)
+            : Color.white.opacity(highlighted ? 0.18 : 0.09)
     }
 
     var body: some View {

@@ -3,7 +3,7 @@ import SwiftUI
 import QuartzCore
 
 @MainActor
-final class PanelController: NSObject, NSWindowDelegate {
+final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDelegate {
     private let panel: CompanionPanel
     private let model: AppModel
     private var screenObserver: NSObjectProtocol?
@@ -14,6 +14,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     private var animating = false
     private var delayedLayout: Task<Void, Never>?
     private var lastPresentationTime: TimeInterval = -.infinity
+    private var pillPan: NSPanGestureRecognizer?
+    private var dragOrigin: CGPoint?
     private var reducedMotion: Bool {
         CommandLine.arguments.contains("--reduce-motion") || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
     }
@@ -40,7 +42,12 @@ final class PanelController: NSObject, NSWindowDelegate {
         panel.contentView = NSHostingView(rootView: CompanionView(model: model)
             .environment(\.lanternReduceMotion, CommandLine.arguments.contains("--reduce-motion")))
         model.onPresentationChange = { [weak self] in self?.present() }
-        model.onResetPosition = { [weak self] in self?.resetPosition() }
+        let pan = NSPanGestureRecognizer(target: self, action: #selector(dragPill(_:)))
+        pan.buttonMask = 1
+        pan.delaysPrimaryMouseButtonEvents = true
+        pan.delegate = self
+        panel.contentView?.addGestureRecognizer(pan)
+        pillPan = pan
         panel.onEscape = { [weak model] in
             guard let model else { return }
             if model.expanded { model.setExpanded(false) } else { model.hideCompanion() }
@@ -58,6 +65,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     func show() { layout(animated: false); panel.orderFrontRegardless() }
 
     private func present() {
+        pillPan?.isEnabled = !model.expanded && !model.companionHidden && !model.showConnections
         delayedLayout?.cancel()
         let time = Date.timeIntervalSinceReferenceDate
         let holdClose = !model.expanded && time - lastPresentationTime > 0.45
@@ -79,9 +87,31 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
-    private func resetPosition() {
-        anchor = nil; defaults.removeObject(forKey: "companionPosition")
-        layout(animated: false)
+    func gestureRecognizer(_ gestureRecognizer: NSGestureRecognizer, shouldAttemptToRecognizeWith event: NSEvent) -> Bool {
+        !model.expanded && !model.companionHidden && !model.showConnections && event.type == .leftMouseDown
+    }
+
+    /// Delayed primary events reach SwiftUI only if the pan fails. A recognized drag therefore cannot
+    /// click the chevron/close button. Expanded controls and sheets opt out before event arbitration.
+    @objc private func dragPill(_ gesture: NSPanGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            delayedLayout?.cancel()
+            layoutGeneration += 1
+            animating = false
+            panel.setFrame(panel.frame, display: true)
+            dragOrigin = panel.frame.origin
+        case .changed, .ended: break
+        default:
+            dragOrigin = nil
+            return
+        }
+        if let origin = dragOrigin {
+            // nil uses window coordinates, avoiding the hosting view's flipped Y axis.
+            let delta = gesture.translation(in: nil)
+            panel.setFrameOrigin(CGPoint(x: origin.x + delta.x, y: origin.y + delta.y))
+        }
+        if gesture.state == .ended { dragOrigin = nil }
     }
 
     private func layout(animated: Bool) {

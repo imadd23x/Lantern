@@ -1,7 +1,7 @@
 import AppKit
 import SwiftUI
 
-/// Packaging renders the same green companion with a deterministic, neutral gaze.
+/// Packaging renders the same companion with motion disabled.
 @MainActor
 enum IconRenderer {
     static func writeIconset(to directory: URL) throws {

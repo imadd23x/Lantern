@@ -98,3 +98,18 @@ The prior instance reported an occupied endpoint again. The exact current-user s
 100143200 had no lsof owner and refused connections. After native Quit and repeated identity/owner/
 connection checks, only that stale socket was removed. This is operational cleanup, not a fix for
 abnormal-exit recovery. Rollback restores the saved app at the stable installed path after quitting.
+
+## 0.1.7 avatar and controls upgrade — 2026-10-06
+
+Installed verified 0.1.7/build 8 at `/Users/imad/Applications/Lantern.app`. Rollback copy:
+`/Users/imad/Applications/Lantern Backups/0.1.6-build7-2f8da8a1/Lantern.app`.
+No pending live proposal was visible before native Quit; the old process released its socket normally.
+All three installed bitmap assets match their workspace sources, and strict/deep signing passed.
+Both hook files were byte-for-byte unchanged; hashes remain those recorded for 0.1.4 above.
+Native inspection showed the new supplied head, shorter expanded header, live Building Tools Codex
+activity and Local connection ready. Existing quiet mode was restored and observed enabled.
+
+Drag anywhere on the compact pill; clicks still open/collapse/hide. The arrow now has its own toolbar
+feedback. The menu has one visibility command: Hide Lantern while shown, Show Lantern while hidden.
+Reset position is removed; remembered coordinates still stay within a visible display. Restore the
+saved 0.1.6 app at the same installed path to roll back, after quitting the new app.

@@ -1,7 +1,7 @@
 # Lantern
 
 A small native macOS companion for **Imad's Codex desktop and Claude Code in VS Code**.
-Independent sessions, a queue of permission requests, and a green lantern companion with cursor-following eyes.
+Independent sessions, a queue of permission requests, and a companion using Imad's supplied masked toy head.
 Runs locally with no API key, telemetry, paid model calls, or third-party dependencies.
 
 ## Build and run
@@ -16,16 +16,17 @@ open outputs/Lantern.app
 ```
 
 The app starts compact below the notch/menu bar. Click the companion to expand or collapse; Escape
-also collapses. Drag the dotted grip to move it; its position is remembered and kept on a visible screen.
-Click **×** to hide it while it keeps listening. **Show Lantern** in the menu brings it back;
-**Reset position** returns it below the notch. Alerts expand a visible panel without activating your app,
-and a deliberately hidden panel stays hidden (pending requests appear on the menu-bar icon/menu).
+also collapses. Drag anywhere on the compact pill to move it; a drag does not click embedded controls.
+The expanded header retains a grip. Position is remembered and kept on a visible screen.
+Click **×** or **Hide Lantern** in the menu to hide it while it keeps listening. The same menu command
+becomes **Show Lantern** while hidden. Alerts expand a visible panel without activating your app,
+and a deliberately hidden panel stays hidden (pending requests appear on the menu-bar icon).
 Quiet mode turns off the attention sound. Installed hooks are recognized after reopening; session
 rows appear on fresh activity. Installation is distinct from agent trust/reload and live hook delivery.
-The transparent lantern gently bobs while an agent works; its eyes follow the cursor with bounded,
-spring-settled movement adapted from Componentry. Reduced motion uses a static neutral gaze.
-An amber glass outline/glow indicates attention. Artwork is drawn natively, with no photo tile or
-external image dependency. This is Imad's authorized green fallback after the Rick head edit failed.
+The head gently bobs while an agent works; an amber outline/glow indicates attention. Its white mask
+eyes remain as supplied, per Imad's choice. Reduce Motion disables decorative movement. The original
+PNG is bundled unchanged and a native outline mask clips away its baked checkerboard. No photo tile
+or external image dependency is displayed. The original procedural green pet is a missing-asset fallback.
 
 Provider filters include session counts and keyboard navigation. Status badges follow real agent events;
 only active work pulses. Selection, hover and press feedback respect reduced motion. These native
@@ -36,7 +37,7 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.3.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.1.7.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
 
@@ -105,8 +106,8 @@ metadata interfering with codesign. `LANTERN_BUILD_DIR` can choose another unsyn
 Packaging removes generated FinderInfo from the copied app root and checks the workspace
 signature. A recurring File Provider metadata failure is reported separately; other signature failures stop
 packaging. The release ZIP always comes from verified unsynced staging. Use it outside the synced folder.
-The icon is rendered from the same procedural avatar as the panel, with tracking disabled for a
-deterministic neutral gaze. The app needs no Downloads or development build-cache image resource.
+The icon is rendered from the same masked head as the panel, with motion disabled for deterministic
+artwork. The app needs no Downloads or development build-cache image resource.
 `ViewState` is a typealias of the system SwiftUI `State` property wrapper; it avoids an SDK macro absent
 from Swift 6.4 Command Line Tools and introduces no custom state implementation.
 

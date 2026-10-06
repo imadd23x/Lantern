@@ -15,8 +15,8 @@ struct CompanionView: View {
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
-                header.frame(width: geometry.size.width, height: model.expanded ? 100 : 46)
-                details.frame(width: PanelPlacement.expanded.width, height: PanelPlacement.expanded.height - 100)
+                header.frame(width: geometry.size.width, height: model.expanded ? 72 : 46)
+                details.frame(width: PanelPlacement.expanded.width, height: PanelPlacement.expanded.height - 72)
                     .opacity(model.expanded ? 1 : 0)
                     .animation(reducedMotion ? nil : model.expanded
                                ? .easeOut(duration: 0.24).delay(0.12) : .easeOut(duration: 0.1), value: model.expanded)
@@ -79,26 +79,27 @@ struct CompanionView: View {
 
     private var header: some View {
         HStack(spacing: model.expanded ? 10 : 6) {
-            WindowGrip().frame(width: 14, height: model.expanded ? 54 : 28)
+            if model.expanded { WindowGrip().frame(width: 14, height: 38) }
             Button { model.setExpanded(!model.expanded) } label: {
                 HStack(spacing: model.expanded ? 12 : 8) {
                     LanternAvatar(busy: model.workingCount > 0, attention: model.needsAttention)
-                        .frame(width: model.expanded ? 60 : 37, height: model.expanded ? 70 : 37)
-                    VStack(alignment: .leading, spacing: 5) {
-                        if model.expanded {
-                            Text("L A N T E R N").font(.system(size: 9, weight: .semibold)).foregroundStyle(Palette.amber)
-                        }
-                        Text(model.expanded ? (request != nil ? "A little attention.\nThen back to flow." : "Your agents,\nin view.") : compactSummary)
-                            .font(.system(size: model.expanded ? 21 : 12, weight: .medium, design: .rounded))
-                            .lineLimit(model.expanded ? 2 : 1).multilineTextAlignment(.leading)
-                    }
+                        .frame(width: model.expanded ? 50 : 36, height: model.expanded ? 54 : 36)
+                    Text(model.expanded ? "L A N T E R N" : compactSummary)
+                        .font(.system(size: model.expanded ? 10 : 12, weight: .medium, design: .rounded))
+                        .foregroundStyle(model.expanded ? Palette.amber : .white).lineLimit(1)
                     Spacer(minLength: 0)
-                    Image(systemName: "chevron.down").font(.system(size: 10, weight: .semibold))
-                        .rotationEffect(.degrees(model.expanded ? 180 : 0)).foregroundStyle(Palette.subtle)
                 }.contentShape(Rectangle())
-            }.buttonStyle(.plain).focused($triggerFocused)
+            }.buttonStyle(.plain)
                 .accessibilityLabel(model.expanded ? "Collapse Lantern" : "Open Lantern agent sessions")
                 .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
+                .help(model.expanded ? "Collapse Lantern" : "Click to open · drag anywhere on the pill to move")
+            Button { model.setExpanded(!model.expanded) } label: {
+                Image(systemName: "chevron.down").font(.system(size: 10, weight: .semibold))
+                    .rotationEffect(.degrees(model.expanded ? 180 : 0))
+            }.buttonStyle(LanternButtonStyle(kind: .toolbar)).focused($triggerFocused)
+                .accessibilityLabel(model.expanded ? "Collapse Lantern" : "Expand Lantern")
+                .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
+                .help(model.expanded ? "Collapse Lantern" : "Expand Lantern")
             if model.expanded {
                 Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
                     .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open connections").help("Connections")

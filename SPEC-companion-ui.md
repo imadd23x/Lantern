@@ -109,3 +109,36 @@ Acceptance: no checkerboard rectangle appears at actual row size; both provider 
 extracted app with no Downloads/build-cache dependency. Verify release packaging/signatures and native
 rows. No new logic tests are needed for this static asset change. Upgrade the existing app with a
 0.1.5 rollback copy and unchanged hook configuration; deliver app/source 0.1.6 archives.
+
+## 0.1.7 avatar, visibility and pill interaction — 2026-10-06
+
+User direction is settled: use the supplied masked LEGO-style head with its original white eyes,
+remove "Your agents, in view", combine Show/Hide into one menu command, remove Reset position,
+drag the compact pill from anywhere, and give its chevron visible hover/press feedback. Arc's
+Expandable Card and Action Button are native design references; no web dependency is added.
+
+The built-in image editor rejected background extraction. Bundle the supplied PNG unchanged and
+display it through a native head-outline clipping shape, excluding checkerboard and neck. Do not
+use a paid CLI/API fallback. Keep working-only bobbing, attention indication and Reduce Motion;
+the user's white-eye choice intentionally supersedes moving pupils for this avatar.
+
+Pass criteria registered before code:
+- The supplied head is legible at compact/expanded size, with no rectangular/checkerboard background
+  and no clipping of hair/face. Its original white eyes remain unchanged. Assets are self-contained.
+- Expanded header has only the avatar/brand and controls; no idle or approval slogan. More room goes
+  to sessions; actual compact bounds remain 288×46 and expanded bounds remain 460×584.
+- Each native menu exposes exactly one visibility action with the correct Show/Hide title, and no
+  Reset position. Hide keeps the listener and queued requests; Show restores the card deliberately.
+- A native primary-button pan on any compact-pill region moves the panel, preserves the grab offset
+  and remembered bounded placement, and cancels click activation. Clicks and keyboard actions still
+  open/collapse/hide; expanded session/approval/scroll controls cannot drag the whole window.
+- Chevron has a 28-point target, visible hover/focus/press feedback and accessible Expand/Collapse
+  state. Rapid reversal and Reduce Motion remain supported. No global input monitor/event tap.
+
+Verify focused lifecycle tests, full suite, packaged relay smoke, isolated native clicks/drags across
+the pill, both menu states, screenshot rendering and reduced-motion behavior. Reject accidental
+expansion/hiding/approval during a drag, exposed hidden input surfaces, a photo tile, lost listener,
+or altered hook settings. Mixed rule: report unobserved hardware paths honestly; do not claim them.
+Rollout: 0.1.7 app/source archives and same-path installation after verifying no pending live approval,
+with a 0.1.6 rollback copy and byte-for-byte preserved hook files. No automatic stale-socket policy
+change is part of this UI request.

@@ -14,10 +14,12 @@ import LanternTransport
     model.start()
     defer { model.stop() }
     #expect(model.isListening)
+    #expect(model.visibilityMenuTitle == "Hide Lantern")
     model.showConnections = true
-    model.hideCompanion()
+    model.toggleCompanionVisibility()
     #expect(model.companionHidden && !model.expanded && model.isListening)
     #expect(!model.showConnections)
+    #expect(model.visibilityMenuTitle == "Show Lantern")
 
     let event = AgentEvent(provider: .claude, sessionID: "hidden-request", kind: .approval,
                            cwd: "/Projects/Hidden", summary: "Read", detail: "synthetic proposal")
@@ -30,8 +32,10 @@ import LanternTransport
     let request = try #require(model.state.approvals.first)
     #expect(model.companionHidden && !model.expanded && model.isListening)
     #expect(request.event == event)
-    model.showCompanion()
+    model.toggleCompanionVisibility()
     #expect(!model.companionHidden && model.expanded)
+    #expect(model.visibilityMenuTitle == "Hide Lantern")
+    #expect(model.state.approvals.first?.id == request.id)
     model.decide(request.id, .deny)
     #expect(try await relay.value == .deny)
     #expect(model.state.approvals.isEmpty)

@@ -97,3 +97,14 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Bundle the asset, retain smooth Codex scaling and original Claude pixel-art rendering.
 - [x] Verify extracted signatures/resources and both provider icons in an isolated native review.
 - [x] Upgrade with rollback and unchanged hook files; observe the icon on a real Codex session row.
+
+## 0.1.7 supplied head, visibility and pill controls
+
+- [x] Register acceptance; inspect Arc Action Button/Expandable Card and actual native event handling.
+- [x] Bundle the exact head screenshot and clip it natively; preserve white eyes per user preference.
+- [x] Remove header slogans/Reset and combine Show/Hide with queued-request/listener regression coverage.
+- [x] Implement compact-only full-pill pan arbitration and separate chevron hover/focus/press feedback.
+- [x] Pass all 30 tests, release packaging, relocated signing/resources and packaged relay smoke.
+- [x] Verify avatar sizes, four drag regions, ordinary clicks/Escape, visible menu and static Reduce Motion.
+- [x] Upgrade with rollback, unchanged hooks and restored quiet mode; observe live Codex activity.
+- [ ] Obtain physical hover confirmation; hidden native menu inspection is limited by the UI tool.

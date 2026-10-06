@@ -1,5 +1,29 @@
 # Native UI refinement — local component library
 
+## 0.1.7 compact-pill controls and supplied head
+
+Reviewed Arc `action-button/{action-button.tsx,action-button.module.css}` and
+`expandable-card/{expandable-card.tsx,expandable-card.module.css}`, registry metadata and shared
+`motion-tokens.ts` from the existing snapshot. SwiftUI adapts the arrow's hover color, muted surface,
+0.12s feedback, press scale and focus state into a separate 28-point toolbar button. The existing
+real-bounds card morph and staged details remain. Async success glyphs/text morphs do not fit a
+simple disclosure control and are omitted. No React/Motion runtime is included; Arc MIT is bundled.
+
+Source avatar is the user's 417×214 PNG screenshot, copied unchanged to
+`Sources/LanternApp/Resources/GreenLanternHead.png` (SHA-256
+`9477a326d3c7370ceb13cd55286b1bac2d14ec56ba6a00e7e5c10a74a125233e`). Its checkerboard is opaque.
+The built-in image editor rejected extraction, so no generated raster or CLI/API fallback is used.
+`CompanionHead.swift` centers the exact bitmap behind a head-outline clipping shape; this masks the
+exterior checkerboard and neck connector in native rendering. Original white eyes are preserved per
+the user's explicit choice; working bob/attention/Reduce Motion remain. The procedural pet/gaze is
+retained only as a missing-asset fallback. Bundle/icon rendering both use the same native mask.
+
+Pill dragging is native rather than adapted from a web drag library. A compact-only `NSPanGestureRecognizer`
+delays primary mouse events; failed pans deliver ordinary clicks, while recognized pans consume them.
+Frame/constraints/preferences remain owned by PanelController. Primary references:
+[Apple gesture recognizers](https://developer.apple.com/documentation/appkit/nsgesturerecognizer)
+and the installed SDK's `AppKit/NSGestureRecognizer.h`. Expanded controls/sheets opt out before recognition.
+
 ## 0.1.6 Codex row icon
 
 User-supplied attachment: `/Users/imad/Downloads/codex-logo.webp`, 320×320 opaque WebP with a baked

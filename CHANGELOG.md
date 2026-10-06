@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.7 — 2026-10-06
+
+Display the supplied masked toy head with its original white eyes and a native outline cutout.
+Remove the expanded header slogans. Combine Show/Hide into one state-aware menu command and remove
+Reset position. Drag the compact pill from any region, preserving ordinary clicks and cancelling
+embedded button activation during drags. Give the chevron its own hover/focus/press surface, adapting
+Arc's toolbar feedback. Keep agent icons, explicit approvals and installed hook settings intact.
+
 ## 0.1.6 — 2026-10-06
 
 Use Imad's supplied blue Codex icon in the existing session-row tile. Remove the attachment's baked

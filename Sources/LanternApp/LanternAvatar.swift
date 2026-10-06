@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Original lantern silhouette, now green. Both panel sizes and the icon share this drawing.
+/// Both panel sizes and the icon share the supplied head. The original drawing is a missing-asset fallback.
 struct LanternAvatar: View {
     let busy: Bool
     let attention: Bool
@@ -14,18 +14,22 @@ struct LanternAvatar: View {
             TimelineView(.animation(minimumInterval: 1.0 / 24, paused: reducedMotion || !busy)) { timeline in
                 let lift = busy && !reducedMotion ? sin(timeline.date.timeIntervalSinceReferenceDate * 2.6) * side * 0.02 : 0
                 ZStack {
-                    LanternBody(attention: attention)
-                    TrackingEyes(pointer: interactive && !reducedMotion ? pointer.map {
-                        CGPoint(x: $0.x - (geometry.size.width - side) / 2,
-                                y: $0.y - (geometry.size.height - side) / 2 - lift)
-                    } : nil)
+                    if let image = CompanionHead.image {
+                        CompanionHead(image: image, attention: attention)
+                    } else {
+                        LanternBody(attention: attention)
+                        TrackingEyes(pointer: interactive && !reducedMotion ? pointer.map {
+                            CGPoint(x: $0.x - (geometry.size.width - side) / 2,
+                                    y: $0.y - (geometry.size.height - side) / 2 - lift)
+                        } : nil)
+                    }
                 }
                 .frame(width: side, height: side)
                 .offset(y: lift)
                 .frame(width: geometry.size.width, height: geometry.size.height)
             }
             .background {
-                if interactive && !reducedMotion {
+                if CompanionHead.image == nil && interactive && !reducedMotion {
                     CursorReader { pointer = $0 }.allowsHitTesting(false)
                 }
             }

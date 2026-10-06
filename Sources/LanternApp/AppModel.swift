@@ -20,7 +20,6 @@ final class AppModel: ObservableObject {
     private var timer: Timer?
     private var disconnected: Set<String> = []
     var onPresentationChange: (() -> Void)?
-    var onResetPosition: (() -> Void)?
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current) {
         isDemo = demo; server = HookServer(directory: directory)
@@ -93,7 +92,11 @@ final class AppModel: ObservableObject {
         companionHidden = false; setExpanded(true)
     }
 
-    func resetPosition() { onResetPosition?() }
+    var visibilityMenuTitle: String { companionHidden ? "Show Lantern" : "Hide Lantern" }
+
+    func toggleCompanionVisibility() {
+        if companionHidden { showCompanion() } else { hideCompanion() }
+    }
 
     func decide(_ id: String, _ decision: HookDecision) {
         guard state.resolve(id, now: Date().timeIntervalSince1970) != nil else {
