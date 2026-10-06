@@ -33,7 +33,9 @@ struct CompanionView: View {
         .animation(LanternMotion.card(reduced: reducedMotion), value: model.expanded)
         .sheet(isPresented: $model.showConnections) { ConnectionsView(model: model) }
         .onChange(of: model.showConnections) { _, shown in if !shown { model.refreshConnections() } }
-        .onChange(of: model.expanded) { _, expanded in if !expanded { triggerFocused = true } }
+        .onChange(of: model.expanded) { _, expanded in
+            if !expanded { triggerFocused = !model.presentationIsAutomatic }
+        }
         .onExitCommand { if model.expanded { model.setExpanded(false) } else { model.hideCompanion() } }
     }
 

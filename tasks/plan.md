@@ -54,3 +54,19 @@ define pass/kill/mixed rules before coding. Keep the existing green pet and appr
 Risk: drag arbitration over embedded buttons is judged through real native input, not just unit tests.
 The image editor rejected extraction; native clipping displays the exact supplied bytes without a
 generation fallback. Park transport recovery and multi-monitor hardware checks outside this change.
+
+## 0.1.8 automatic approval presentation and focus
+
+1. Reproduce last-answer stickiness with a real private socket and register presentation/focus criteria.
+2. Keep automatic presentation ownership in AppModel, reconcile every queue-draining path, and treat
+   manual presentation/Connections as overrides. Inject only the clock needed to verify actual expiry.
+3. Keep key-window eligibility and interrupted-application ownership in PanelController. Automatic
+   popups/compact returns cannot take key; explicit cards/Connections retain keyboard use. Return focus
+   on Allow/Deny only when Lantern owns it and no newer foreground application would be displaced.
+4. Verify queue/manual/hidden/ordering/cancel/expiry, full suite, signing/relay and isolated native choices.
+   Use an unsteered physical typing check rather than targeted automation as proof of keyboard routing.
+5. Upgrade with unchanged hooks, previous quiet mode and a rollback copy; archive exact matching source.
+
+The socket-backed tests run in a sequential Swift Testing suite: too many detached blocking clients
+exhausted the cooperative executor required by main-actor callbacks. No assertion/test is skipped and
+timeouts are not increased. The same formerly failing case passed in isolation before serialization.

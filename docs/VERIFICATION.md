@@ -201,6 +201,43 @@ paths below retain their limits; synthetic routing and geometry tests do not ver
 
 ## Remaining validation
 
+### 0.1.8 approval restoration — 2026-10-06
+
+The original real-socket regression failed because the card remained expanded after Allow. After
+the fix, the full suite passed: 21 core/transport and 16 app tests (37 functions, 40 parameterized
+cases). Coverage includes Allow/Deny/Delegate, two-provider queue retention, manual cards/Connections,
+notification-before-request ordering, relay cancellation, and actual timer expiry with an injected
+clock. Hidden/listening and request-scoped decisions still pass. Test fixture constructors were
+corrected to supply required working directories. A timeout case initially assumed a thrown error;
+inspection confirmed the relay contract safely returns Delegate on disconnected/timeout reads, and
+the assertion now checks that actual contract.
+
+Concurrent blocking test clients exhausted the cooperative executor used by their main-actor callbacks.
+The same failing case passed alone in 15ms. The new medium-test suite now runs sequentially, retaining
+every assertion and original timeout; the full suite passed in that configuration. No product transport
+policy was changed to accommodate testing. Release/package and packaged relay smoke passed; existing
+CLT linker search-path warnings remain.
+
+An isolated native 0.1.8 review automatically expanded for two real packaged relay proposals. Coordinate
+clicks on Allow once kept the first remaining request visible, then returned the final card to a 288×46
+pill. Both Codex and Claude relay processes exited 0 with their individual Allow output. No proposed
+command executed. Native keyboard routing is checked with an unsteered user FocusCheck separately;
+targeted automation is not treated as proof of which app receives subsequent physical typing.
+
+The user reported that the FocusCheck request was no longer visible. Its relay log records Allow,
+not expiry, and exit 0. Typing resumption after that click remains unconfirmed; a follow-up question
+is pending. Once the non-key review collapsed, the UI tool could no longer reliably capture its menu
+(invalid capture parameter); it was stopped by exact process identity and its confirmed stopped,
+unowned/refusing private socket was removed. No live endpoint was removed.
+
+Final 0.1.8/build 9 is installed with a 0.1.7 rollback at the stable relay path. Strict/deep signatures,
+matching packaged binary/artwork and unchanged hook hashes passed. Quiet mode was restored; native
+inspection showed live Codex tool activity and Local connection ready. Explicit opening now makes
+the panel key for keyboard controls, while automatic presentations cannot become key. Native Tab
+focused All agents in the manually opened final app. The full test/package/smoke sequence passed again
+after that explicit-opening refinement. A saved interim 0.1.8 app is retained separately; the final
+release ZIP and source archive are the authoritative deliverables.
+
 ### 0.1.7 avatar and compact-pill controls — 2026-10-06
 
 - Final full suite passed: 21 core/transport tests and 9 native app tests. The hidden-listener test

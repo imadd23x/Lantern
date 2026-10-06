@@ -16,6 +16,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     private var lastPresentationTime: TimeInterval = -.infinity
     private var pillPan: NSPanGestureRecognizer?
     private var dragOrigin: CGPoint?
+    private var interruptedApplication: NSRunningApplication?
     private var reducedMotion: Bool {
         CommandLine.arguments.contains("--reduce-motion") || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
     }
@@ -33,6 +34,8 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         panel.delegate = self
         panel.isMovable = true
         panel.isFloatingPanel = true
+        panel.becomesKeyOnlyIfNeeded = true
+        panel.keyboardFocusAllowed = { [weak model] in model?.allowsKeyboardFocus ?? false }
         panel.level = .statusBar
         panel.backgroundColor = .clear
         panel.isOpaque = false
@@ -42,6 +45,9 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         panel.contentView = NSHostingView(rootView: CompanionView(model: model)
             .environment(\.lanternReduceMotion, CommandLine.arguments.contains("--reduce-motion")))
         model.onPresentationChange = { [weak self] in self?.present() }
+        model.onApprovalDecision = { [weak self] decision in
+            if decision != .delegate { self?.returnKeyboardFocus() }
+        }
         let pan = NSPanGestureRecognizer(target: self, action: #selector(dragPill(_:)))
         pan.buttonMask = 1
         pan.delaysPrimaryMouseButtonEvents = true
@@ -65,6 +71,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     func show() { layout(animated: false); panel.orderFrontRegardless() }
 
     private func present() {
+        if !model.allowsKeyboardFocus { returnKeyboardFocus() }
         pillPan?.isEnabled = !model.expanded && !model.companionHidden && !model.showConnections
         delayedLayout?.cancel()
         let time = Date.timeIntervalSinceReferenceDate
@@ -84,6 +91,8 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
                 }
             } else { layout(animated: panel.isVisible) }
             panel.orderFrontRegardless()
+            // Explicitly opening Lantern opts into its keyboard controls; alerts never do.
+            if model.expanded && model.allowsKeyboardFocus { panel.makeKey() }
         }
     }
 
@@ -149,6 +158,25 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         if frame != panel.frame { panel.setFrame(frame, display: true) }
     }
 
+    func windowDidBecomeKey(_ notification: Notification) {
+        if let app = NSWorkspace.shared.frontmostApplication,
+           app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
+            interruptedApplication = app
+        }
+    }
+
+    private func returnKeyboardFocus() {
+        guard panel.isKeyWindow else { return }
+        let previous = interruptedApplication
+        interruptedApplication = nil
+        panel.resignKey()
+        guard let previous, !previous.isTerminated,
+              let current = NSWorkspace.shared.frontmostApplication,
+              current.processIdentifier == previous.processIdentifier
+                || current.processIdentifier == ProcessInfo.processInfo.processIdentifier else { return }
+        previous.activate(options: [])
+    }
+
     private func usableFrame(of screen: NSScreen) -> CGRect {
         let visible = screen.visibleFrame
         let top = min(visible.maxY, screen.frame.maxY - screen.safeAreaInsets.top)
@@ -158,7 +186,8 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
 
 private final class CompanionPanel: NSPanel {
     var onEscape: (() -> Void)?
-    override var canBecomeKey: Bool { true }
+    var keyboardFocusAllowed: (() -> Bool)?
+    override var canBecomeKey: Bool { keyboardFocusAllowed?() ?? false }
     override var canBecomeMain: Bool { false }
     override func cancelOperation(_ sender: Any?) { onEscape?() }
 }

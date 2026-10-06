@@ -109,3 +109,14 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Upgrade with rollback, unchanged hooks and restored quiet mode; observe live Codex activity.
 - [x] User confirms the installed arrow's physical hover highlight; hidden native menu inspection remains
   limited by the UI tool, with both visibility states covered by the lifecycle test.
+
+## 0.1.8 approval restoration and keyboard focus
+
+- [x] Reproduce sticky expansion with a failing real-socket regression; register acceptance before code.
+- [x] Track automatic presentation and restore the pill on queue drain, preserving explicit user choices.
+- [x] Restrict automatic key-window eligibility and release owned focus on Allow/Deny.
+- [x] Verify queue/manual/hidden/ordering/cancellation/expiry and all 37 tests (40 cases).
+- [x] Verify release signing/relay and native first/last decisions with two isolated provider proposals.
+- [ ] Verify unsteered physical typing after the private FocusCheck sample.
+- [x] Upgrade with rollback, unchanged hooks/restored quiet mode, live activity and matching binaries.
+- [x] Preserve keyboard controls on explicit opening; native Tab focuses All agents in the final build.

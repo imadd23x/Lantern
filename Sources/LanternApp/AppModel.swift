@@ -8,7 +8,10 @@ final class AppModel: ObservableObject {
     @Published private(set) var state = SessionState()
     @Published private(set) var expanded = false
     @Published private(set) var companionHidden = false
-    @Published var showConnections = false
+    @Published private(set) var presentationIsAutomatic = false
+    @Published var showConnections = false {
+        didSet { if showConnections { presentationIsAutomatic = false } }
+    }
     @Published var errorMessage: String?
     @Published private(set) var isListening = false
     @Published private(set) var installedProviders: Set<AgentProvider> = []
@@ -19,9 +22,13 @@ final class AppModel: ObservableObject {
     private let server: HookServer
     private var timer: Timer?
     private var disconnected: Set<String> = []
+    private let clock: () -> TimeInterval
     var onPresentationChange: (() -> Void)?
+    var onApprovalDecision: ((HookDecision) -> Void)?
 
-    init(demo: Bool = false, directory: URL = RuntimeDirectory.current) {
+    init(demo: Bool = false, directory: URL = RuntimeDirectory.current,
+         clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
+        self.clock = clock; now = clock()
         isDemo = demo; server = HookServer(directory: directory)
     }
 
@@ -80,11 +87,13 @@ final class AppModel: ObservableObject {
     func stop() { timer?.invalidate(); timer = nil; server.stop(); isListening = false }
 
     func setExpanded(_ value: Bool) {
+        presentationIsAutomatic = false
         if value && !expanded { refreshConnections() }
         expanded = value; onPresentationChange?()
     }
 
     func hideCompanion() {
+        presentationIsAutomatic = false
         showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
     }
 
@@ -93,16 +102,18 @@ final class AppModel: ObservableObject {
     }
 
     var visibilityMenuTitle: String { companionHidden ? "Show Lantern" : "Hide Lantern" }
+    var allowsKeyboardFocus: Bool { showConnections || !presentationIsAutomatic }
 
     func toggleCompanionVisibility() {
         if companionHidden { showCompanion() } else { hideCompanion() }
     }
 
     func decide(_ id: String, _ decision: HookDecision) {
-        guard state.resolve(id, now: Date().timeIntervalSince1970) != nil else {
-            server.respond(to: id, with: .delegate); return
-        }
-        server.respond(to: id, with: decision)
+        let hadApprovals = !state.approvals.isEmpty
+        let request = state.resolve(id, now: clock())
+        server.respond(to: id, with: request == nil ? .delegate : decision)
+        _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+        onApprovalDecision?(decision)
     }
 
     func openAgent(_ session: AgentSession) {
@@ -123,25 +134,44 @@ final class AppModel: ObservableObject {
 
     private func receive(_ event: AgentEvent, id: String) {
         if disconnected.remove(id) != nil { return }
+        let hadApprovals = !state.approvals.isEmpty
         let cleared = state.apply(event, requestID: event.kind == .approval ? id : nil, now: now)
         for request in cleared { server.respond(to: request, with: .delegate) }
+        let restored = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
         if [.approval, .attention, .failed].contains(event.kind) {
-            if !companionHidden { setExpanded(true) }
+            if !companionHidden && !expanded && !restored {
+                presentationIsAutomatic = true
+                refreshConnections()
+                expanded = true; onPresentationChange?()
+            }
             if !quiet { NSSound(named: "Tink")?.play() }
         }
     }
 
     private func connectionClosed(_ id: String) {
+        let hadApprovals = !state.approvals.isEmpty
         // Callback Tasks can reach the main actor in either order. Remember early disconnects.
         if state.resolve(id, now: now) == nil {
             disconnected.insert(id)
             if disconnected.count > 256 { disconnected.removeAll(keepingCapacity: true) }
         }
+        _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
     }
 
     private func tick() {
-        now = Date().timeIntervalSince1970
+        now = clock()
+        let hadApprovals = !state.approvals.isEmpty
         for id in state.expire(now: now) { server.respond(to: id, with: .delegate) }
+        _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+    }
+
+    private func restorePresentationIfQueueDrained(hadApprovals: Bool) -> Bool {
+        guard hadApprovals, state.approvals.isEmpty, presentationIsAutomatic,
+              expanded, !showConnections else { return false }
+        // Retain automatic focus policy through the closing animation and compact presentation.
+        // A later explicit user presentation action opts back into normal keyboard interaction.
+        expanded = false; onPresentationChange?()
+        return true
     }
 
     private func loadDemo() {

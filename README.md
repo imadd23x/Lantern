@@ -37,7 +37,7 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.7.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.1.8.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
 
@@ -58,6 +58,11 @@ Every session has a separate row and identity. Concurrent requests stay queued; 
 select the request to inspect. The card shows provider/session, working directory, reason, and the complete
 tool input in a scrollable area. **Allow once** applies only to the selected hook connection.
 There is no persistent always-allow, automatic approval, or Return-key default.
+
+If attention opened Lantern from a pill, answering the last queued request returns it to the pill.
+A card you opened yourself stays expanded. Automatic popups preserve your current application's
+keyboard focus, so clicking Allow/Deny lets you keep typing there. Explicitly open Lantern to use
+its keyboard controls or Connections. Answer in agent intentionally opens the matching agent.
 
 **Deny** returns the agent's documented deny response. **Answer in agent**, timeout, connection loss,
 or quit returns no permission decision, allowing the agent's normal approval path to continue.

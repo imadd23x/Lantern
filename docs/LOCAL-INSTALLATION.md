@@ -113,3 +113,20 @@ Drag anywhere on the compact pill; clicks still open/collapse/hide. The arrow no
 feedback. The menu has one visibility command: Hide Lantern while shown, Show Lantern while hidden.
 Reset position is removed; remembered coordinates still stay within a visible display. Restore the
 saved 0.1.6 app at the same installed path to roll back, after quitting the new app.
+
+## 0.1.8 approval/focus upgrade — 2026-10-06
+
+Installed final verified 0.1.8/build 9 at `/Users/imad/Applications/Lantern.app`. Original rollback:
+`/Users/imad/Applications/Lantern Backups/0.1.7-build8-b142f243/Lantern.app`.
+An interim 0.1.8 app is also saved separately. Each upgrade checked for pending live approvals,
+quit normally and retained byte-for-byte unchanged Codex/Claude configuration hashes (same hashes
+as the 0.1.4 record). No hook/trust transaction or live approval decision was made.
+Final installed binary/artwork match the extracted package; strict/deep signing passed. Native
+inspection showed live Codex delivery, Local connection ready and restored quiet mode. Tab works
+on a manually opened card. Isolated native sample Allow clicks verified queue retention and final
+collapse; the physical typing check remains awaiting user confirmation, as recorded in VERIFICATION.
+
+Automatically opened cards return to the pill when the queue drains. Explicitly opened cards stay
+open. Automatic popups preserve external keyboard focus; manual Allow/Deny releases owned focus
+without forcing a switch away from a newer foreground app. Restore the saved 0.1.7 app at the stable
+path after quitting to roll back; hook definitions do not need rewriting.

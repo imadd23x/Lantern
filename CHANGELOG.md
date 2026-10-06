@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.8 — 2026-10-06
+
+Return automatically opened approval cards to the pill after the last queued request is answered,
+cancelled or expires. Keep manually opened cards and explicit Connections/user presentation choices.
+Automatic popups retain the current application's keyboard focus; Allow/Deny release a key manual
+panel back to the app active at the click. Answer in agent retains its navigation behavior.
+
 ## 0.1.7 — 2026-10-06
 
 Display the supplied masked toy head with its original white eyes and a native outline cutout.

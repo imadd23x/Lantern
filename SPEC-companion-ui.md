@@ -142,3 +142,30 @@ or altered hook settings. Mixed rule: report unobserved hardware paths honestly;
 Rollout: 0.1.7 app/source archives and same-path installation after verifying no pending live approval,
 with a 0.1.6 rollback copy and byte-for-byte preserved hook files. No automatic stale-socket policy
 change is part of this UI request.
+
+## 0.1.8 approval presentation and keyboard focus — 2026-10-06
+
+Reproduction path: receive expands without recording its cause, decide removes the request without
+restoring presentation, and the nonactivating panel unconditionally permits becoming key. A click
+can therefore redirect keyboard input even though Lantern never activates its application.
+
+Pass criteria registered before implementation:
+- If attention automatically opens a compact pill, answering the last queued request returns it to
+  compact. Earlier answers keep the remaining queue visible. A manually opened card stays open.
+- Notification-before-PermissionRequest ordering retains automatic ownership. Request cancellation,
+  expiry and session completion also restore the pill when the automatically shown queue drains.
+- Explicit expand/collapse/Show or opening Connections overrides automatic presentation; a hidden
+  companion stays hidden. No automatic permission decision or replay is added.
+- Automatically managed presentations cannot become key or move SwiftUI focus to the disclosure
+  button. Manual cards/Connections retain keyboard support. After Allow/Deny from a key manual card,
+  release panel focus to the app active at the click, without switching away from a newer foreground
+  app. Answer in agent retains its intentional navigation semantics.
+- Use native AppKit focus policy; no Accessibility permission, event tap, simulated keystroke or
+  background app automation. Native Allow/Deny remain deliberate and request-scoped.
+
+Verify the existing behavior with a failing socket-backed regression, then queue/manual/hidden/
+cancellation cases and the full suite. Verify native collapse with isolated synthetic proposals;
+physical typing resumption requires an unsteered user check if targeted UI automation cannot prove
+keyboard routing. Reject lost queued requests, collapsed manual cards, focus jumps to an old app,
+incorrect decisions or modified hook settings. Package/install 0.1.8 at the stable path with a 0.1.7
+rollback copy. Report each verification layer separately and keep unobserved typing behavior explicit.
