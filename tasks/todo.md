@@ -107,4 +107,5 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Pass all 30 tests, release packaging, relocated signing/resources and packaged relay smoke.
 - [x] Verify avatar sizes, four drag regions, ordinary clicks/Escape, visible menu and static Reduce Motion.
 - [x] Upgrade with rollback, unchanged hooks and restored quiet mode; observe live Codex activity.
-- [ ] Obtain physical hover confirmation; hidden native menu inspection is limited by the UI tool.
+- [x] User confirms the installed arrow's physical hover highlight; hidden native menu inspection remains
+  limited by the UI tool, with both visibility states covered by the lifecycle test.

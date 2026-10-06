@@ -223,14 +223,14 @@ paths below retain their limits; synthetic routing and geometry tests do not ver
   was stopped by identity-checked SIGTERM; only its confirmed unowned/refusing private socket was cleaned.
 - A separate review using process-local Reduce Motion received a synthetic working event through the
   packaged relay. Two decoded 460×584 captures had 0 changed avatar pixels. It quit normally, exit 0,
-  removing its socket. No OS accessibility preference was changed. Physical hover confirmation is
-  requested separately; source provides hover/focus/press feedback using the shared toolbar style.
+  removing its socket. No OS accessibility preference was changed. The user confirmed the physical
+  up/down-arrow hover produces the rounded highlight in the installed app on 2026-10-06.
 - Installed 0.1.7/build 8 at the stable relay path with a 0.1.6 rollback. Native inspection showed the new
   head on real Codex activity and Local connection ready. Both hook files were unchanged. The previous
   app released its live socket on normal Quit; no live stale-endpoint cleanup was needed. Existing quiet
   mode was restored through the native control and observed as Enable attention sounds.
 
-Multi-monitor hardware, full VoiceOver and physical hover remain distinct from the automated checks.
+Multi-monitor hardware and full VoiceOver remain unobserved; physical hover has the user's confirmation.
 Existing linker search-path warnings remain; no new dependency, trust change, paid fallback or real
 approval decision was introduced.
 
