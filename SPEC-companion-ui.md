@@ -209,3 +209,26 @@ Verify the large native-rendered icon and compact/expanded head for residual bac
 locations; check the green approval card and focus feedback. No geometry-mirroring tests are needed
 for the static mask/color adjustment. The current writable source is Documents/Codex/Lantern; it is a
 local working copy with the pending navigation changes, and the original folder/library are preserved.
+
+## 0.1.10 stable dragging, footer and compact Show — 2026-10-06
+
+Root hypothesis: pan translation is evaluated in the moving window's coordinate system, then applied
+to a fixed original frame. Each window move changes that reference, producing oscillation. Replace
+it with a screen-coordinate anchor, preserving the original grab offset and existing pan arbitration.
+
+Pass criteria registered before code:
+- Repeated events at a stationary screen pointer produce the same window origin even as the window
+  moves. Slow/reversed compact drags track displacement smoothly without changing presentation or
+  clicking arrow/close. Remembered bounded placement and native expanded grip remain supported.
+- Remove the footer's Private by default text. Bell remains its existing quiet-mode toggle, using
+  the shared Arc-inspired 28-point toolbar hover/focus/press surface, tooltip and sound-state label.
+  Keep footer height comparable so request content retains room; Reduce Motion remains supported.
+- Show in the visibility menu restores a visible compact pill, including when requests are queued.
+  It keeps listener/requests intact. Connections explicitly opens expanded setup; clicking the pill
+  still expands. Finder reopen uses the same compact Show behavior.
+
+Verify failing compact-Show regression, screen-anchor feedback regression, full suite/package/relay,
+then isolated native directional/reversed drags, bell clicks, menu policy and Connections. Judge drag
+feel with an unsteered physical check if automated captures cannot measure continuous motion. Reject
+vibration, accidental embedded actions, collapsed Connections, lost requests or settings writes.
+Rollout 0.1.10/build 11 with 0.1.9 rollback and unchanged hook files at the same installed app path.

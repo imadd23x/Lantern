@@ -150,3 +150,16 @@ Claude navigation now brings the last-active existing Code window forward with i
 untouched. It never opens cwd as a folder or starts a replacement chat. Answer in agent preserves
 the request if activation fails. Isolated native navigation and handoff left Code's workspace/tab
 state unchanged. Restore the saved 0.1.8 app at the stable installed path after quitting to roll back.
+
+## 0.1.10 compact dragging/footer upgrade — 2026-10-06
+
+Installed verified 0.1.10/build 11 at `/Users/imad/Applications/Lantern.app`. Rollback copy:
+`/Users/imad/Applications/Lantern Backups/0.1.9-build10-7fdae2e6/Lantern.app`. The app was quit
+only after inspecting that no live approvals were pending; its socket removed normally.
+Both hook files remain byte-for-byte unchanged at the recorded hashes. Sound remained Enabled.
+Native restart showed compact presentation, live Codex activity, Local connection ready and
+the icon-only footer bell. The app was left compact. Physical drag smoothness and hover feedback
+await user confirmation; the isolated demo is closed, so use the installed app for that check.
+
+Show Lantern now restores compact; Connections explicitly opens expanded setup. Roll back by
+quitting and restoring the saved 0.1.9 app at the same path; hook definitions need no changes.

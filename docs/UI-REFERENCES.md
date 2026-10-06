@@ -176,3 +176,9 @@ stops on window occlusion/detach, and is absent under Reduce Motion or icon rend
 The built-in image-editing tool rejected the Rick head cutout. Per the user's explicit instruction,
 the original native lantern is restored in green; this supersedes the 0.1.2 portrait choice and the
 original amber-avatar criterion. Amber attention controls and all agent behavior remain unchanged.
+
+## 0.1.10 footer bell
+
+Reuse the existing native `LanternButtonStyle.toolbar` adaptation of Arc action-button feedback.
+The bell keeps SwiftUI Button activation/cancellation, a 28-point hit target, hover/focus/press
+surface, sound-state accessibility value and Reduce Motion support. No new library dependency.

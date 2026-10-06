@@ -70,7 +70,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         return false
     }
     @objc private func toggleVisibility() { model.toggleCompanionVisibility() }
-    @objc private func connections() { model.showConnections = true; model.showCompanion() }
+    @objc private func connections() { model.showConnections = true; model.showCompanion(expanded: true) }
     @objc private func quiet(_ sender: NSMenuItem) {
         model.quiet.toggle(); sender.state = model.quiet ? .on : .off
     }

@@ -33,7 +33,7 @@ import LanternTransport
     #expect(model.companionHidden && !model.expanded && model.isListening)
     #expect(request.event == event)
     model.toggleCompanionVisibility()
-    #expect(!model.companionHidden && model.expanded)
+    #expect(!model.companionHidden && !model.expanded)
     #expect(model.visibilityMenuTitle == "Hide Lantern")
     #expect(model.state.approvals.first?.id == request.id)
     model.decide(request.id, .deny)
@@ -42,4 +42,18 @@ import LanternTransport
     model.stop()
     #expect(!model.isListening)
     #expect(!FileManager.default.fileExists(atPath: socketPath))
+}
+
+@MainActor
+@Test func connectionsCanExplicitlyOpenAfterCompactShow() {
+    let model = AppModel(directory: URL(fileURLWithPath: "/private/tmp/lantern-show-" + UUID().uuidString))
+    model.setExpanded(true)
+    model.hideCompanion()
+    model.showCompanion()
+    #expect(!model.companionHidden && !model.expanded && !model.showConnections)
+    model.hideCompanion()
+    model.showConnections = true
+    model.showCompanion(expanded: true)
+    #expect(!model.companionHidden && model.expanded && model.showConnections)
+    #expect(model.allowsKeyboardFocus)
 }

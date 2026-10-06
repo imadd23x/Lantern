@@ -369,3 +369,30 @@ has the observed metadata limitation above. The ZIP remains the portable deliver
 authorized local installation is running with both providers' live startup/activity evidence above;
 real permission decisions retain the stated verification limit, consistent with the pre-registered
 partial-result rule in `SPEC.md`.
+
+### 0.1.10 compact dragging and footer — 2026-10-06
+
+The focused compact-Show regression first failed on the old implementation, then passed with
+the fix. Full `bash scripts/swift.sh test` passed: 44 test functions (48 parameterized cases),
+including stationary-screen-pointer stability, reversed/negative-coordinate grab-offset retention,
+queued requests through compact Show and explicit expanded Connections. `git diff --check` passed.
+Release packaging, strict/deep extracted signatures and packaged relay smoke checks passed.
+The existing CLT missing linker-search-path warnings remain; no new dependency was introduced.
+
+Isolated 0.1.10 demo: `/private/tmp/lantern-drag-95xscaqk/LanternDragReview.app`, private runtime
+and agent-config directories, configuration writes disabled. Compact drags from text/avatar/arrow/
+close stayed compact without triggering embedded buttons. Synthetic drag displacement is not a
+reliable physical-motion measure; the virtual cursor/grip behavior differs from physical input.
+Hands-on drag smoothness and bell hover confirmation are pending. Bell clicks changed its glyph and
+accessible state between Enabled and Muted. The footer wording is absent. Connections opened its
+sheet and left the expanded card after Done. Hidden/reopen inspection returned compact; visibility
+policy is also covered by the model regression because native automation may activate/reopen its target.
+
+Installed 0.1.10/build 11 at the existing app path. Strict/deep signing, all installed bundle-file
+bytes against the extracted ZIP, version/build and unchanged hook hashes passed. Native restart
+started compact; expansion showed live Codex tool delivery and Local connection ready. Sound
+remained Enabled. No live approval, agent restart, trust or settings transaction was performed.
+Final app is compact. The isolated review exited 0 and removed its owned socket. AppKit emitted
+“Window move completed without beginning” during the synthetic native grip attempt; physical
+drag behavior remains unconfirmed rather than being inferred from that attempt.
+Rollback: `/Users/imad/Applications/Lantern Backups/0.1.9-build10-7fdae2e6/Lantern.app`.

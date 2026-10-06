@@ -100,8 +100,8 @@ final class AppModel: ObservableObject {
         showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
     }
 
-    func showCompanion() {
-        companionHidden = false; setExpanded(true)
+    func showCompanion(expanded: Bool = false) {
+        companionHidden = false; setExpanded(expanded)
     }
 
     var visibilityMenuTitle: String { companionHidden ? "Show Lantern" : "Hide Lantern" }

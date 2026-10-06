@@ -15,7 +15,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     private var delayedLayout: Task<Void, Never>?
     private var lastPresentationTime: TimeInterval = -.infinity
     private var pillPan: NSPanGestureRecognizer?
-    private var dragOrigin: CGPoint?
+    private var pillDrag: PanelDrag?
     private var interruptedApplication: NSRunningApplication?
     private var reducedMotion: Bool {
         CommandLine.arguments.contains("--reduce-motion") || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
@@ -109,18 +109,20 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             layoutGeneration += 1
             animating = false
             panel.setFrame(panel.frame, display: true)
-            dragOrigin = panel.frame.origin
+            pillDrag = PanelDrag(origin: panel.frame.origin,
+                                 pointer: panel.convertPoint(toScreen: gesture.location(in: nil)),
+                                 initialTranslation: gesture.translation(in: nil))
         case .changed, .ended: break
         default:
-            dragOrigin = nil
+            pillDrag = nil
             return
         }
-        if let origin = dragOrigin {
-            // nil uses window coordinates, avoiding the hosting view's flipped Y axis.
-            let delta = gesture.translation(in: nil)
-            panel.setFrameOrigin(CGPoint(x: origin.x + delta.x, y: origin.y + delta.y))
+        if let drag = pillDrag {
+            // Convert each event to the fixed screen space before moving its coordinate system.
+            let pointer = panel.convertPoint(toScreen: gesture.location(in: nil))
+            panel.setFrameOrigin(drag.origin(at: pointer))
         }
-        if gesture.state == .ended { dragOrigin = nil }
+        if gesture.state == .ended { pillDrag = nil }
     }
 
     private func layout(animated: Bool) {

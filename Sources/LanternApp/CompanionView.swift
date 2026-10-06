@@ -158,10 +158,11 @@ struct CompanionView: View {
             Text(model.isListening ? "Local connection ready" : "Connection unavailable").font(.system(size: 10))
             Spacer()
             Button { model.quiet.toggle() } label: { Image(systemName: model.quiet ? "bell.slash" : "bell") }
-                .buttonStyle(.plain).help(model.quiet ? "Enable attention sounds" : "Quiet mode")
+                .buttonStyle(LanternButtonStyle(kind: .toolbar))
+                .help(model.quiet ? "Enable attention sounds" : "Mute attention sounds")
                 .accessibilityLabel(model.quiet ? "Enable attention sounds" : "Mute attention sounds")
-            Text("Private by default").font(.system(size: 10))
-        }.foregroundStyle(Palette.subtle).padding(.horizontal, 22).padding(.vertical, 15)
+                .accessibilityValue(model.quiet ? "Muted" : "Enabled")
+        }.foregroundStyle(Palette.subtle).padding(.horizontal, 22).padding(.vertical, 8)
             .background(Color.white.opacity(0.025))
     }
 }

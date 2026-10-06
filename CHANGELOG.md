@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.10 — 2026-10-06
+
+Track compact-pill drags in screen coordinates, preserving the original grab offset and removing
+the moving-window translation feedback that caused vibration. Keep click/drag arbitration and
+screen bounds. Show Lantern and Finder reopen restore the compact pill; Connections still opens
+its panel. Retain queued requests and the local listener through hide/show.
+
+Remove the footer's privacy wording and give its bell the same Arc-inspired hover, focus and press
+feedback as the toolbar. Keep the sound toggle, accessible state and footer height.
+
 ## 0.1.9 — 2026-10-06
 
 Return Claude navigation to the existing VS Code window and its selected chat, preserving live work.
