@@ -172,3 +172,10 @@ was performed with no live approval cards pending, and the socket removed normal
 files retain their recorded hashes; no agent/config/trust action occurred. The installed
 header has no drag dots; the same native drag target and compact pan remain. Restart showed
 live Codex delivery and Local connection ready; sound stayed Enabled and the app was left compact.
+
+## 0.1.12 header spacing — 2026-10-07
+
+Installed 0.1.12/build 13 with rollback at
+`/Users/imad/Applications/Lantern Backups/0.1.11-build12-f4eb5087/Lantern.app`.
+Native Quit had no pending approval cards; socket removed normally. Hook hashes are unchanged.
+Avatar/title alignment and live Codex delivery verified onscreen; final app is compact.

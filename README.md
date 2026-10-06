@@ -40,7 +40,7 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.11.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.1.12.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Connect the agents
 

@@ -78,7 +78,6 @@ struct CompanionView: View {
 
     private var header: some View {
         HStack(spacing: model.expanded ? 10 : 6) {
-            if model.expanded { WindowGrip().frame(width: 14, height: 38) }
             Button { model.setExpanded(!model.expanded) } label: {
                 HStack(spacing: model.expanded ? 12 : 8) {
                     LanternAvatar(busy: model.workingCount > 0, attention: model.needsAttention)
@@ -106,7 +105,13 @@ struct CompanionView: View {
             Button { model.hideCompanion() } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .medium)) }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Hide Lantern and keep listening")
                 .help("Hide Lantern · the menu bar brings it back")
-        }.padding(.horizontal, model.expanded ? 16 : 10)
+        }
+        .padding(.leading, model.expanded ? 20 : 10)
+        .padding(.trailing, model.expanded ? 16 : 10)
+        .overlay(alignment: .leading) {
+            // Keep native dragging in the outer padding without reserving a separate icon column.
+            if model.expanded { WindowGrip().frame(width: 20, height: 38) }
+        }
     }
 
     private var approvalQueue: some View {

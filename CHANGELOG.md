@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.12 — 2026-10-07
+
+Close the expanded header's empty grip column: shift the avatar and title 20 points left,
+align the avatar with the card inset, and retain native dragging in the left outer padding.
+
 ## 0.1.11 — 2026-10-07
 
 Remove the visible drag dots beside the expanded avatar. Retain the same native drag target,

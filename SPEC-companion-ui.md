@@ -239,3 +239,11 @@ Remove only the expanded grip's dot drawing. Preserve its frame, mouseDown/perfo
 open-hand cursor, tooltip and compact pan. Acceptance: no dots beside the avatar in the
 packaged native app, unchanged drag handlers and hook files. Build/sign and inspect the
 installed header; retain 0.1.10 for rollback. No new tests for a static drawing removal.
+
+## 0.1.12 header spacing — 2026-10-07
+
+Remove the grip's layout column and overlay its existing native target in the left padding.
+Use a 20-point expanded leading inset, moving avatar/title 20 points left; keep right controls,
+avatar/title spacing, compact layout and drag handlers unchanged. Verify the packaged native
+header's alignment and retained drag target. No new logic tests for a static layout change.
+Install with a 0.1.11 rollback and unchanged hooks.

@@ -407,3 +407,12 @@ files match the extracted package byte-for-byte; hook hashes are unchanged. Nati
 confirmed no dots to the left of the avatar, retained accessible drag target, Enabled sound,
 live Codex delivery and Local connection ready. Final presentation is compact. This verifies
 the visual removal; no new physical drag-smoothness claim is made.
+
+### 0.1.12 header spacing — 2026-10-07
+
+Release build/package, diff checks and extracted/staged/installed strict signatures passed.
+Installed files exactly match the package. Native inspection confirmed the avatar/title moved
+20 points left, card-aligned avatar inset, unchanged right controls, retained accessible drag
+target and live Codex delivery. Drag handlers and compact layout are unchanged; no new logic
+tests or physical-motion claim for this static layout change. Both hook hashes and Enabled
+sound are unchanged. Final app is compact.
