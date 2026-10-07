@@ -229,7 +229,7 @@ Final release/source archives are tied to the immutable v0.2.0 release; do not r
 - [x] Shared native Arc controls, semantic badges, emblem and compact gear menu.
 - [x] Content-sized Settings/Connections/companion, rounded surfaces and expanded-header drag.
 - [x] Regression tests, release smoke/signatures, isolated native interaction review.
-- [ ] Safe upgrade with rollback, unchanged configuration and final GitHub handoff.
+- [x] Safe upgrade with rollback, unchanged configuration and final GitHub handoff.
 
 Arc checkpoint: branch codex/arc-interface from clean main3cf4d0a. Usage removed from production
 Core/App/Hook/Transport and active docs/fixtures; unknown-envelope fail-closed test retained.
@@ -273,3 +273,10 @@ Retained idle5min, login On, two expected bindings and Enabled sound; no registr
 is left compact and listening. Code is final; GitHub commit/PR/checks and source archive remain.
 No need to rerun unchanged local tests/package. Physical composited corners/new hover/typing/next-login
 are explicit residuals, not blockers invented for otherwise complete implementation. Automation remains paused.
+
+Completed handoff: implementation source19ad6b8 passed push37650664324 and PR37650672576 checks.
+PR #2: https://github.com/imadd23x/Lantern/pull/2. App ZIP SHA406fa50e, source ZIP checked against all97
+tracked blobs; SHA256SUMS covers both. Final documentation closes this checkpoint; regenerate the source
+archive at the final documentation commit. Local app/build25 is already verified and unchanged by docs.
+Main/release publication remains a review choice; the feature branch and installed result are ready.
+No required implementation, local verification or installation work remains for this refinement.

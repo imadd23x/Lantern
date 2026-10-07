@@ -48,6 +48,14 @@ remains distinct. Newly styled physical hover, unsteered typing, next-login and 
 behavior are not claimed. Earlier user acceptance of shortcut/focus behavior stands; existing policy and
 lifecycle tests passed. Historical evidence below is retained as dated history, not current capability.
 
+GitHub implementation checks passed at source19ad6b8: [push](https://github.com/imadd23x/Lantern/actions/runs/37650664324)
+and [PR](https://github.com/imadd23x/Lantern/actions/runs/37650672576). [PR #2](https://github.com/imadd23x/Lantern/pull/2)
+contains the focused control, window/retirement and evidence commits. Review covered correctness,
+readability, architecture, security and performance against SPEC-arc-interface.md; no material scoped
+findings remain. No new external dependency, service or permission grant was introduced. Final docs-only
+handoff changes do not require repeating unchanged local runtime tests; the source ZIP is regenerated
+from the final commit and compared with every tracked blob. Main/release publication remains a review choice.
+
 2026-10-05. Results below distinguish observed local behavior from live host activation.
 
 ## Observed checks
