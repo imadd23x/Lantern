@@ -50,7 +50,7 @@ public enum HookConfiguration {
         events + (provider == .codex ? ["Interrupt"] : ["Notification", "PostToolUseFailure", "StopFailure"])
     }
 
-    private static func configurationRoot(_ original: Data?) throws -> [String: Any] {
+    static func configurationRoot(_ original: Data?) throws -> [String: Any] {
         guard let original else { return [:] }
         guard original.count <= 2_000_000,
               let root = try? JSONSerialization.jsonObject(with: original) as? [String: Any] else {
