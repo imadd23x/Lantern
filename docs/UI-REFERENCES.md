@@ -182,3 +182,12 @@ original amber-avatar criterion. Amber attention controls and all agent behavior
 Reuse the existing native `LanternButtonStyle.toolbar` adaptation of Arc action-button feedback.
 The bell keeps SwiftUI Button activation/cancellation, a 28-point hit target, hover/focus/press
 surface, sound-state accessibility value and Reduce Motion support. No new library dependency.
+
+## 0.2.0 desktop settings
+
+Reviewed Arc `registry/components/switch/switch.module.css` and
+`registry/components/progress/progress.module.css` in the existing local snapshot. Settings
+adapts the switch's compact track/clear state distinction through native SwiftUI switches;
+rounded cards and existing Arc action-button feedback retain keyboard and accessibility
+behavior. Shortcut recorders use a fixed-width label, visible recording border and native
+key handling. No React, npm dependency or Planes Pro source is added.

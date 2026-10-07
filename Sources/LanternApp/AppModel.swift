@@ -8,9 +8,10 @@ final class AppModel: ObservableObject {
     @Published private(set) var state = SessionState()
     @Published private(set) var expanded = false
     @Published private(set) var companionHidden = false
+    @Published private(set) var automaticallyHidden = false
     @Published private(set) var presentationIsAutomatic = false
     @Published var showConnections = false {
-        didSet { if showConnections { presentationIsAutomatic = false } }
+        didSet { recordInteraction(); if showConnections { presentationIsAutomatic = false } }
     }
     @Published var errorMessage: String?
     @Published var providerFilter: AgentProvider?
@@ -22,13 +23,18 @@ final class AppModel: ObservableObject {
     @Published private(set) var now = Date().timeIntervalSince1970
     let isDemo: Bool
     let desktopPreferences: DesktopPreferences
-    @Published var isSettingsOpen = false
+    @Published var isSettingsOpen = false { didSet { recordInteraction() } }
+    var isMenuOpen = false { didSet { recordInteraction() } }
+    var isDragging = false { didSet { recordInteraction() } }
+    var isPointerInside = false { didSet { if oldValue != isPointerInside { recordInteraction() } } }
     var onSettingsRequest: (() -> Void)?
     private let server: HookServer
     private var timer: Timer?
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
     private let navigator: AgentNavigator
+    private var lastInteraction: TimeInterval
+    private var preferencesSubscription: AnyCancellable?
     private let attentionSound = Bundle.module.url(forResource: "A-Train", withExtension: "mp3")
         .flatMap { NSSound(contentsOf: $0, byReference: false) }
     var onPresentationChange: (() -> Void)?
@@ -38,9 +44,20 @@ final class AppModel: ObservableObject {
          clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
          navigator: AgentNavigator = .live, desktopPreferences: DesktopPreferences? = nil) {
         self.clock = clock; now = clock()
+        lastInteraction = clock()
         self.navigator = navigator
         self.desktopPreferences = desktopPreferences ?? DesktopPreferences()
         isDemo = demo; server = HookServer(directory: directory)
+        preferencesSubscription = self.desktopPreferences.objectWillChange.sink { [weak self] in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.recordInteraction()
+                if self.automaticallyHidden && (!self.desktopPreferences.autoHideEnabled || self.desktopPreferences.pinned) {
+                    self.revealOnHover()
+                }
+                self.objectWillChange.send()
+            }
+        }
     }
 
     var sessions: [AgentSession] {
@@ -132,18 +149,29 @@ final class AppModel: ObservableObject {
     func stop() { timer?.invalidate(); timer = nil; server.stop(); connectionStatus = .disconnected }
 
     func setExpanded(_ value: Bool) {
+        recordInteraction()
         presentationIsAutomatic = false
         if value && !expanded { refreshConnections() }
         expanded = value; onPresentationChange?()
     }
 
     func hideCompanion() {
+        recordInteraction(); automaticallyHidden = false
         presentationIsAutomatic = false
         showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
     }
 
     func showCompanion(expanded: Bool = false) {
-        companionHidden = false; setExpanded(expanded)
+        automaticallyHidden = false; companionHidden = false; setExpanded(expanded)
+    }
+
+    func recordInteraction() { lastInteraction = clock() }
+
+    /// Automatic reveal never opts into keyboard focus or overrides an explicit Hide.
+    func revealOnHover() {
+        guard automaticallyHidden else { return }
+        recordInteraction(); automaticallyHidden = false; companionHidden = false
+        presentationIsAutomatic = true; onPresentationChange?()
     }
 
     var visibilityMenuTitle: String { companionHidden ? "Show Lantern" : "Hide Lantern" }
@@ -179,10 +207,12 @@ final class AppModel: ObservableObject {
 
     private func receive(_ event: AgentEvent, id: String) {
         if disconnected.remove(id) != nil { return }
+        now = clock(); recordInteraction()
         let hadApprovals = !state.approvals.isEmpty
         let cleared = state.apply(event, requestID: event.kind == .approval ? id : nil, now: now)
         for request in cleared { server.respond(to: request, with: .delegate) }
         let restored = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+        if workingCount > 0 || needsAttention { revealOnHover() }
         if [.approval, .attention, .failed].contains(event.kind) {
             if !companionHidden && !expanded && !restored {
                 presentationIsAutomatic = true
@@ -203,11 +233,18 @@ final class AppModel: ObservableObject {
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
     }
 
-    private func tick() {
+    func tick() {
         now = clock()
         let hadApprovals = !state.approvals.isEmpty
         for id in state.expire(now: now) { server.respond(to: id, with: .delegate) }
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+        let eligible = desktopPreferences.autoHideEnabled && !desktopPreferences.pinned
+            && !companionHidden && !expanded && !showConnections && !isSettingsOpen
+            && !isMenuOpen && !isDragging && !isPointerInside && workingCount == 0 && !needsAttention
+        guard eligible else { lastInteraction = now; return }
+        guard now >= lastInteraction, now - lastInteraction >= desktopPreferences.idleDelay else { return }
+        automaticallyHidden = true; companionHidden = true; presentationIsAutomatic = true
+        onPresentationChange?()
     }
 
     private func restorePresentationIfQueueDrained(hadApprovals: Bool) -> Bool {
@@ -216,6 +253,7 @@ final class AppModel: ObservableObject {
         // Retain automatic focus policy through the closing animation and compact presentation.
         // A later explicit user presentation action opts back into normal keyboard interaction.
         expanded = false; onPresentationChange?()
+        recordInteraction()
         return true
     }
 

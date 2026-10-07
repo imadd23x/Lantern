@@ -57,6 +57,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let menu = NSMenu()
         menu.addItem(withTitle: model.visibilityMenuTitle, action: #selector(toggleVisibility), keyEquivalent: "")
         menu.addItem(withTitle: "Settings…", action: #selector(openSettings), keyEquivalent: "")
+        menu.addItem(withTitle: "Keep visible", action: #selector(pin(_:)), keyEquivalent: "")
         menu.addItem(withTitle: "Connections…", action: #selector(connections), keyEquivalent: ",")
         menu.addItem(withTitle: "Quiet mode", action: #selector(quiet(_:)), keyEquivalent: "")
         menu.addItem(.separator())
@@ -69,15 +70,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func menuNeedsUpdate(_ menu: NSMenu) {
         menu.items.first(where: { $0.action == #selector(quiet(_:)) })?.state = model.quiet ? .on : .off
         menu.items.first(where: { $0.action == #selector(toggleVisibility) })?.title = model.visibilityMenuTitle
+        menu.items.first(where: { $0.action == #selector(pin(_:)) })?.state = model.desktopPreferences.pinned ? .on : .off
     }
 
-    func applicationWillTerminate(_ notification: Notification) { settings?.close(); shortcuts?.stop(); model.stop() }
+    func menuWillOpen(_ menu: NSMenu) { model.isMenuOpen = true }
+    func menuDidClose(_ menu: NSMenu) { model.isMenuOpen = false }
+    func applicationWillTerminate(_ notification: Notification) { settings?.close(); shortcuts?.stop(); panel?.stop(); model.stop() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         model.showCompanion()
         return false
     }
     @objc private func toggleVisibility() { model.toggleCompanionVisibility() }
     @objc private func openSettings() { settings?.show() }
+    @objc private func pin(_ sender: NSMenuItem) { model.desktopPreferences.pinned.toggle() }
     @objc private func connections() { model.showConnections = true; model.showCompanion(expanded: true) }
     @objc private func quiet(_ sender: NSMenuItem) {
         model.quiet.toggle(); sender.state = model.quiet ? .on : .off

@@ -98,6 +98,11 @@ struct CompanionView: View {
                 .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
                 .help(model.expanded ? "Collapse Lantern" : "Expand Lantern")
             if model.expanded {
+                Button { model.desktopPreferences.pinned.toggle() } label: {
+                    Image(systemName: model.desktopPreferences.pinned ? "pin.fill" : "pin")
+                }.buttonStyle(LanternButtonStyle(kind: .toolbar))
+                    .accessibilityLabel(model.desktopPreferences.pinned ? "Unpin Lantern" : "Keep Lantern visible")
+                    .help(model.desktopPreferences.pinned ? "Unpin Lantern" : "Keep Lantern visible")
                 Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
                     .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open connections").help("Connections")
                 Button { model.onSettingsRequest?() } label: { Image(systemName: "gearshape") }
