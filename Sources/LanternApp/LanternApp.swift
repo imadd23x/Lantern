@@ -25,11 +25,17 @@ struct LanternApplication {
 final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private let model = AppModel(demo: CommandLine.arguments.contains("--demo"))
     private var panel: PanelController?
+    private var shortcuts: ShortcutController?
+    private var settings: DesktopSettingsController?
     private var item: NSStatusItem?
     private var stateSubscription: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         panel = PanelController(model: model)
+        let shortcuts = ShortcutController(preferences: model.desktopPreferences, onAction: model.performShortcut)
+        self.shortcuts = shortcuts
+        settings = DesktopSettingsController(model: model, shortcuts: shortcuts, login: .live(isDemo: model.isDemo))
+        model.onSettingsRequest = { [weak self] in self?.settings?.show() }
         item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item?.button?.image = NSImage(systemSymbolName: "lamp.desk.fill", accessibilityDescription: "Lantern agent companion")
         item?.menu = makeMenu()
@@ -50,6 +56,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private func makeMenu() -> NSMenu {
         let menu = NSMenu()
         menu.addItem(withTitle: model.visibilityMenuTitle, action: #selector(toggleVisibility), keyEquivalent: "")
+        menu.addItem(withTitle: "Settings…", action: #selector(openSettings), keyEquivalent: "")
         menu.addItem(withTitle: "Connections…", action: #selector(connections), keyEquivalent: ",")
         menu.addItem(withTitle: "Quiet mode", action: #selector(quiet(_:)), keyEquivalent: "")
         menu.addItem(.separator())
@@ -64,12 +71,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.items.first(where: { $0.action == #selector(toggleVisibility) })?.title = model.visibilityMenuTitle
     }
 
-    func applicationWillTerminate(_ notification: Notification) { model.stop() }
+    func applicationWillTerminate(_ notification: Notification) { settings?.close(); shortcuts?.stop(); model.stop() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         model.showCompanion()
         return false
     }
     @objc private func toggleVisibility() { model.toggleCompanionVisibility() }
+    @objc private func openSettings() { settings?.show() }
     @objc private func connections() { model.showConnections = true; model.showCompanion(expanded: true) }
     @objc private func quiet(_ sender: NSMenuItem) {
         model.quiet.toggle(); sender.state = model.quiet ? .on : .off

@@ -16,16 +16,20 @@ final class ShortcutRegistry: ObservableObject {
 
     @discardableResult
     func apply(_ binding: ShortcutBinding, for action: ShortcutAction) -> Bool {
-        guard binding.isSafe else {
-            errors[action] = "Use a readable key with Command, Control or Option."
-            return false
-        }
         if !binding.enabled {
             if let old = active.removeValue(forKey: action) { unregister(old.token) }
             errors.removeValue(forKey: action)
             return true
         }
-        if active[action]?.binding == binding { errors.removeValue(forKey: action); return true }
+        guard binding.isSafe else {
+            errors[action] = "Use a readable key with Command, Control or Option."
+            return false
+        }
+        if let old = active[action], old.binding.keyCode == binding.keyCode, old.binding.modifiers == binding.modifiers {
+            active[action] = (binding, old.token)
+            errors.removeValue(forKey: action)
+            return true
+        }
         guard !active.contains(where: { $0.key != action && binding.conflicts(with: $0.value.binding) }) else {
             errors[action] = "Another Lantern shortcut uses this combination."
             return false

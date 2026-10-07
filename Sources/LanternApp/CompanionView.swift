@@ -3,13 +3,12 @@ import LanternCore
 
 struct CompanionView: View {
     @ObservedObject var model: AppModel
-    @ViewState private var filter: AgentProvider?
-    @ViewState private var selectedRequest: String?
+    private var filter: AgentProvider? { model.providerFilter }
     @FocusState private var triggerFocused: Bool
     @LanternReducedMotion private var reducedMotion
 
     private var request: PendingApproval? {
-        model.state.approvals.first(where: { $0.id == selectedRequest }) ?? model.state.approvals.first
+        model.selectedApproval
     }
 
     var body: some View {
@@ -55,7 +54,7 @@ struct CompanionView: View {
                 Text(error).font(.system(size: 11)).foregroundStyle(.orange)
                     .padding(12).background(Palette.card).clipShape(RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 20)
             }
-            ProviderFilter(selection: $filter, sessions: model.sessions)
+            ProviderFilter(selection: $model.providerFilter, sessions: model.sessions)
                 .padding(.horizontal, 20).padding(.bottom, 12)
             ScrollView {
                 LazyVStack(spacing: 7) {
@@ -101,6 +100,8 @@ struct CompanionView: View {
             if model.expanded {
                 Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
                     .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open connections").help("Connections")
+                Button { model.onSettingsRequest?() } label: { Image(systemName: "gearshape") }
+                    .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open Lantern settings").help("Settings")
             }
             Button { model.hideCompanion() } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .medium)) }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Hide Lantern and keep listening")
@@ -122,7 +123,7 @@ struct CompanionView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
                         ForEach(Array(model.state.approvals.enumerated()), id: \.element.id) { index, approval in
-                            Button("\(index + 1)") { selectedRequest = approval.id }
+                            Button("\(index + 1)") { model.selectedRequestID = approval.id }
                                 .buttonStyle(.plain).font(.system(size: 10, weight: .semibold))
                                 .frame(width: 22, height: 22)
                                 .background(request?.id == approval.id ? Palette.accent.opacity(0.18) : Palette.card)

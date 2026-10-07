@@ -13,12 +13,17 @@ final class AppModel: ObservableObject {
         didSet { if showConnections { presentationIsAutomatic = false } }
     }
     @Published var errorMessage: String?
+    @Published var providerFilter: AgentProvider?
+    @Published var selectedRequestID: String?
     @Published private(set) var connectionStatus: ConnectionStatus = .disconnected
     @Published private(set) var installedProviders: Set<AgentProvider> = []
     @Published private(set) var connectionWarnings: [AgentProvider: String] = [:]
     @Published var quiet = false
     @Published private(set) var now = Date().timeIntervalSince1970
     let isDemo: Bool
+    let desktopPreferences: DesktopPreferences
+    @Published var isSettingsOpen = false
+    var onSettingsRequest: (() -> Void)?
     private let server: HookServer
     private var timer: Timer?
     private var disconnected: Set<String> = []
@@ -31,9 +36,10 @@ final class AppModel: ObservableObject {
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current,
          clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
-         navigator: AgentNavigator = .live) {
+         navigator: AgentNavigator = .live, desktopPreferences: DesktopPreferences? = nil) {
         self.clock = clock; now = clock()
         self.navigator = navigator
+        self.desktopPreferences = desktopPreferences ?? DesktopPreferences()
         isDemo = demo; server = HookServer(directory: directory)
     }
 
@@ -48,6 +54,32 @@ final class AppModel: ObservableObject {
     var relayPath: String { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lantern-hook").path }
     var socketPath: String { server.socketPath }
     var isListening: Bool { connectionStatus == .connected }
+    var selectedApproval: PendingApproval? {
+        state.approvals.first { $0.id == selectedRequestID } ?? state.approvals.first
+    }
+
+    func performShortcut(_ action: ShortcutAction) {
+        switch action {
+        case .visibility: toggleCompanionVisibility()
+        case .mute: quiet.toggle()
+        case .attention:
+            let requests = state.approvals
+            if !requests.isEmpty {
+                let current = requests.firstIndex { $0.id == selectedApproval?.id } ?? -1
+                let request = requests[(current + 1) % requests.count]
+                selectedRequestID = request.id; providerFilter = request.event.provider
+            } else if let session = sessions.first(where: { [.attention, .failed].contains($0.phase) }) {
+                providerFilter = session.id.provider
+            }
+            showCompanion(expanded: true)
+        case .nextProvider, .previousProvider:
+            let order: [AgentProvider?] = [nil, .codex, .claude]
+            let current = order.firstIndex { $0 == providerFilter } ?? 0
+            let direction = action == .nextProvider ? 1 : -1
+            providerFilter = order[(current + direction + order.count) % order.count]
+            showCompanion(expanded: true)
+        }
+    }
 
     func configurationURL(for provider: AgentProvider) -> URL {
         let env = ProcessInfo.processInfo.environment

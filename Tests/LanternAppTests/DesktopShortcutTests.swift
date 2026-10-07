@@ -16,6 +16,23 @@ import Testing
 }
 
 @MainActor
+@Test func shortcutMetadataEditsAndDisablingDoNotNeedNewNativeRegistration() throws {
+    var token: Int?
+    let registry = ShortcutRegistry(register: { _, _ in
+        guard token == nil else { return nil }
+        token = 1; return 1
+    }, unregister: { _ in token = nil })
+    var binding = try #require(ShortcutBinding.defaults[.visibility])
+    #expect(registry.apply(binding, for: .visibility))
+    binding.keyName = "New L"
+    #expect(registry.apply(binding, for: .visibility))
+    #expect(registry.activeBinding(for: .visibility)?.keyName == "New L" && token != nil)
+    binding.enabled = false; binding.keyName = ""
+    #expect(registry.apply(binding, for: .visibility))
+    #expect(registry.activeBinding(for: .visibility) == nil && token == nil)
+}
+
+@MainActor
 @Test func failedShortcutReplacementRetainsTheWorkingRegistration() throws {
     var tokens: Set<Int> = []
     var next = 0
