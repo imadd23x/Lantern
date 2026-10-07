@@ -47,3 +47,15 @@ import Testing
     #expect(try Data(contentsOf: backup) == original)
     #expect(throws: ConfigurationError.changed) { try ConfigurationTransaction.apply(preview, to: url) }
 }
+
+@Test func editedWrapperBooleanCannotBeMistakenForItsOriginalNumber() throws {
+    let original = Data(#"{"statusLine":{"type":"command","command":"cat","padding":1}}"#.utf8)
+    let preview = try StatusLineConfiguration.preview(original: original, relayPath: "/A/lantern-hook", remove: false)
+    var root = try #require(try JSONSerialization.jsonObject(with: preview.updated) as? [String: Any])
+    var line = try #require(root["statusLine"] as? [String: Any])
+    line["padding"] = true; root["statusLine"] = line
+    let edited = try JSONSerialization.data(withJSONObject: root)
+    #expect(throws: ConfigurationError.changed) {
+        try StatusLineConfiguration.preview(original: edited, relayPath: "/A/lantern-hook", remove: true)
+    }
+}

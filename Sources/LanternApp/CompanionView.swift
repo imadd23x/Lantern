@@ -170,6 +170,7 @@ struct CompanionView: View {
                 .accessibilityLabel("Agent connection")
                 .accessibilityValue(model.connectionStatus.title)
                 .help(model.connectionStatus.title)
+            if model.desktopPreferences.usageDisplayEnabled { UsageIndicator(model: model).padding(.leading, 5) }
             Spacer()
             Button { model.quiet.toggle() } label: { Image(systemName: model.quiet ? "bell.slash" : "bell") }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar))

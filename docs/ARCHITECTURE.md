@@ -94,7 +94,7 @@ ad-hoc signs nested relay then app, and verifies both staging and delivered bund
 FinderInfo added to the generated app root by File Provider; provenance attributes are preserved.
 File Provider reapplies this metadata later on this synced volume, so the ZIP from unsynced staging
 is the handoff artifact. Extract it to a stable local folder before activating full-path hook commands.
-This build is local-use software, not notarized distribution. No install/update daemon or login item.
+This build is local-use software, not notarized distribution. No install/update daemon.
 Do not move the app after connecting without regenerating hook commands from its new stable location.
 
 ## Decisions, 2026-10-05
@@ -107,3 +107,34 @@ Do not move the app after connecting without regenerating hook commands from its
 - No persistent allow: keeps the approval surface deliberate and narrow.
 - No built-in chat/API integrations: not needed for the confirmed workflow and would add credentials/cost.
 - CLI trust / host reload stays explicit: never bypass the user's agent policy.
+
+## 0.2.0 desktop additions
+
+`DesktopPreferences` owns persisted presentation and shortcut choices. `ShortcutRegistry` protects
+working registrations during replacement; `CarbonShortcuts` hides native callback/token ownership.
+The main-actor controller pauses registrations during key recording and publishes conflicts/errors.
+Commands share AppModel's provider filter and selected request ID; no command approves a request.
+
+Automatic hide is distinct from manual Hide. AppModel owns the deadline and blockers. PanelController
+orders the hidden panel out and samples pointer entry at its current compact top edge at 0.15s intervals.
+This sampler survives hidden-window occlusion, creates no click surface and reveals with passive focus.
+It stops at application termination. Pin, menus, settings, sheets, drag, expansion, work and attention
+reset/block the idle deadline. Screen changes recompute the hotspot from the clamped frame.
+
+Login startup uses `SMAppService.mainApp`; OS status is authoritative. Login registration and usage
+configuration require the canonical bundle ID and a regular installed path in the user's or system
+Applications folder; demo/temporary/review copies cannot perform those changes.
+
+Claude quota follows an additive `claude_usage` v1 envelope. Discriminated frames never fall back to
+AgentEvent decoding. They receive a prompt no-decision acknowledgement, create no request/session,
+and never affect presentation, sound or idle activity. Only quota fields cross this channel; input is
+bounded and percentages/reset values validated. A snapshot replaces both windows; omissions clear
+old values. Freshness uses host receipt time, 15-minute expiry and reset passage, never inferred zero.
+
+The status-line wrapper embeds a bounded original snapshot, including absent versus null. Exact
+canonical JSON ownership preserves boolean/number distinctions. Reinstall unwraps one owned wrapper;
+restore refuses a changed wrapper or external replacement. The existing optimistic backup/atomic
+transaction applies the preview. Setup checks the executable before preview and apply.
+UsageRelay streams stdin to the saved command while capturing at most 200KB for quota parsing;
+oversized/invalid data and socket absence do not interrupt that command's stdout/stderr/env/cwd/exit.
+No auth files, private experimental extension APIs or paid model turns supply usage.

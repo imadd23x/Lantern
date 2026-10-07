@@ -26,7 +26,11 @@ struct DesktopCommandTests {
     @Test func attentionCommandSelectsAnExistingRequestWithoutDeciding() async throws {
         let directory = URL(fileURLWithPath: "/private/tmp/lantern-commands-" + UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
-        let model = AppModel(directory: directory)
+        let suite = "lantern-command-" + UUID().uuidString
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let model = AppModel(directory: directory, desktopPreferences: DesktopPreferences(defaults: defaults),
+            configurationURLs: [.codex: directory.appendingPathComponent("codex.json"), .claude: directory.appendingPathComponent("claude.json")])
         model.quiet = true; model.start()
         defer { model.stop() }
         let a = AgentEvent(provider: .claude, sessionID: "a", kind: .approval, cwd: "/Projects/A", summary: "Read")

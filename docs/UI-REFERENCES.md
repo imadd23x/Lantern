@@ -191,3 +191,8 @@ adapts the switch's compact track/clear state distinction through native SwiftUI
 rounded cards and existing Arc action-button feedback retain keyboard and accessibility
 behavior. Shortcut recorders use a fixed-width label, visible recording border and native
 key handling. No React, npm dependency or Planes Pro source is added.
+
+Claude usage adapts Arc's 7px rounded progress track and stationary monospaced percentage label.
+The native meters show five-hour/week values only from validated telemetry. Missing/reset-passed
+windows have no filled segment; stale values retain a dimmed segment and explicit stale label.
+Quota exhaustion is not treated as task completion. No confirmation checkmark or simulated value.

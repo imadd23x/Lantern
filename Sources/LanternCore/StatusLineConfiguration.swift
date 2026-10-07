@@ -85,7 +85,9 @@ public enum StatusLineConfiguration {
         let snapshot = String(command[split.upperBound...].dropLast(ending.count))
         let expected = try wrapper(snapshot: snapshot, relayPath: path)
         // An editor changed this wrapper's fields: refuse to overwrite those edits on removal/install.
-        guard NSDictionary(dictionary: line).isEqual(to: expected) else { throw ConfigurationError.changed }
+        let options: JSONSerialization.WritingOptions = [.sortedKeys, .withoutEscapingSlashes]
+        guard try JSONSerialization.data(withJSONObject: line, options: options)
+                == JSONSerialization.data(withJSONObject: expected, options: options) else { throw ConfigurationError.changed }
         return snapshot
     }
 }

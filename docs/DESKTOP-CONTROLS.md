@@ -47,5 +47,11 @@ It runs locally without model tokens. A native VS Code extension panel is not do
 export this status-line data. Lantern must display waiting/unavailable when that host supplies
 none; the extension's private experimental APIs are outside this integration.
 
-Usage implementation, runtime review and release rollout are still in progress. The installed
-0.1.14 app has not been replaced at this checkpoint.
+Review the connection in **Settings → Usage** before enabling the local relay. Installation wraps
+your prior command, preserves its stdin/stdout/stderr/environment/cwd/exit, and creates an exact
+backup. Invalid or oversized usage data and an absent Lantern do not interrupt that command.
+Only the unchanged owned wrapper can be restored; an external edit requires fresh review.
+Remove the relay before rolling back to a pre-0.2.0 executable.
+
+Implementation, 68 tests and release relay checks passed. Native review/installation remain pending
+because the Mac locked during the overnight run. Installed0.1.14 and both agent settings are unchanged.

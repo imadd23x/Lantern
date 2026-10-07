@@ -15,10 +15,13 @@ struct DesktopSettingsView: View {
             Picker("Settings section", selection: $section) {
                 Text("General").tag(0)
                 Text("Shortcuts").tag(1)
+                Text("Usage").tag(2)
             }.pickerStyle(.segmented)
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    if section == 0 { general } else { shortcutSettings }
+                    if section == 0 { general }
+                    else if section == 1 { shortcutSettings }
+                    else { UsageSettingsView(model: model, preferences: preferences) }
                 }.padding(.vertical, 4)
             }
             HStack {

@@ -70,7 +70,8 @@ struct IdlePresentationTests {
         let suite = "lantern-idle-activity-" + UUID().uuidString
         let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
-        let model = AppModel(directory: directory, clock: { time }, desktopPreferences: DesktopPreferences(defaults: defaults))
+        let model = AppModel(directory: directory, clock: { time }, desktopPreferences: DesktopPreferences(defaults: defaults),
+            configurationURLs: [.codex: directory.appendingPathComponent("codex.json"), .claude: directory.appendingPathComponent("claude.json")])
         model.quiet = true; model.start()
         defer { model.stop() }
         time += 31; model.tick()
@@ -104,7 +105,8 @@ struct IdlePresentationTests {
         let directory = URL(fileURLWithPath: "/private/tmp/lantern-idle-approval-" + UUID().uuidString)
         defer { try? FileManager.default.removeItem(at: directory) }
         var time: TimeInterval = 1000
-        let model = AppModel(directory: directory, clock: { time }, desktopPreferences: preferences)
+        let model = AppModel(directory: directory, clock: { time }, desktopPreferences: preferences,
+            configurationURLs: [.codex: directory.appendingPathComponent("codex.json"), .claude: directory.appendingPathComponent("claude.json")])
         model.quiet = true; model.start()
         defer { model.stop() }
         time += 31; model.tick()

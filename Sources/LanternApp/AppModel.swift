@@ -6,6 +6,7 @@ import LanternTransport
 @MainActor
 final class AppModel: ObservableObject {
     @Published private(set) var state = SessionState()
+    @Published private(set) var claudeUsage = ClaudeUsageState()
     @Published private(set) var expanded = false
     @Published private(set) var companionHidden = false
     @Published private(set) var automaticallyHidden = false
@@ -33,6 +34,7 @@ final class AppModel: ObservableObject {
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
     private let navigator: AgentNavigator
+    private let configurationURLs: [AgentProvider: URL]
     private var lastInteraction: TimeInterval
     private var preferencesSubscription: AnyCancellable?
     private let attentionSound = Bundle.module.url(forResource: "A-Train", withExtension: "mp3")
@@ -42,10 +44,12 @@ final class AppModel: ObservableObject {
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current,
          clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
-         navigator: AgentNavigator = .live, desktopPreferences: DesktopPreferences? = nil) {
+         navigator: AgentNavigator = .live, desktopPreferences: DesktopPreferences? = nil,
+         configurationURLs: [AgentProvider: URL] = [:]) {
         self.clock = clock; now = clock()
         lastInteraction = clock()
         self.navigator = navigator
+        self.configurationURLs = configurationURLs
         self.desktopPreferences = desktopPreferences ?? DesktopPreferences()
         isDemo = demo; server = HookServer(directory: directory)
         preferencesSubscription = self.desktopPreferences.objectWillChange.sink { [weak self] in
@@ -99,6 +103,7 @@ final class AppModel: ObservableObject {
     }
 
     func configurationURL(for provider: AgentProvider) -> URL {
+        if let override = configurationURLs[provider] { return override }
         let env = ProcessInfo.processInfo.environment
         let home = FileManager.default.homeDirectoryForCurrentUser
         let directory = provider == .codex
@@ -132,6 +137,11 @@ final class AppModel: ObservableObject {
                 Task { @MainActor [weak self] in self?.receive(event, id: id) }
             }, onDisconnect: { [weak self] id in
                 Task { @MainActor [weak self] in self?.connectionClosed(id) }
+            }, onUsage: { [weak self] snapshot in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    try? self.claudeUsage.receive(snapshot, now: self.clock())
+                }
             })
             errorMessage = nil
             connectionStatus = .connected

@@ -37,4 +37,5 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
     func close() { window?.close() }
     func windowWillClose(_ notification: Notification) { shortcuts.recording = nil; model.isSettingsOpen = false }
     func windowDidResignKey(_ notification: Notification) { shortcuts.recording = nil }
+    func windowDidBecomeKey(_ notification: Notification) { login.refresh() }
 }

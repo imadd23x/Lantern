@@ -18,7 +18,8 @@ public final class HookServer: @unchecked Sendable {
     }
 
     public func start(onEvent: @escaping @Sendable (AgentEvent, String) -> Void,
-                      onDisconnect: @escaping @Sendable (String) -> Void) throws {
+                      onDisconnect: @escaping @Sendable (String) -> Void,
+                      onUsage: @escaping @Sendable (ClaudeUsageSnapshot) -> Void = { _ in }) throws {
         try lock.withLock {
             guard listener < 0 else { throw TransportError.occupied }
             let fm = FileManager.default
@@ -47,7 +48,7 @@ public final class HookServer: @unchecked Sendable {
                 throw TransportError.system(errno)
             }
             listener = fd
-            Thread.detachNewThread { [self] in acceptLoop(fd: fd, onEvent: onEvent, onDisconnect: onDisconnect) }
+            Thread.detachNewThread { [self] in acceptLoop(fd: fd, onEvent: onEvent, onDisconnect: onDisconnect, onUsage: onUsage) }
         }
     }
 
@@ -72,7 +73,8 @@ public final class HookServer: @unchecked Sendable {
     }
 
     private func acceptLoop(fd: Int32, onEvent: @escaping @Sendable (AgentEvent, String) -> Void,
-                            onDisconnect: @escaping @Sendable (String) -> Void) {
+                            onDisconnect: @escaping @Sendable (String) -> Void,
+                            onUsage: @escaping @Sendable (ClaudeUsageSnapshot) -> Void) {
         defer { close(fd) }
         while lock.withLock({ listener == fd }) {
             let client = accept(fd, nil, nil)
@@ -97,7 +99,16 @@ public final class HookServer: @unchecked Sendable {
                 }
                 do {
                     SocketIO.configure(client, timeout: 2)
-                    let event = try JSONDecoder().decode(AgentEvent.self, from: SocketIO.readLine(client, timeout: 2))
+                    let data = try SocketIO.readLine(client, timeout: 2)
+                    let root = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+                    if root?["type"] != nil {
+                        let envelope = try JSONDecoder().decode(ClaudeUsageEnvelope.self, from: data)
+                        try envelope.validate()
+                        onUsage(envelope.snapshot)
+                        peer.finish(.delegate)
+                        return
+                    }
+                    let event = try JSONDecoder().decode(AgentEvent.self, from: data)
                     try event.validate()
                     pendingApproval = event.kind == .approval
                     onEvent(event, id)

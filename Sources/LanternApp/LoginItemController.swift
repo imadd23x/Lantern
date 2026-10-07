@@ -27,8 +27,7 @@ final class LoginItemController: ObservableObject {
     }
 
     static func live(isDemo: Bool) -> LoginItemController {
-        let supported = !isDemo && Bundle.main.bundleIdentifier == "local.imad.Lantern"
-            && Bundle.main.bundleURL.pathExtension == "app"
+        let supported = InstalledApplication.permitsConfiguration(isDemo: isDemo)
         return Self(supported: supported, read: {
             guard supported else { return .unavailable }
             switch SMAppService.mainApp.status {

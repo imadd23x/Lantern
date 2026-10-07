@@ -464,3 +464,47 @@ assertion counts are unchanged. No production executable depends on the test sup
 Full local suite passes (46 functions / 50 cases); remote checks are the acceptance gate for this fix.
 Current remote results: https://github.com/imadd23x/Lantern/actions/workflows/checks.yml
 The installed 0.1.14 app and hook configuration are unchanged.
+
+### 0.2.0 desktop additions — 2026-10-07
+
+Implemented configurable native Carbon shortcuts/recording and shared request/provider selection;
+idle compact hide, pointer-entry reveal, pin and interaction blockers; native login controls with
+truthful OS status; validated five-hour/week usage and preserving local status-line relay/setup.
+Arc switch/progress references remain native adaptations with existing notices. No dependencies,
+auth-file access, experimental extension API calls or paid inference were added.
+
+Tests failed before each logic slice. Full local suite passed 68 functions / 72 parameterized cases
+(28 Core + 40 App) in `/private/tmp/lantern-0.2.0-tests.log`. A final one-line Settings key-window
+delegate refreshes the login status after returning from macOS; its three focused guard/login tests
+passed and the final release package is being rebuilt. Full CI on the final source remains required.
+
+Coverage includes retained hotkey registrations on failure, disabled/metadata-only bindings,
+stable request selection without decisions, idle blockers/manual hiding/passive reveal, queue
+restoration and expiry, native registration errors/approval states, canonical installed-path guards,
+usage missing/stale/reset/invalid windows, additive discriminator rejection, no-session/no-decision
+delivery, reversible absent/null wrapper snapshots, idempotence, exact backups and stale previews.
+Fresh review's boolean-vs-number wrapper defect was reproduced with a failing test and fixed using
+canonical JSON comparison. Review also produced temporary-app and missing-executable setup guards.
+
+Both packaged relay fixtures passed. The usage fixture verifies malformed/600KB stdin, early prior
+command exit, absent Lantern, stdin/stdout/stderr/environment/cwd/exit preservation, quota-only wire,
+and no printed permission grant even from an unexpected allow acknowledgement.
+
+The ZIP CRC passed. Python's generic extraction exposed AppleDouble metadata as files and failed
+the temporary copy's signature check; no such copy was installed. macOS `ditto` extraction passes
+deep strict signatures for app and relay. The supplied head, provider icons and A-Train resource
+match installed0.1.14 byte-for-byte. Agent settings hashes remain unchanged:
+Codex `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`;
+Claude `c5eefd580bab15712e8f580351933f1d2be7cb0398ea4491a0c513d7b2191fa0`.
+
+Native review/upgrade is **pending**, not a completed live validation. The isolated review bundle
+was prepared with private runtime/config paths and a distinct identity, but computer use returned
+that the Mac is locked; it cannot unlock the screen. Installed app remains0.1.14/build15. No new
+login registration or usage configuration was attempted. Finish the native review and safe upgrade
+after manual unlock; do not replace a running app with unknown live approvals.
+
+Claude extension2.1.289's native panel has no established documented public quota export.
+The supported source is [Claude's status-line JSON](https://code.claude.com/docs/en/statusline),
+not private messaging or credentials. Native-panel usage stays unavailable until valid data arrives.
+Next-login behavior, physical hover/focus, multi-display and exact inactive-tab navigation remain
+separate live checks; existing safe Claude navigation code is unchanged.

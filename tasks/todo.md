@@ -136,12 +136,12 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 ## Overnight desktop additions — 2026-10-07
 
 - [x] Desktop preferences and safe bindings — two tests failed before implementation, now pass; unsafe/duplicate keys rejected and preferences persist.
-- [ ] Native shortcut driver and Settings — registration errors, user editing, shared selection.
-- [ ] Idle presentation — deterministic deadlines/manual hide/focus/pending-request tests; hotspot.
-- [ ] Native login item — explicit canonical-app control and OS status; no demo registrations.
-- [ ] Usage state — invalid/missing/stale/reset/partial window tests.
-- [ ] Usage transport/relay — isolated no-decision/no-session and previous-command preservation.
-- [ ] Usage configuration — exact ownership/idempotence/restoration/concurrency tests and setup UI.
+- [x] Native shortcut driver and Settings — registration errors, user editing, shared selection; compiled and regression-tested.
+- [x] Idle presentation — deterministic deadlines/manual hide/focus/pending-request tests; independent pointer-entry hotspot wired.
+- [x] Native login item — installed-path/identity/demo guards tested, truthful OS states; native registration still awaits rollout.
+- [x] Usage state — invalid/missing/stale/reset/partial window tests passed.
+- [x] Usage transport/relay — real delivery has no decisions/sessions/presentation changes; executable fixture preserves prior command on malformed/600KB input, early exit, absent server and unexpected allow ack.
+- [x] Usage configuration — exact ownership/idempotence/restoration/concurrency tests and setup UI; boolean-vs-number ownership defect reproduced and fixed.
 - [ ] Runtime/review/package — all tests, native UI, signatures/assets, rollback, safe install.
 - [ ] GitHub checks/archives — source commits, CI success, honest morning handoff; stop heartbeat.
 
@@ -154,3 +154,19 @@ stop on completion. Fresh design review completed; its eight substantive finding
 Installed extension's `usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET` and private
 panel_usage_update messaging are not used as Lantern integrations. Official status-line telemetry
 remains the supported relay path; native-panel live data is an explicit compatibility check.
+
+Checkpoint 04:40 Dubai: local commits `81d77d3`, `3d52ed6`, `3c417e1`, `2268f22` preserve
+completed slices. Final uncommitted usage transport/relay/UI and canonical-app guard are under
+full verification, package and smoke command (exec cell213; logs `/private/tmp/lantern-0.2.0-*.log`).
+No installed-app, login item, live configuration or GitHub changes yet. Last full suite before
+guard addition passed 67 functions (71 parameterized cases); guard's three focused tests passed.
+Next: finish final native review, package extraction/signatures, safe upgrade with 0.1.14 backup,
+native login status, GitHub CI and source archive. Do not repeat checks without intervening changes.
+
+11:22 Dubai: native review blocked by locked Mac. CUA `getApp` took until07:21 UTC to return
+the lock failure; do not repeat it without the user's unlock reply. User asked asynchronously.
+Full suite passed68/72 and both packaged smoke fixtures passed. Head/icons/A-Train match installed
+bytes and both hook hashes are unchanged. Added a Settings key-window login-status refresh;
+three focused tests passed, final packaging/smoke is exec cell227. Installed0.1.14 is untouched.
+Finish source commits, feature-branch CI/archives while waiting. Preserve main/release rollout until
+native acceptance and a safe no-live-approval upgrade can be completed.
