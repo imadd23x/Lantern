@@ -145,7 +145,7 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Automated verification/package — full suite 68 functions/72 cases, final focused login tests, both smoke fixtures, ZIP CRC, extracted signatures and exact resource hashes.
 - [x] GitHub checks/archives — committed feature branch, green code CI, draft PR #1, verified exact source archive.
 - [x] Native review and rollout — native Settings/usage, physical Allow/Hide, installed Show/Hide/Settings confirmation, safe empty-queue upgrade with signed rollback, native login On.
-- [ ] Complete final handoff and stop heartbeat after native rollout; OS/user-only checks remain explicitly documented.
+- [x] Complete final handoff and stop heartbeat after native rollout; OS/user-only checks remain explicitly documented.
 
 Open live check: installed Claude extension2.1.289 consumes unified usage events internally, but
 no documented public export or statusLine emission has been established for native panel sessions.
@@ -214,3 +214,11 @@ user reports a runtime failure; finish GitHub handoff/release and pause heartbea
 User confirmed both installed visibility toggle/compact return and active Settings foreground.
 Native acceptance is complete within documented next-login/hover/typing and telemetry limitations.
 Finish docs-only commit, green final CI, merge/release/source archive and pause automation.
+
+Final acceptance: user confirmed installed visibility toggle/compact return and foreground Settings.
+PR #1 merged to main at3b264240; final PR checks37631331612/37631339978 passed. Overnight automation
+finish-lantern-overnight is PAUSED (tool confirmed). Installed build19 and signed0.1.14 rollback
+are verified; native login On/Connected/live Codex/Enabled observed; both hook hashes unchanged.
+Usage relay remains optional and unapplied for the unsupported native VS Code telemetry path.
+No required feature work remains; next-login/physical hover/unsteered typing are manual residuals.
+Final release/source archives are tied to the immutable v0.2.0 release; do not re-run unchanged checks.

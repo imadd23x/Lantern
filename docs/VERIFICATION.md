@@ -625,3 +625,9 @@ The user confirmed installed Show/Hide restores the compact pill and active Sett
 the companion. This provides desktop-stacking evidence beyond the per-window capture. Next-login behavior,
 physical top-edge hover and unsteered physical typing remain separate checks; no logout/reboot or
 paid agent turn was used. Earlier private physical Allow/Hide tests and exact allowance receipt stand.
+
+Final handoff: [PR #1](https://github.com/imadd23x/Lantern/pull/1) merged to main with
+[final PR checks](https://github.com/imadd23x/Lantern/actions/runs/37631339978) green. User confirmed
+installed visibility and Settings ordering. The overnight automation tool returned PAUSED.
+App ZIP remains build19, SHAab63f53a; source archive is checked against its immutable release commit.
+No further agent inference, real permission grants, global config writes or logout/reboot were used.

@@ -204,3 +204,19 @@ Private source repository: https://github.com/imadd23x/Lantern (default branch m
 The writable checkout uses the new `github` remote and tracks github/main; the existing local
 origin is preserved. Source/history and release tags are uploaded; generated app/ZIP outputs
 remain local. A test-only executor fix accompanies import; installed app/hooks are unchanged.
+
+## 0.2.0/build19 update — 2026-10-07
+
+Installed at `/Users/imad/Applications/Lantern.app` after the user-ready reply and an empty live
+approval queue. Signed rollback: `/Users/imad/Applications/Lantern Backups/0.1.14-build15-b58fd38e/Lantern.app`.
+Installed files match the verified package, signatures pass and both current hooks are unchanged.
+Claude settings changed independently earlier and that current baseline was preserved exactly.
+Listener/live Codex delivery and Enabled sound were observed. Native launch at login is On without
+approval/error text. User confirmed Cmd-Option-H toggles compact Show/Hide and active Settings is
+above the companion; private Cmd-Return approval returned exact allow and restored the pill.
+
+Claude usage is available through supported local status-line telemetry. Native VS Code panel
+sessions may not provide it; the live relay was not activated and meters honestly show Unavailable.
+Use the preserving Settings → Usage preview if you later want a CLI status-line connection. Remove
+that relay before rolling back to a pre-0.2 app. Next-login/physical hover/unsteered typing remain
+manual checks. The bounded overnight automation is paused after accepted installation.
