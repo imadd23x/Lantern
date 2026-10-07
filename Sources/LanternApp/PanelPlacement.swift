@@ -46,3 +46,25 @@ extension LanternMotion {
     static let detailsRevealDuration: TimeInterval = 0.24
     static let detailsSettlingInterval: TimeInterval = detailsRevealDelay + detailsRevealDuration + 0.04
 }
+
+/// Shared metrics size the actual window and its content; long lists scroll after the height cap.
+enum PanelLayout {
+    static let headerHeight: CGFloat = 72
+    static let rowHeight: CGFloat = 62
+    static let rowSpacing: CGFloat = 7
+    static let emptyHeight: CGFloat = 216
+    static let approvalHeight: CGFloat = 286
+    static let maximumHeight: CGFloat = 640
+
+    static func size(sessionCount: Int, approval: Bool, notice: Bool, demo: Bool = false) -> CGSize {
+        let rows = CGFloat(max(0, sessionCount)) * rowHeight + CGFloat(max(0, sessionCount - 1)) * rowSpacing
+        let list = sessionCount == 0 ? (approval ? 48 : emptyHeight) : (approval ? min(rows, 116) : rows)
+        let chrome: CGFloat = headerHeight + 40 + 12 + 44 + 12
+        let extra: CGFloat = (approval ? approvalHeight + 36 : 0) + (notice ? 52 : 0) + (demo ? 24 : 0)
+        return CGSize(width: PanelPlacement.expanded.width, height: min(maximumHeight, chrome + list + extra))
+    }
+
+    static func canDrag(expanded: Bool, pointFromTop: CGFloat) -> Bool {
+        (0...(expanded ? headerHeight : PanelPlacement.compact.height)).contains(pointFromTop)
+    }
+}

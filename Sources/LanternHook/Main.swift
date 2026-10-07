@@ -11,10 +11,6 @@ struct LanternHookApplication {
             let args = CommandLine.arguments
             guard let index = args.firstIndex(of: "--provider"), args.indices.contains(index + 1),
                   let provider = AgentProvider(rawValue: args[index + 1]) else { exit(0) }
-            if args.contains("--usage") {
-                guard provider == .claude else { exit(0) }
-                exit(UsageRelay.run(args))
-            }
             var data = Data()
             while let chunk = try FileHandle.standardInput.read(upToCount: min(8192, 200_001 - data.count)), !chunk.isEmpty {
                 data.append(chunk)

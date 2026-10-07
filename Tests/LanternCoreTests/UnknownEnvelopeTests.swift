@@ -4,35 +4,33 @@ import Testing
 import LanternCore
 @testable import LanternTransport
 
-@Test func invalidUsageDiscriminatorsCannotFallBackToAnApprovalEvent() async throws {
-    let directory = URL(fileURLWithPath: "/private/tmp/lantern-invalid-usage-" + UUID().uuidString)
+@Test func unknownTypedMessagesCannotFallBackToAnApprovalEvent() async throws {
+    let directory = URL(fileURLWithPath: "/private/tmp/lantern-unknown-envelope-" + UUID().uuidString)
     defer { try? FileManager.default.removeItem(at: directory) }
     let events = AsyncStream<AgentEvent>.makeStream()
-    let usage = AsyncStream<ClaudeUsageSnapshot>.makeStream()
     let disconnects = AsyncStream<String>.makeStream()
     let server = HookServer(directory: directory)
     try server.start(onEvent: { event, id in
         events.continuation.yield(event); server.respond(to: id, with: .allow)
-    }, onDisconnect: { disconnects.continuation.yield($0) }, onUsage: { usage.continuation.yield($0) })
+    }, onDisconnect: { disconnects.continuation.yield($0) })
     defer { server.stop() }
     let event = AgentEvent(provider: .claude, sessionID: "fixture", kind: .approval, cwd: "/Fixture", summary: "Read")
     var root = try #require(try JSONSerialization.jsonObject(with: JSONEncoder().encode(event)) as? [String: Any])
     for discriminator: Any in ["claude_usage", "unknown", true, NSNull()] {
         root["type"] = discriminator
-        let result = try await rawUsageExchange(JSONSerialization.data(withJSONObject: root), path: server.socketPath)
+        let result = try await rawTypedExchange(JSONSerialization.data(withJSONObject: root), path: server.socketPath)
         #expect(result == .delegate)
     }
     for json in [#"{"type":"claude_usage","version":2,"snapshot":{}}"#,
                  #"{"type":"claude_usage","version":1,"snapshot":{"fiveHour":{"usedPercentage":101}}}"#] {
-        #expect(try await rawUsageExchange(Data(json.utf8), path: server.socketPath) == .delegate)
+        #expect(try await rawTypedExchange(Data(json.utf8), path: server.socketPath) == .delegate)
     }
-    server.stop(); events.continuation.finish(); usage.continuation.finish(); disconnects.continuation.finish()
-    for await _ in events.stream { Issue.record("Usage must not reach the activity/approval callback") }
-    for await _ in usage.stream { Issue.record("Invalid usage must not replace validated quota") }
-    for await _ in disconnects.stream { Issue.record("Usage must not cancel approval requests") }
+    server.stop(); events.continuation.finish(); disconnects.continuation.finish()
+    for await _ in events.stream { Issue.record("Unknown envelopes must not reach the activity/approval callback") }
+    for await _ in disconnects.stream { Issue.record("Unknown envelopes must not cancel approval requests") }
 }
 
-private func rawUsageExchange(_ data: Data, path: String) async throws -> HookDecision {
+private func rawTypedExchange(_ data: Data, path: String) async throws -> HookDecision {
     try await withCheckedThrowingContinuation { continuation in
         Thread.detachNewThread {
             continuation.resume(with: Result {

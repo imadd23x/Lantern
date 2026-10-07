@@ -8,6 +8,7 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
     private let shortcuts: ShortcutController
     private let login: LoginItemController
     private var window: NSWindow?
+    private let selection = SettingsSelection()
     private var recordingChanged: AnyCancellable?
     private var releaseMonitor: Any?
 
@@ -19,19 +20,24 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
         }
     }
 
-    func show() {
+    func show(section: SettingsSection = .general) {
+        selection.section = section
         shortcuts.recording = nil
         login.refresh()
         if window == nil {
-            let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 560, height: 640),
-                                  styleMask: [.titled, .closable, .resizable], backing: .buffered, defer: false)
+            let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 500, height: 400),
+                                  styleMask: [.titled, .closable], backing: .buffered, defer: false)
             window.title = "Lantern settings"
-            window.minSize = CGSize(width: 500, height: 440)
+            window.minSize = CGSize(width: 500, height: 300)
             window.isReleasedWhenClosed = false
             window.delegate = self
-            window.contentView = NSHostingView(rootView: DesktopSettingsView(model: model,
-                preferences: model.desktopPreferences, shortcuts: shortcuts, login: login,
-                onClose: { [weak self] in self?.window?.close() }))
+            let content = NSHostingView(rootView: DesktopSettingsView(model: model,
+                preferences: model.desktopPreferences, shortcuts: shortcuts, login: login, selection: selection,
+                onClose: { [weak self] in self?.window?.close() },
+                onHeightChange: { [weak self] height in self?.resize(height: height) }))
+            // The measured content owns sizing; hosting-view window constraints must not pin the old tab.
+            content.sizingOptions = []
+            window.contentView = content
             window.center()
             self.window = window
         }
@@ -40,6 +46,17 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
         window?.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 1)
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func resize(height: CGFloat) {
+        guard let window, height.isFinite, height > 0 else { return }
+        let bounds = (window.screen ?? NSScreen.main)?.visibleFrame ?? window.frame
+        let titlebar = window.frame.height - window.contentRect(forFrameRect: window.frame).height
+        let frame = PanelPlacement.frame(size: CGSize(width: 500, height: height.rounded(.up) + titlebar),
+            anchor: CGPoint(x: window.frame.midX, y: window.frame.maxY), bounds: bounds)
+        guard frame != window.frame else { return }
+        let reduced = CommandLine.arguments.contains("--reduce-motion") || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+        window.setFrame(frame, display: true, animate: window.isVisible && !reduced)
     }
 
     private func monitorRelease(recording: Bool) {

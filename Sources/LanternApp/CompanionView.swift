@@ -3,7 +3,6 @@ import LanternCore
 
 struct CompanionView: View {
     @ObservedObject var model: AppModel
-    private var filter: AgentProvider? { model.providerFilter }
     @FocusState private var triggerFocused: Bool
     @LanternReducedMotion private var reducedMotion
 
@@ -15,7 +14,7 @@ struct CompanionView: View {
         GeometryReader { geometry in
             VStack(spacing: 0) {
                 header.frame(width: geometry.size.width, height: model.expanded ? 72 : 46)
-                details.frame(width: PanelPlacement.expanded.width, height: PanelPlacement.expanded.height - 72)
+                details.frame(width: PanelPlacement.expanded.width, height: max(0, geometry.size.height - PanelLayout.headerHeight))
                     .opacity(model.expanded ? 1 : 0)
                     .animation(reducedMotion ? nil : model.expanded
                                ? .easeOut(duration: LanternMotion.detailsRevealDuration).delay(LanternMotion.detailsRevealDelay) : .easeOut(duration: 0.1), value: model.expanded)
@@ -30,8 +29,6 @@ struct CompanionView: View {
         .clipShape(RoundedRectangle(cornerRadius: model.expanded ? 27 : 23))
         .overlay(RoundedRectangle(cornerRadius: model.expanded ? 27 : 23).stroke(Palette.border, lineWidth: 1))
         .animation(LanternMotion.card(reduced: reducedMotion), value: model.expanded)
-        .sheet(isPresented: $model.showConnections) { ConnectionsView(model: model) }
-        .onChange(of: model.showConnections) { _, shown in if !shown { model.refreshConnections() } }
         .onChange(of: model.expanded) { _, expanded in
             if !expanded { triggerFocused = !model.presentationIsAutomatic }
         }
@@ -51,19 +48,23 @@ struct CompanionView: View {
                     .padding(.horizontal, 22).padding(.bottom, 10)
             }
             if let error = model.errorMessage {
-                Text(error).font(.system(size: 11)).foregroundStyle(.orange)
+                Text(error).font(.system(size: 11)).foregroundStyle(Palette.warning).lineLimit(2)
                     .padding(12).background(Palette.card).clipShape(RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 20)
             }
             ProviderFilter(selection: $model.providerFilter, sessions: model.sessions)
                 .padding(.horizontal, 20).padding(.bottom, 12)
             ScrollView {
                 LazyVStack(spacing: 7) {
-                    let sessions = model.sessions.filter { filter == nil || $0.id.provider == filter }
-                    if sessions.isEmpty { emptyState }
-                    ForEach(sessions) { session in SessionRow(session: session, now: model.now) { model.openAgent(session) } }
+                    let sessions = model.visibleSessions
+                    if sessions.isEmpty {
+                        if request == nil { emptyState }
+                        else { Text("No sessions in this tab").font(.system(size: 12)).foregroundStyle(Palette.subtle).frame(height: 48) }
+                    }
+                    ForEach(sessions) { session in SessionRow(session: session, now: model.now) { model.openAgent(session) }.frame(height: PanelLayout.rowHeight) }
                 }.padding(.horizontal, 20)
             }
             .frame(maxHeight: request == nil ? .infinity : 116)
+            .layoutPriority(-1)
             if let request {
                 approvalQueue.padding(.horizontal, 20).padding(.top, 12)
                 ApprovalCard(request: request, now: model.now, decide: { decision in model.decide(request.id, decision) },
@@ -73,10 +74,11 @@ struct CompanionView: View {
                     .id(request.id)
                     .onAppear { model.setDisplayedApproval(request.id, visible: true) }
                     .onDisappear { model.setDisplayedApproval(request.id, visible: false) }
+                    .frame(height: PanelLayout.approvalHeight)
                     .padding(.horizontal, 20).padding(.top, 9)
             }
-            Spacer(minLength: 10)
-            footer
+            Color.clear.frame(height: 12)
+            footer.frame(height: 44)
         }
     }
 
@@ -91,7 +93,7 @@ struct CompanionView: View {
                         .foregroundStyle(model.expanded ? Palette.accent : .white).lineLimit(1)
                     Spacer(minLength: 0)
                 }.contentShape(Rectangle())
-            }.buttonStyle(.plain)
+            }.buttonStyle(LanternButtonStyle(kind: .switchRow))
                 .accessibilityLabel(model.expanded ? "Collapse Lantern" : "Open Lantern agent sessions")
                 .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
                 .help(model.expanded ? "Collapse Lantern" : "Click to open · drag anywhere on the pill to move")
@@ -103,15 +105,10 @@ struct CompanionView: View {
                 .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
                 .help(model.expanded ? "Collapse Lantern" : "Expand Lantern")
             if model.expanded {
-                Button { model.desktopPreferences.pinned.toggle() } label: {
-                    Image(systemName: model.desktopPreferences.pinned ? "pin.fill" : "pin")
-                }.buttonStyle(LanternButtonStyle(kind: .toolbar))
-                    .accessibilityLabel(model.desktopPreferences.pinned ? "Unpin Lantern" : "Keep Lantern visible")
-                    .help(model.desktopPreferences.pinned ? "Unpin Lantern" : "Keep Lantern visible")
-                Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
-                    .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open connections").help("Connections")
-                Button { model.onSettingsRequest?() } label: { Image(systemName: "gearshape") }
-                    .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open Lantern settings").help("Settings")
+                Button { model.isSettingsMenuOpen.toggle() } label: { Image(systemName: "gearshape") }
+                    .buttonStyle(LanternButtonStyle(kind: .menuTrigger))
+                    .accessibilityLabel("Open Lantern settings menu").help("Settings")
+                    .popover(isPresented: $model.isSettingsMenuOpen, arrowEdge: .bottom) { SettingsMenu(model: model) }
             }
             Button { model.hideCompanion() } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .medium)) }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Hide Lantern and keep listening")
@@ -119,10 +116,7 @@ struct CompanionView: View {
         }
         .padding(.leading, model.expanded ? 20 : 10)
         .padding(.trailing, model.expanded ? 16 : 10)
-        .overlay(alignment: .leading) {
-            // Keep native dragging in the outer padding without reserving a separate icon column.
-            if model.expanded { WindowGrip().frame(width: 20, height: 38) }
-        }
+
     }
 
     private var approvalQueue: some View {
@@ -134,7 +128,7 @@ struct CompanionView: View {
                     HStack(spacing: 5) {
                         ForEach(Array(model.state.approvals.enumerated()), id: \.element.id) { index, approval in
                             Button("\(index + 1)") { model.selectedRequestID = approval.id }
-                                .buttonStyle(.plain).font(.system(size: 10, weight: .semibold))
+                                .buttonStyle(LanternButtonStyle(kind: .tab)).font(.system(size: 10, weight: .semibold))
                                 .frame(width: 22, height: 22)
                                 .background(request?.id == approval.id ? Palette.accent.opacity(0.18) : Palette.card)
                                 .clipShape(Circle()).accessibilityLabel("Show queued request \(index + 1) from \(approval.event.provider.title)")
@@ -147,18 +141,12 @@ struct CompanionView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "sparkle").font(.system(size: 28)).foregroundStyle(Palette.accent.opacity(0.7))
-            Text(filter.map { "No activity from \($0.title) yet." } ?? "Waiting for agent activity.")
-                .font(.system(size: 15, weight: .medium, design: .rounded))
-            Text(emptyExplanation)
-                .font(.system(size: 12)).foregroundStyle(Palette.subtle).multilineTextAlignment(.center).lineSpacing(4)
-            Button(needsSetup ? "Review connections" : "Connection details") { model.showConnections = true }
-                .buttonStyle(LanternButtonStyle(kind: .secondary))
-        }.padding(.horizontal, 34).frame(height: 250)
+        AgentEmptyState(title: model.providerFilter.map { "No \($0.title) sessions yet" } ?? "Ready for your agents",
+                        explanation: emptyExplanation,
+                        actionTitle: needsSetup ? "Connect agents" : "Agent connections") { model.showConnections = true }
     }
 
-    private var relevantProviders: [AgentProvider] { filter.map { [$0] } ?? AgentProvider.allCases }
+    private var relevantProviders: [AgentProvider] { model.providerFilter.map { [$0] } ?? AgentProvider.allCases }
     private var needsSetup: Bool { relevantProviders.contains { !model.installedProviders.contains($0) } }
     private var emptyExplanation: String {
         let installed = relevantProviders.filter { model.installedProviders.contains($0) }.map(\.title)
@@ -175,7 +163,6 @@ struct CompanionView: View {
                 .accessibilityLabel("Agent connection")
                 .accessibilityValue(model.connectionStatus.title)
                 .help(model.connectionStatus.title)
-            if model.desktopPreferences.usageDisplayEnabled { UsageIndicator(model: model).padding(.leading, 5) }
             Spacer()
             Button { model.quiet.toggle() } label: { Image(systemName: model.quiet ? "bell.slash" : "bell") }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar))

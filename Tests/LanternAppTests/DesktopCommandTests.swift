@@ -54,13 +54,14 @@ struct DesktopCommandTests {
         try await wait(model, count: 1)
         model.setDisplayedApproval(try #require(model.selectedApproval).id, visible: true)
         model.approvalPresentationReady = true
-        for blocked in 0..<3 {
+        for blocked in 0..<4 {
             if blocked == 0 { model.isSettingsOpen = true }
             if blocked == 1 { model.showConnections = true }
-            if blocked == 2 { model.hideCompanion() }
+            if blocked == 2 { model.isSettingsMenuOpen = true }
+            if blocked == 3 { model.hideCompanion() }
             model.performShortcut(.allowOnce)
             #expect(model.state.approvals.count == 1)
-            model.isSettingsOpen = false; model.showConnections = false
+            model.isSettingsOpen = false; model.showConnections = false; model.isSettingsMenuOpen = false
         }
         model.showCompanion(expanded: true)
         fixture.time += SessionState.approvalLifetime + 1

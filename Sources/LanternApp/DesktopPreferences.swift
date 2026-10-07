@@ -7,7 +7,6 @@ final class DesktopPreferences: ObservableObject {
     @Published var autoHideEnabled: Bool { didSet { defaults.set(autoHideEnabled, forKey: "desktop.autoHide") } }
     @Published var pinned: Bool { didSet { defaults.set(pinned, forKey: "desktop.pinned") } }
     @Published var shortcutsEnabled: Bool { didSet { defaults.set(shortcutsEnabled, forKey: "desktop.shortcutsEnabled") } }
-    @Published var usageDisplayEnabled: Bool { didSet { defaults.set(usageDisplayEnabled, forKey: "desktop.usageDisplay") } }
     @Published private(set) var idleDelay: TimeInterval
     @Published private(set) var bindings: [ShortcutAction: ShortcutBinding]
 
@@ -16,7 +15,6 @@ final class DesktopPreferences: ObservableObject {
         autoHideEnabled = defaults.object(forKey: "desktop.autoHide") as? Bool ?? true
         pinned = defaults.object(forKey: "desktop.pinned") as? Bool ?? false
         shortcutsEnabled = defaults.object(forKey: "desktop.shortcutsEnabled") as? Bool ?? true
-        usageDisplayEnabled = defaults.object(forKey: "desktop.usageDisplay") as? Bool ?? true
         let delay = defaults.double(forKey: "desktop.idleDelay")
         idleDelay = delay.isFinite && (10...300).contains(delay) ? delay : 30
         let stored = defaults.data(forKey: "desktop.bindings")

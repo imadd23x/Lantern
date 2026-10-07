@@ -8,7 +8,6 @@ final class AppModel: ObservableObject {
     @Published private(set) var state = SessionState() {
         didSet { scheduleApprovalExpiry() }
     }
-    @Published private(set) var claudeUsage = ClaudeUsageState()
     @Published private(set) var expanded = false
     @Published private(set) var companionHidden = false
     @Published private(set) var automaticallyHidden = false
@@ -17,6 +16,7 @@ final class AppModel: ObservableObject {
         didSet { recordInteraction(); if showConnections { presentationIsAutomatic = false } }
     }
     @Published var errorMessage: String?
+    @Published var isSettingsMenuOpen = false { didSet { recordInteraction() } }
     @Published var providerFilter: AgentProvider?
     @Published var selectedRequestID: String?
     @Published private(set) var connectionStatus: ConnectionStatus = .disconnected
@@ -30,7 +30,7 @@ final class AppModel: ObservableObject {
     var isMenuOpen = false { didSet { recordInteraction() } }
     var isDragging = false { didSet { recordInteraction() } }
     var isPointerInside = false { didSet { if oldValue != isPointerInside { recordInteraction() } } }
-    var onSettingsRequest: (() -> Void)?
+    var onSettingsRequest: ((SettingsSection) -> Void)?
     private let server: HookServer
     private var timer: Timer?
     private var approvalExpiry: Task<Void, Never>?
@@ -73,6 +73,11 @@ final class AppModel: ObservableObject {
             return $0.updatedAt > $1.updatedAt
         }
     }
+    var visibleSessions: [AgentSession] { sessions.filter { providerFilter == nil || $0.id.provider == providerFilter } }
+    var expandedSize: CGSize {
+        PanelLayout.size(sessionCount: visibleSessions.count, approval: selectedApproval != nil,
+                         notice: errorMessage != nil, demo: isDemo)
+    }
     var workingCount: Int { sessions.filter { [.thinking, .working].contains($0.phase) }.count }
     var needsAttention: Bool { !state.approvals.isEmpty || sessions.contains { [.attention, .failed].contains($0.phase) } }
     var relayPath: String { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lantern-hook").path }
@@ -87,7 +92,7 @@ final class AppModel: ObservableObject {
 
     var allowsGlobalApproval: Bool {
         guard desktopPreferences.shortcutsEnabled, desktopPreferences.bindings[.allowOnce]?.enabled == true,
-              !isDemo, expanded, !companionHidden, !showConnections, !isSettingsOpen,
+              !isDemo, expanded, !companionHidden, !showConnections, !isSettingsOpen, !isSettingsMenuOpen,
               approvalPresentationReady, let request = selectedApproval,
               displayedApprovalID == request.id else { return false }
         return !request.event.detail.isEmpty && clock() < request.expiresAt
@@ -142,11 +147,6 @@ final class AppModel: ObservableObject {
                 Task { @MainActor [weak self] in self?.receive(event, id: id) }
             }, onDisconnect: { [weak self] id in
                 Task { @MainActor [weak self] in self?.connectionClosed(id) }
-            }, onUsage: { [weak self] snapshot in
-                Task { @MainActor [weak self] in
-                    guard let self else { return }
-                    try? self.claudeUsage.receive(snapshot, now: self.clock())
-                }
             })
             errorMessage = nil
             connectionStatus = .connected
@@ -176,7 +176,7 @@ final class AppModel: ObservableObject {
     func hideCompanion() {
         recordInteraction(); automaticallyHidden = false
         presentationIsAutomatic = false
-        showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
+        showConnections = false; isSettingsMenuOpen = false; expanded = false; companionHidden = true; onPresentationChange?()
     }
 
     func showCompanion(expanded: Bool = false) {
@@ -270,7 +270,7 @@ final class AppModel: ObservableObject {
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
         let eligible = desktopPreferences.autoHideEnabled && !desktopPreferences.pinned
             && !companionHidden && !expanded && !showConnections && !isSettingsOpen
-            && !isMenuOpen && !isDragging && !isPointerInside && workingCount == 0 && !needsAttention
+            && !isMenuOpen && !isSettingsMenuOpen && !isDragging && !isPointerInside && workingCount == 0 && !needsAttention
         guard eligible else { lastInteraction = now; return }
         guard now >= lastInteraction, now - lastInteraction >= desktopPreferences.idleDelay else { return }
         automaticallyHidden = true; companionHidden = true; presentationIsAutomatic = true

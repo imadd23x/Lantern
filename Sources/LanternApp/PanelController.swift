@@ -1,11 +1,14 @@
 import AppKit
 import SwiftUI
 import QuartzCore
+import Combine
 
 @MainActor
 final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDelegate {
     private let panel: CompanionPanel
     private let model: AppModel
+    private var contentSubscription: AnyCancellable?
+    private var layoutSize = CGSize.zero
     private var screenObserver: NSObjectProtocol?
     private var motionObserver: NSObjectProtocol?
     private var anchor: CGPoint?
@@ -45,8 +48,15 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         panel.hasShadow = true
         panel.hidesOnDeactivate = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
-        panel.contentView = NSHostingView(rootView: CompanionView(model: model)
+        panel.contentView = CompanionHostingView(rootView: CompanionView(model: model)
             .environment(\.lanternReduceMotion, CommandLine.arguments.contains("--reduce-motion")))
+        contentSubscription = model.objectWillChange.sink { [weak self] in
+            Task { @MainActor [weak self] in
+                guard let self, self.model.expanded, !self.model.companionHidden,
+                      !self.model.isDragging, self.model.expandedSize != self.layoutSize else { return }
+                self.layout(animated: self.panel.isVisible)
+            }
+        }
         model.onPresentationChange = { [weak self] in self?.present() }
         model.onApprovalDecision = { [weak self] decision in
             if decision != .delegate { self?.returnKeyboardFocus() }
@@ -81,7 +91,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
 
     func stop() {
         model.approvalPresentationReady = false
-        pointerTimer?.invalidate(); pointerTimer = nil; delayedLayout?.cancel()
+        pointerTimer?.invalidate(); pointerTimer = nil; delayedLayout?.cancel(); contentSubscription = nil
         if let screenObserver { NotificationCenter.default.removeObserver(screenObserver) }
         if let motionObserver { NSWorkspace.shared.notificationCenter.removeObserver(motionObserver) }
     }
@@ -99,7 +109,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         revealReadiness.update(expanded: model.expanded, reduced: reducedMotion, now: ProcessInfo.processInfo.systemUptime)
         model.approvalPresentationReady = false
         if !model.allowsKeyboardFocus { returnKeyboardFocus() }
-        pillPan?.isEnabled = !model.expanded && !model.companionHidden && !model.showConnections
+        pillPan?.isEnabled = !model.companionHidden && !model.showConnections && !model.isSettingsMenuOpen
         delayedLayout?.cancel()
         let time = Date.timeIntervalSinceReferenceDate
         let holdClose = !model.expanded && time - lastPresentationTime > 0.45
@@ -125,11 +135,14 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     }
 
     func gestureRecognizer(_ gestureRecognizer: NSGestureRecognizer, shouldAttemptToRecognizeWith event: NSEvent) -> Bool {
-        !model.expanded && !model.companionHidden && !model.showConnections && event.type == .leftMouseDown
+        guard !model.companionHidden, !model.showConnections, !model.isSettingsMenuOpen,
+              event.type == .leftMouseDown, let content = panel.contentView else { return false }
+        let point = content.convert(event.locationInWindow, from: nil)
+        return PanelLayout.canDrag(expanded: model.expanded,
+                                   pointFromTop: content.isFlipped ? point.y : content.bounds.height - point.y)
     }
 
-    /// Delayed primary events reach SwiftUI only if the pan fails. A recognized drag therefore cannot
-    /// click the chevron/close button. Expanded controls and sheets opt out before event arbitration.
+    /// Failed pans deliver normal button clicks; recognized header/pill drags consume activation.
     @objc private func dragPill(_ gesture: NSPanGestureRecognizer) {
         switch gesture.state {
         case .began:
@@ -151,7 +164,10 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             let pointer = panel.convertPoint(toScreen: gesture.location(in: nil))
             panel.setFrameOrigin(drag.origin(at: pointer))
         }
-        if gesture.state == .ended { pillDrag = nil; model.isDragging = false }
+        if gesture.state == .ended {
+            pillDrag = nil; model.isDragging = false
+            if model.expanded && model.expandedSize != layoutSize { layout(animated: true) }
+        }
     }
 
     private func layout(animated: Bool) {
@@ -162,7 +178,8 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         guard let screen else { return }
         let bounds = usableFrame(of: screen)
         let desired = anchor ?? CGPoint(x: screen.frame.midX, y: bounds.maxY - 8)
-        let frame = PanelPlacement.frame(size: model.expanded ? PanelPlacement.expanded : PanelPlacement.compact,
+        layoutSize = model.expanded ? model.expandedSize : PanelPlacement.compact
+        let frame = PanelPlacement.frame(size: layoutSize,
                                          anchor: desired, bounds: bounds)
         if model.automaticallyHidden {
             hotspotEntry = PointerEntry(inside: PanelPlacement.revealHotspot(for: frame).contains(NSEvent.mouseLocation))
@@ -231,4 +248,10 @@ private final class CompanionPanel: NSPanel {
     override var canBecomeKey: Bool { keyboardFocusAllowed?() ?? false }
     override var canBecomeMain: Bool { false }
     override func cancelOperation(_ sender: Any?) { onEscape?() }
+}
+
+/// Manual controls can regain key focus after Settings closes. Automatic alerts still reject key
+/// eligibility through CompanionPanel.canBecomeKey, preserving the interrupted typing application.
+private final class CompanionHostingView<Content: View>: NSHostingView<Content> {
+    override var needsPanelToBecomeKey: Bool { true }
 }

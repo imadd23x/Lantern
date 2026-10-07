@@ -4,7 +4,8 @@ import LanternTransport
 
 struct ConnectionsView: View {
     @ObservedObject var model: AppModel
-    @Environment(\.dismiss) private var dismiss
+    let onClose: () -> Void
+    let onHeightChange: (CGFloat) -> Void
     @ViewState private var provider: AgentProvider = .codex
     @ViewState private var preview: ConfigurationPreview?
     @ViewState private var removing = false
@@ -15,51 +16,68 @@ struct ConnectionsView: View {
     private var target: URL { model.configurationURL(for: provider) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 13) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text("Connect your agents").font(.system(size: 20, weight: .semibold, design: .rounded))
+                Text("Connect your agents").font(.system(size: 19, weight: .semibold, design: .rounded))
                 Spacer()
-                Button("Done") { dismiss() }.keyboardShortcut(.cancelAction)
+                Button("Done", action: onClose).buttonStyle(LanternButtonStyle(kind: .secondary))
+                    .keyboardShortcut(.cancelAction)
             }
-            Text("Lantern uses local hooks to watch sessions and return the decisions you make here.")
-                .font(.system(size: 12)).foregroundStyle(.secondary)
-            Picker("Agent", selection: $provider) {
-                ForEach(AgentProvider.allCases, id: \.self) { Text($0.title).tag($0) }
-            }.pickerStyle(.segmented).onChange(of: provider) { _, _ in preview = nil; error = ""; message = "" }
-            Text(model.installedProviders.contains(provider) ? "Hooks installed · Waiting for agent activity"
-                 : model.connectionWarnings[provider] ?? "Hooks not installed for this Lantern app")
-                .font(.system(size: 11)).foregroundStyle(model.installedProviders.contains(provider) ? .mint : .secondary)
-            Text(target.path).font(.system(size: 10, design: .monospaced)).textSelection(.enabled)
-            HStack {
-                Button("Preview connection") { makePreview(remove: false) }
-                Button("Preview removal") { makePreview(remove: true) }
-            }.controlSize(.small).buttonStyle(LanternButtonStyle(kind: .secondary))
+            Text("Local hooks bring agent activity and approval requests to Lantern.")
+                .font(.system(size: 12)).foregroundStyle(Palette.subtle)
+            ArcTabs(tabs: AgentProvider.allCases.enumerated().map { ArcTab(id: $0.offset, title: $0.element.title) },
+                    selection: Binding(get: { provider == .codex ? 0 : 1 },
+                                       set: { provider = AgentProvider.allCases[$0] }))
+                .onChange(of: provider) { _, _ in preview = nil; error = ""; message = "" }
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 7) {
+                    Circle().fill(model.installedProviders.contains(provider) ? Palette.accent : Palette.warning)
+                        .frame(width: 6, height: 6)
+                    Text(model.installedProviders.contains(provider) ? "Hooks installed"
+                         : model.connectionWarnings[provider] ?? "Not connected")
+                        .font(.system(size: 12, weight: .medium))
+                }
+                Text((target.path as NSString).abbreviatingWithTildeInPath)
+                    .font(.system(size: 10, design: .monospaced)).foregroundStyle(Palette.subtle)
+                    .textSelection(.enabled)
+                HStack(spacing: 8) {
+                    Button("Preview connection") { makePreview(remove: false) }
+                        .buttonStyle(LanternButtonStyle(kind: .secondary))
+                    if model.installedProviders.contains(provider) || model.connectionWarnings[provider] != nil || removing {
+                        Button("Preview removal") { makePreview(remove: true) }
+                            .buttonStyle(LanternButtonStyle(kind: .ghost))
+                    }
+                }.controlSize(.small).font(.system(size: 11, weight: .medium))
+            }.padding(14).frame(maxWidth: .infinity, alignment: .leading)
+                .background(Palette.card, in: RoundedRectangle(cornerRadius: 14))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Palette.border))
             if let preview {
-                Picker("View", selection: $showingBefore) {
-                    Text("Proposed settings").tag(false)
-                    Text("Current settings").tag(true)
-                }.pickerStyle(.segmented)
+                ArcTabs(tabs: [ArcTab(id: 0, title: "Proposed settings"), ArcTab(id: 1, title: "Current settings")],
+                        selection: Binding(get: { showingBefore ? 1 : 0 }, set: { showingBefore = $0 == 1 }))
                 ScrollView([.vertical, .horizontal]) {
                     Text(String(decoding: showingBefore ? preview.original ?? Data("(No existing file)".utf8) : preview.updated, as: UTF8.self))
-                        .font(.system(size: 10, design: .monospaced)).textSelection(.enabled).padding(10)
-                }.frame(height: 165).background(.black.opacity(0.2)).clipShape(RoundedRectangle(cornerRadius: 10))
+                        .font(.system(size: 10, design: .monospaced)).textSelection(.enabled).padding(12)
+                }.frame(height: 180).background(Palette.inset, in: RoundedRectangle(cornerRadius: 12))
+                Text("Existing hooks stay in place. A verified backup is created before applying.")
+                    .font(.system(size: 11)).foregroundStyle(Palette.subtle)
                 Button(removing ? "Apply removal" : "Back up and connect") { apply(preview) }
-                    .buttonStyle(LanternButtonStyle(kind: .primary)).controlSize(.small)
+                    .buttonStyle(LanternButtonStyle(kind: removing ? .danger : .primary))
                     .disabled(model.isDemo)
-            } else {
-                Spacer(minLength: 0)
-                Text("Review the exact change before applying. Existing hooks stay in place; a verified backup is created first.")
-                    .font(.system(size: 12)).foregroundStyle(.secondary)
-                Spacer(minLength: 0)
             }
-            if !message.isEmpty { Text(message).font(.system(size: 11)).foregroundStyle(.mint).textSelection(.enabled) }
-            if !error.isEmpty { Text(error).font(.system(size: 11)).foregroundStyle(.orange) }
+            if !message.isEmpty { Text(message).font(.system(size: 11)).foregroundStyle(Palette.accentText).textSelection(.enabled) }
+            if !error.isEmpty { Text(error).font(.system(size: 11)).foregroundStyle(Palette.warning) }
             Text(provider == .codex
-                 ? "After connecting, open /hooks in Codex CLI to review and trust the Lantern definitions. Start a new desktop session so its host reloads the hooks. Managed policy can restrict hooks."
-                 : "After connecting, restart your Claude Code session in VS Code so it loads the hooks. Project or managed settings may disable user hooks.")
-                .font(.system(size: 10)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
-            if model.isDemo { Text("Demo mode: configuration writes are disabled.").font(.system(size: 10)).foregroundStyle(Palette.accent) }
-        }.padding(22).frame(width: 520, height: 510).preferredColorScheme(.dark)
+                 ? "After connecting, trust Lantern in Codex CLI /hooks, then start a new desktop session."
+                 : "After connecting, restart the Claude Code session in VS Code to load its hooks.")
+                .font(.system(size: 11)).foregroundStyle(Palette.subtle).fixedSize(horizontal: false, vertical: true)
+            if model.isDemo { Text("Demo: configuration writes are disabled.").font(.system(size: 10)).foregroundStyle(Palette.accentText) }
+        }
+        .padding(20).frame(width: 480).fixedSize(horizontal: false, vertical: true)
+        .foregroundStyle(.white).background(Palette.background)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 22).stroke(Palette.border))
+        .onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: onHeightChange)
+        .preferredColorScheme(.dark)
     }
 
     private func makePreview(remove: Bool) {

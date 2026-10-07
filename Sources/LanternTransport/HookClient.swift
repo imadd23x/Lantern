@@ -20,13 +20,6 @@ public enum HookClient {
                             timeout: timeout ?? (event.kind == .approval ? 115 : 0.3))
     }
 
-    /// A usage acknowledgement can never be an approval, even from an unexpected peer response.
-    public static func exchange(_ usage: ClaudeUsageEnvelope, socketPath: String) throws -> HookDecision {
-        try usage.validate()
-        _ = try exchange(JSONEncoder().encode(usage), socketPath: socketPath, timeout: 0.3)
-        return .delegate
-    }
-
     private static func exchange(_ data: Data, socketPath: String, timeout duration: TimeInterval) throws -> HookDecision {
         let fd = socket(AF_UNIX, SOCK_STREAM, 0)
         guard fd >= 0 else { throw TransportError.system(errno) }
