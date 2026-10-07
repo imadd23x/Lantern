@@ -113,35 +113,20 @@ Do not move the app after connecting without regenerating hook commands from its
 `DesktopPreferences` owns persisted presentation and shortcut choices. `ShortcutRegistry` protects
 working registrations during replacement; `CarbonShortcuts` hides native callback/token ownership.
 The main-actor controller pauses registrations during key recording and publishes conflicts/errors.
-Commands share AppModel's provider filter and selected request ID; no command approves a request.
+The approval command uses AppModel's selected and displayed request identity and its availability gate.
 
 Automatic hide is distinct from manual Hide. AppModel owns the deadline and blockers. PanelController
 orders the hidden panel out and samples pointer entry at its current compact top edge at 0.15s intervals.
 This sampler survives hidden-window occlusion, creates no click surface and reveals with passive focus.
-It stops at application termination. Pin, menus, settings, sheets, drag, expansion, work and attention
+It stops at application termination. Keep-visible, menus, Settings, Connections, drag, expansion, work and attention
 reset/block the idle deadline. Screen changes recompute the hotspot from the clamped frame.
 
-Login startup uses `SMAppService.mainApp`; OS status is authoritative. Login registration and usage
-configuration require the canonical bundle ID and a regular installed path in the user's or system
+Login startup uses `SMAppService.mainApp`; OS status is authoritative. Login registration requires the canonical bundle ID and a regular installed path in the user's or system
 Applications folder; demo/temporary/review copies cannot perform those changes.
-
-Claude quota follows an additive `claude_usage` v1 envelope. Discriminated frames never fall back to
-AgentEvent decoding. They receive a prompt no-decision acknowledgement, create no request/session,
-and never affect presentation, sound or idle activity. Only quota fields cross this channel; input is
-bounded and percentages/reset values validated. A snapshot replaces both windows; omissions clear
-old values. Freshness uses host receipt time, 15-minute expiry and reset passage, never inferred zero.
-
-The status-line wrapper embeds a bounded original snapshot, including absent versus null. Exact
-canonical JSON ownership preserves boolean/number distinctions. Reinstall unwraps one owned wrapper;
-restore refuses a changed wrapper or external replacement. The existing optimistic backup/atomic
-transaction applies the preview. Setup checks the executable before preview and apply.
-UsageRelay streams stdin to the saved command while capturing at most 200KB for quota parsing;
-oversized/invalid data and socket absence do not interrupt that command's stdout/stderr/env/cwd/exit.
-No auth files, private experimental extension APIs or paid model turns supply usage.
 
 ### Approval shortcut refinement
 
-The two global actions are Allow once and Hide. AppModel gates Allow on exact displayed/selected
+The two global actions are Allow once and Show/hide. AppModel gates Allow on exact displayed/selected
 identity, proposal/deadline and settled visible presentation. PanelController marks readiness after
 its window/details morph; card appearance alone does not opt into approval. ShortcutController
 applies availability in synchronization and edits. ShortcutLifecycle preserves physical-press state
@@ -150,3 +135,26 @@ CarbonShortcuts samples only the configured key and required modifiers on regist
 held chord is not new intent. DesktopSettingsController owns the temporary app-local key-up monitor;
 [Apple's event-monitor guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/MonitoringEvents/MonitoringEvents.html)
 describes its scope, main-thread delivery and early removal. No global input monitor is installed.
+
+## 0.3.0 Arc interface and usage retirement
+
+ArcTabs, ArcSwitchStyle and LanternButtonStyle share presentation and keyboard/accessibility behavior;
+permission dispatch remains in AppModel. SettingsMenu is a native trigger-anchored popover with three
+local destinations. An open menu blocks global Allow and idle hide. The supplied emblem replaces the
+sparkle through a cached template image; the head and provider artwork remain unchanged.
+
+PanelLayout owns list/approval metrics and the height cap. PanelController observes content changes,
+retargets actual window bounds around its saved top-center anchor and defers resize during drag.
+The existing screen-space pan accepts the whole compact pill or the expanded header; a recognized
+pan consumes button activation. A manual click can regain key focus after Settings closes, while
+CompanionPanel still rejects key eligibility for automatic approval presentation.
+
+ConnectionsController owns an independent transparent card instead of an attached sheet, removing
+AppKit's rectangular sheet-parent dimming. Both setup and Settings report actual content geometry;
+their controllers own window sizing. Preview expands only for the reviewed settings diff, preserving
+the original backup/transaction/reload safeguards. No configuration is changed by opening a window.
+
+Usage models, UI, preferences, status-line installation and relay transport are removed. Unknown
+typed socket envelopes, including old telemetry envelopes, still return Delegate and cannot become
+session activity or an approval. Live settings contained no owned usage wrapper before the upgrade;
+the installer verified both hook files remained byte-identical.

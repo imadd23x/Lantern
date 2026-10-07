@@ -1,5 +1,53 @@
 # Verification evidence — Lantern
 
+## Current release: 0.3.0/build25 — 2026-10-07
+
+Full local regressions passed: **72 test functions / 77 parameterized cases**. The sandbox initially
+denied test Unix sockets; the same suite passed with local socket permissions. New layout tests cover
+short/growing/capped lists, readable approval allocation and header/content drag boundaries. The
+existing shortcut safety matrix now includes an open gear menu. Unknown typed messages, including
+old telemetry envelopes, return Delegate without session or approval callbacks.
+
+Final release compilation, packaged Allow/Deny/Delegate contracts for both providers, ZIP CRC and
+deep/strict extracted signatures passed. Supplied head, Codex/Claude icons and A-Train are byte-identical
+to installed build19. App ZIP SHA256:
+`406fa50eefde64e4495fdf8d47a14b6e1f9c402a3c487906ad2342a9d4759be4`.
+
+Isolated native review used private runtime/configuration directories and disabled global shortcut
+registration to avoid conflict with the installed app. Observed: Arc gear destinations, native AX
+switches, selected tab states, Escape/keyboard navigation, empty state/emblem, compact Connections
+(310 points), preview expansion (630 points), and readable General/Shortcuts footers. Settings first
+failed to grow with the old preference callback; that candidate was rejected. Direct content geometry
+passed both tab directions in the final build. A real coordinate click after closing Settings restored
+tab keyboard navigation; End selected Claude. An accessibility-only action bypassed mouse focus and
+was not used as evidence for physical-click behavior.
+
+Earlier candidate list review showed two rows at311 points, nine rows at the640-point cap with scroll,
+and five filtered rows at518 points. Expanded-header pan preserved expansion and stored its new position;
+the final build also preserved expansion after drag. The non-executing `ArcLayoutCheck — sample`
+approval returned exactly `allow` and automatically restored the compact pill. No command was executed,
+real approval granted, agent navigation triggered, or agent configuration applied during review.
+
+Safe upgrade: the fresh installed approval queue was empty immediately before native Quit. The guarded
+transaction verified a stopped process, strict release/stage/installed signatures and every installed
+file against the extracted release. Signed rollback:
+`/Users/imad/Applications/Lantern Backups/0.2.0-build19-b729e846/Lantern.app`.
+Both current hook files remained byte-identical:
+
+- Codex: `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`.
+- Claude: `28c7bf5ecb66b6701f26e65508f93c20209bc5006e0a4681c2e75ddd05172ec6`.
+
+Installed0.3.0 restarted compact, then received actual Codex activity in a242-point one-row window.
+Both agents showed Hooks installed; Settings retained idle hide at5 minutes, login On and exactly
+Command–Return / Command–Option–H with no registration errors. Sound remained Enabled. The updated
+app is left running compact. No owned status-line wrapper was present; no live configuration was written.
+
+Limits: per-window screenshots do not prove desktop compositing/occlusion. Removing the attached sheet
+and keeping both windows transparent addresses the square-parent path; physical desktop corner review
+remains distinct. Newly styled physical hover, unsteered typing, next-login and multi-display hardware
+behavior are not claimed. Earlier user acceptance of shortcut/focus behavior stands; existing policy and
+lifecycle tests passed. Historical evidence below is retained as dated history, not current capability.
+
 2026-10-05. Results below distinguish observed local behavior from live host activation.
 
 ## Observed checks

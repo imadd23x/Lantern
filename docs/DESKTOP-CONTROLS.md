@@ -1,6 +1,6 @@
 # Desktop controls
 
-Open **Settings…** from Lantern's menu bar, or use the gear in the expanded panel.
+Open **Settings…** from Lantern's menu bar, or choose General/Shortcuts from the expanded panel's gear menu.
 Preferences are stored in the app's UserDefaults; session proposals remain in memory only.
 
 ## Shortcuts
@@ -13,7 +13,7 @@ The two defaults follow the user's refined choice:
 | Command + Option + H | Show / hide the pill |
 
 Allow is registered only while a selected, unexpired card with a proposal is visible and settled.
-It is disabled in Settings, connections sheets and demos. Holding the combination does not approve
+It is disabled in Settings, Connections, the gear menu and demos. Holding the combination does not approve
 the next queued request; release and press again. A combination already held when a request arrives
 also needs a fresh press. Plain Enter remains in the typing app. Automatic approvals retain passive
 focus and return to the pill after the last decision; a manually opened card stays expanded.
@@ -27,7 +27,7 @@ retains the working registration and reports its error. The visibility shortcut 
 
 An idle compact pill hides after 30 seconds by default. Settings offers 15 seconds through
 5 minutes. **Keep visible** pins it; explicit Hide remains available. Work, attention, queued
-requests, expansion, the connections sheet, Settings, menus, pointer presence and dragging
+requests, expansion, Connections, Settings, menus, pointer presence and dragging
 block the deadline. Finishing an interaction starts a full new idle interval.
 
 Automatic hide orders the panel out. A separate low-frequency pointer sampler detects entry
@@ -40,24 +40,12 @@ retains the existing return-to-pill and passive focus behavior.
 
 The native switch uses macOS `SMAppService.mainApp`, only for the canonical installed bundle.
 The UI reads the actual OS status, including registration failure and approval required.
-If macOS requires approval, use **Open Login Items…** and approve Lantern yourself. Review
+If macOS requires approval, use **Open Login Items** and approve Lantern yourself. Review
 and demo builds cannot register. No reboot or logout is used for verification.
 
-## Claude usage boundary
-
-Claude's documented status-line JSON supplies `rate_limits.five_hour` and `seven_day`, with
-percentages and reset epochs. See [Claude status-line documentation](https://code.claude.com/docs/en/statusline).
-It runs locally without model tokens. A native VS Code extension panel is not documented to
-export this status-line data. Lantern must display waiting/unavailable when that host supplies
-none; the extension's private experimental APIs are outside this integration.
-
-Review the connection in **Settings → Usage** before enabling the local relay. Installation wraps
-your prior command, preserves its stdin/stdout/stderr/environment/cwd/exit, and creates an exact
-backup. Invalid or oversized usage data and an absent Lantern do not interrupt that command.
-Only the unchanged owned wrapper can be restored; an external edit requires fresh review.
-Remove the relay before rolling back to a pre-0.2.0 executable.
-
-Installed0.2.0/build19 at `~/Applications/Lantern.app`, with signed0.1.14 rollback retained.
-Native listener/activity and login switch On are observed. Physical private Allow/Hide passed;
-installed visibility/Settings also passed user confirmation. Next-login/hover/typing remain manual checks.
+Installed 0.3.0/build25 at `~/Applications/Lantern.app`, with signed 0.2.0 and earlier rollback bundles retained.
+Native listener/activity, retained two shortcut defaults and login switch On are observed.
+Private non-executing Allow returned exactly allow and collapsed to the pill. Earlier physical
+Allow/visibility and foreground Settings acceptance stand; next-login, new physical hover and
+unsteered typing remain separate manual checks.
 Current evidence and rollback location are in VERIFICATION.md.

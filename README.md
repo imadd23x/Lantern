@@ -17,7 +17,8 @@ open outputs/Lantern.app
 
 The app starts compact below the notch/menu bar. Click the companion to expand or collapse; Escape
 also collapses. Drag anywhere on the compact pill to move it; a drag does not click embedded controls.
-The expanded header retains a grip. Position is remembered and kept on a visible screen.
+Drag anywhere on the expanded header too; there is no grip icon. Position is remembered and kept
+on a visible screen. The expanded window grows with its session list, then scrolls at its height limit.
 Click **×** or **Hide Lantern** in the menu to hide it while it keeps listening. The same menu command
 becomes **Show Lantern** while hidden. Alerts expand a visible panel without activating your app,
 and a deliberately hidden panel stays hidden (pending requests appear on the menu-bar icon).
@@ -40,26 +41,25 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.2.0.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.3.0.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Desktop settings
 
-**Settings…** adds configurable global shortcuts, idle hide with hover reveal, pinning, native
-launch at login, and Claude usage indicators. Defaults: Command+Return allows the visible, selected request once;
+The expanded panel's gear opens a compact destination menu. General and Shortcuts open
+content-sized Settings tabs; Agent connections opens a separate rounded setup window. **Settings…**
+in the menu bar opens General. Preferences include configurable global shortcuts, idle hide with
+hover reveal, keeping the pill visible, and native launch at login. Defaults: Command+Return allows the visible, selected request once;
 Command+Option+H shows or hides the pill. No approval shortcut is active without an actionable card.
 The idle compact pill hides after 30 seconds; work, attention and interaction keep it visible.
 Manual Hide stays hidden until explicitly shown. Hover reveals an idle-hidden pill without focus.
 
-Login and usage setup are available only from `~/Applications/Lantern.app` or `/Applications/Lantern.app`.
+Login setup is available only from `~/Applications/Lantern.app` or `/Applications/Lantern.app`.
 Launch at login changes only when its switch is used; macOS may require approval in Login Items.
-Claude usage uses documented local status-line data, with separate five-hour and weekly windows.
-The native VS Code panel may supply none; unavailable/stale/reset-passed values remain explicit.
-Open **Settings → Usage → Review connection…** to preserve and wrap an existing status line.
 See [desktop controls](docs/DESKTOP-CONTROLS.md) for behavior and limitations.
 
 ## Connect the agents
 
-1. Launch the packaged app and open **Connections** using its sliders button or menu.
+1. Launch the packaged app and open **Agent connections** from the gear menu or Settings.
 2. Pick Codex or Claude Code and click **Preview connection**.
 3. Compare **Proposed settings** and **Current settings**, then click **Back up and connect**.
 4. For Codex, review/trust the exact definitions using `/hooks` in Codex CLI. Start a new desktop
@@ -99,10 +99,7 @@ Open **Connections → Preview removal → Apply removal** for each provider. Th
 marked `lantern-managed-v1`, preserving other handlers and subsequent unrelated edits. A new verified backup
 is written alongside the settings file. Restart the agent session to stop loading the removed hooks.
 Quit Lantern to release every pending request without a decision. No background daemon is installed.
-Turn off **Settings → General → Launch at login** before removing the app. If usage relay is configured,
-remove it through **Settings → Usage → Remove relay…** before rolling back to a pre-0.2.0 app;
-the older relay cannot preserve the wrapped status-line command. Removal restores only an unchanged
-Lantern wrapper and retains other settings/hooks. Every change creates a verified backup.
+Turn off **Settings → General → Launch at login** before removing the app.
 
 Configuration transactions refuse malformed shapes, symlink targets, failed backups and changes since preview.
 They coordinate Lantern writers with an advisory lock and replace settings by atomic rename. A non-cooperating

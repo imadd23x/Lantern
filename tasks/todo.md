@@ -222,3 +222,54 @@ are verified; native login On/Connected/live Codex/Enabled observed; both hook h
 Usage relay remains optional and unapplied for the unsupported native VS Code telemetry path.
 No required feature work remains; next-login/physical hover/unsteered typing are manual residuals.
 Final release/source archives are tied to the immutable v0.2.0 release; do not re-run unchanged checks.
+
+## Arc interface refinement — 2026-10-07
+
+- [x] Retire usage end to end; preserve hooks and confirm no installed status-line wrapper.
+- [x] Shared native Arc controls, semantic badges, emblem and compact gear menu.
+- [x] Content-sized Settings/Connections/companion, rounded surfaces and expanded-header drag.
+- [x] Regression tests, release smoke/signatures, isolated native interaction review.
+- [ ] Safe upgrade with rollback, unchanged configuration and final GitHub handoff.
+
+Arc checkpoint: branch codex/arc-interface from clean main3cf4d0a. Usage removed from production
+Core/App/Hook/Transport and active docs/fixtures; unknown-envelope fail-closed test retained.
+Live hook hashes55afa1a2/28c7bf5e unchanged, neither contains an owned usage status-line wrapper.
+72 functions/77 parameterized cases passed with local socket permissions (sandboxed sockets denied).
+Content-size/header-drag tests failed before PanelLayout implementation; menu blocks global Allow.
+
+Native review: /private/tmp/lantern-arc20-ybpt77q_/Lantern Arc Review.app,
+bundleID local.imad.Lantern.arc-review20, private runtime/codex/claude directories. Review defaults
+have autoHide/global shortcuts off, so the installed app keeps its registrations. Supplied transparent
+emblem cutout generated via built-in editor, bundled template in exact accent. User head/icons/sound unchanged.
+Build20 review: empty396px, two rows311px, nine rows640px/scroll, Codex filter518px, expanded title
+pan moved and persisted x1410/top1282 without collapse. Arc menu/Connections310px/preview630px/Done
+worked; native semantic badges and truthful states visible. End selected Claude after explicit reopen.
+
+Settings refinement: content-sized tab window catches a native failure — initial preference callback
+only supplied400 and didn't update after General selection, clipping footer. Build21/22 rejected for
+that outcome; temporary numeric diagnostics in build23 reproduced it and are now removed. Build24
+uses onGeometryChange on actual content instead; review must pass both tab directions before rollout.
+CompanionHostingView.needsPanelToBecomeKey lets manual clicks regain key after Settings; automatic
+panel.canBecomeKey gate still preserves passive focus. Native verification of final focus/approval pending.
+
+Production remains installed0.2.0/build19. Do not install stale candidate ZIPs. Prepared signed build24
+package is being built; review update script /private/tmp/lantern-arc-review-update.py preserves each
+old private app, verifies stopped process, and only removes a proven unowned/refused private test socket.
+Private review was quit through CmdQ after build23 trace; confirm before update. Latest receipt is
+outputs/arc-review.json (update it after final bundle), docs/VERIFICATION still needs final evidence.
+Next: review build24 Settings resize/footer, private socket approval and header drag; tests/smoke/signatures;
+commit/push/PR then fresh real empty queue / signed build19 rollback / safe installation and release.
+
+Final native/install checkpoint: build25 full72/77 passed, packaged relay smoke/signatures/CRC and retained
+assets passed. Direct content geometry fixed Settings; final Connections310/preview630 and both Settings
+footers passed. Real coordinate click after Settings regained keyboard navigation; AX-only activation
+does not establish native mouse focus. Non-executing sample returned exact allow and collapsed. No real
+approval or configuration action was performed. Expanded header remains draggable without collapse.
+
+Installed0.3.0/build25 after fresh empty real queue, ordered Quit and guarded verified swap. Signed19
+rollback: ~/Applications/Lantern Backups/0.2.0-build19-b729e846/Lantern.app. Both live hook hashes unchanged;
+no owned usage wrapper. Compact restart/real Codex/242-point one-row view/both installed hooks observed.
+Retained idle5min, login On, two expected bindings and Enabled sound; no registration errors. Production
+is left compact and listening. Code is final; GitHub commit/PR/checks and source archive remain.
+No need to rerun unchanged local tests/package. Physical composited corners/new hover/typing/next-login
+are explicit residuals, not blockers invented for otherwise complete implementation. Automation remains paused.

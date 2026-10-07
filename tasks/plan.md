@@ -85,3 +85,14 @@ timeouts are not increased. The same formerly failing case passed in isolation b
 Decision: preserve the selected live Claude extension tab in the last-active existing Code window.
 Anthropic's /open?session handler can create a panel when it cannot find that session in its target
 window, so it is not used to guess across windows. No new bridge/extension or Accessibility grant is needed.
+
+## Arc interface refinement — 2026-10-07
+
+Acceptance/kill criteria are registered in SPEC-arc-interface.md before edits.
+1. Retire usage only after targeted live configuration inspection; remove active docs/CI fixtures.
+2. Adapt the actual Arc sources into shared native tabs, switches, buttons, badges and empty state;
+   reuse those in provider filters, Settings, Connections and approvals. Gear uses an anchored menu.
+3. Add tested content sizing and expanded-header native drag arbitration. Separate Connections from
+   the companion's attached sheet so parent alpha/corners never become a rectangular sheet backdrop.
+4. Run regressions, relay smoke, package/signature checks, isolated native review. Safely install with
+   build19 rollback only after a fresh empty queue and unchanged targeted configuration checks.

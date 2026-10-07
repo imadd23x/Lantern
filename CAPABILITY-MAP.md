@@ -20,10 +20,8 @@ No generic event bus or adapter protocol until another implementation actually n
 |---|---|---|
 | desktop-controls | Persisted shortcut preferences, native registration, login item, Settings | — |
 | idle-presentation | Idle deadlines, manual/automatic hide distinction, passive hotspot reveal | desktop-controls |
-| usage-state | Validated independent Claude quota windows and freshness | — |
-| usage-relay | Versioned telemetry, preserving status-line wrapper, owner-only transport | usage-state, hook-connection, hook-configuration |
-| companion-ui | Shared selection commands, pin, settings and usage display | all above |
+| companion-ui | Shared selection commands, native settings and presentation | desktop-controls, idle-presentation |
 
-Build order: desktop-controls → idle-presentation; usage-state → usage-relay → companion-ui.
-The four requested capabilities are approved for unattended implementation; ordinary defaults
-are resolved within scope. Existing approval, navigation, artwork and sound contracts are retained.
+Build order: desktop-controls → idle-presentation → companion-ui.
+Usage was explicitly retired by the 2026-10-07 interface refinement. See SPEC-arc-interface.md.
+The retained desktop capabilities remain authorized; ordinary defaults are resolved within scope. Existing approval, navigation, artwork and sound contracts are retained.

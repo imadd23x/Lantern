@@ -1,3 +1,7 @@
+# Historical 0.2.0 specification
+
+Usage requirements below are superseded by SPEC-arc-interface.md (2026-10-07); the feature is removed.
+
 # Lantern desktop additions — 2026-10-07
 
 ## Scope and authority

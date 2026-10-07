@@ -196,3 +196,36 @@ Claude usage adapts Arc's 7px rounded progress track and stationary monospaced p
 The native meters show five-hour/week values only from validated telemetry. Missing/reset-passed
 windows have no filled segment; stale values retain a dimmed segment and explicit stale label.
 Quota exhaustion is not treated as task completion. No confirmation checkmark or simulated value.
+
+## 0.3.0 Arc interface refinement
+
+Reviewed the local Arc snapshot 7238f981's registry metadata, source and CSS for tabs, user-menu,
+button, switch, badge, empty-states and notification-center. Their React/Radix/Motion dependencies
+are references only; no pnpm runtime is installed in the Swift package. Existing Arc MIT notice
+continues to ship in the app bundle.
+
+- ArcTabs shares the stationary labels/gliding raised selection, selected accent, focus outline and
+  Arrow/Home/End behavior across provider, Settings and configuration-preview tabs.
+- SettingsMenu adapts user-menu's compact identity header, 38-point destination rows and quiet
+  green highlight to General/Shortcuts/Agent connections. AppKit/SwiftUI own anchoring, outside-click
+  dismissal and keyboard focus; account/theme/sign-out actions do not fit this local app.
+- LanternButtonStyle covers primary, secondary, danger, ghost, toolbar, menu, row and tab rendering.
+  Native Button retains release/cancellation/disabled semantics. Popover anchors never press-scale.
+- ArcSwitchStyle uses the 42×24 fixed track and 18-point thumb with interruptible native selection
+  animation, immediate press feedback and native Toggle accessibility representation.
+- SessionStatusBadge follows Arc's semantic tones and 22-point small pills; Complete is success,
+  Ended neutral, attention/approval warning. No simulated progress or looping completed-state effects.
+- AgentEmptyState adapts the card/illustration/copy/single-action hierarchy. The user's emblem
+  replaces the sparkle. Notification-center grouping inspired the approval section's presentation;
+  read/unread history is omitted because it would introduce an unauthorized new data feature.
+
+The supplied images.png is opaque with a baked checkerboard. The built-in editor extracted a PNG
+with real alpha, including the emblem's internal cutouts. LanternEmblem renders that alpha as a
+native template in the exact #069b2e accent. Supplied head/avatar, provider icons and sound remain
+byte-identical. Native menus and macOS title-bar controls remain system-owned.
+
+Connections uses an independent transparent NSPanel rather than an attached sheet: the companion
+retains its own rounded alpha surface. Direct content geometry sizes only that setup card.
+PanelLayout gives the companion a content-based height with a 640-point cap; the AppKit controller
+retargets actual bounds and retains the existing reveal-readiness deadline. Header pans reuse the
+fixed-screen-coordinate PanelDrag; below-header events are excluded before recognition.

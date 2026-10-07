@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.3.0 — 2026-10-07
+
+- Arc-inspired native tabs, gear menu, buttons, switches, status badges and empty states.
+- Compact Connections and Settings windows; the session window grows with its contents and scrolls at a height limit.
+- Expanded header can be dragged anywhere without a grip icon.
+- Supplied Green Lantern emblem replaces the sparkle; head, agent icons and A-Train cue retained.
+- Removed header pin/connections icons, long shortcut explanation and the entire usage feature.
+- Connections opens as a separate rounded card, preserving the companion's corner transparency.
+
+## 0.2.0 — 2026-10-07
+
+- Command–Return Allow once and Command–Option–H show/hide shortcuts.
+- Idle hide with hover reveal, launch at login and foreground Settings.
+- Optional Claude usage telemetry, subsequently removed in 0.3.0 at the user's request.
+
 ## 0.1.14 — 2026-10-07
 
 Use the supplied A-Train.mp3 clip for attention alerts. Bundle the original audio locally,
