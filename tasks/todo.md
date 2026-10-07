@@ -142,8 +142,10 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Usage state — invalid/missing/stale/reset/partial window tests passed.
 - [x] Usage transport/relay — real delivery has no decisions/sessions/presentation changes; executable fixture preserves prior command on malformed/600KB input, early exit, absent server and unexpected allow ack.
 - [x] Usage configuration — exact ownership/idempotence/restoration/concurrency tests and setup UI; boolean-vs-number ownership defect reproduced and fixed.
-- [ ] Runtime/review/package — all tests, native UI, signatures/assets, rollback, safe install.
-- [ ] GitHub checks/archives — source commits, CI success, honest morning handoff; stop heartbeat.
+- [x] Automated verification/package — full suite 68 functions/72 cases, final focused login tests, both smoke fixtures, ZIP CRC, extracted signatures and exact resource hashes.
+- [x] GitHub checks/archives — committed feature branch, green code CI, draft PR #1, verified exact source archive.
+- [ ] Native review and rollout — onscreen Settings/shortcuts/usage/idle checks, safe no-live-approval upgrade with 0.1.14 rollback, native login status.
+- [ ] Complete final handoff and stop heartbeat after native rollout; OS/user-only checks remain explicitly documented.
 
 Open live check: installed Claude extension2.1.289 consumes unified usage events internally, but
 no documented public export or statusLine emission has been established for native panel sessions.
@@ -155,18 +157,18 @@ Installed extension's `usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET
 panel_usage_update messaging are not used as Lantern integrations. Official status-line telemetry
 remains the supported relay path; native-panel live data is an explicit compatibility check.
 
-Checkpoint 04:40 Dubai: local commits `81d77d3`, `3d52ed6`, `3c417e1`, `2268f22` preserve
-completed slices. Final uncommitted usage transport/relay/UI and canonical-app guard are under
-full verification, package and smoke command (exec cell213; logs `/private/tmp/lantern-0.2.0-*.log`).
-No installed-app, login item, live configuration or GitHub changes yet. Last full suite before
-guard addition passed 67 functions (71 parameterized cases); guard's three focused tests passed.
-Next: finish final native review, package extraction/signatures, safe upgrade with 0.1.14 backup,
-native login status, GitHub CI and source archive. Do not repeat checks without intervening changes.
+Current checkpoint: feature source `8dc91d8` passed the complete local suite (68/72), final focused
+login/installation tests, release packaging and both smoke fixtures. GitHub run37588602158 is green;
+[draft PR #1](https://github.com/imadd23x/Lantern/pull/1) is attached to the task. The 0.2.0 ZIP
+passes CRC and macOS extraction/deep strict signatures. Head/icons/A-Train and both hook hashes
+are unchanged. The source ZIP is checked against every tracked blob; SHA256SUMS covers both ZIPs.
 
-11:22 Dubai: native review blocked by locked Mac. CUA `getApp` took until07:21 UTC to return
-the lock failure; do not repeat it without the user's unlock reply. User asked asynchronously.
-Full suite passed68/72 and both packaged smoke fixtures passed. Head/icons/A-Train match installed
-bytes and both hook hashes are unchanged. Added a Settings key-window login-status refresh;
-three focused tests passed, final packaging/smoke is exec cell227. Installed0.1.14 is untouched.
-Finish source commits, feature-branch CI/archives while waiting. Preserve main/release rollout until
-native acceptance and a safe no-live-approval upgrade can be completed.
+Native review is blocked by the locked Mac. CUA `getApp` took until07:21 UTC to return the lock
+failure; do not retry before the user's unlock reply. An async unlock question is pending.
+Installed0.1.14/build15 is untouched. No login registration or live usage setup was attempted.
+The prepared rollback installer `/private/tmp/lantern-install-0.2.0.py` has not run. Preserve
+main/release tags until native acceptance and a safe no-live-approval upgrade. The bounded
+overnight heartbeat rule expired at08:00 Dubai; do not create a replacement automation.
+Next: after unlock, review an isolated final package, observe/quit the old app safely, install
+with rollback, verify native login/listener state, finish GitHub rollout and pause the heartbeat.
+Do not repeat unchanged local checks; documentation-only updates need whitespace/archive checks.

@@ -476,7 +476,10 @@ auth-file access, experimental extension API calls or paid inference were added.
 Tests failed before each logic slice. Full local suite passed 68 functions / 72 parameterized cases
 (28 Core + 40 App) in `/private/tmp/lantern-0.2.0-tests.log`. A final one-line Settings key-window
 delegate refreshes the login status after returning from macOS; its three focused guard/login tests
-passed and the final release package is being rebuilt. Full CI on the final source remains required.
+passed. Final release packaging and both smoke fixtures passed; the complete final code suite,
+packaging, smoke fixtures and whitespace checks also passed in
+[GitHub CI run 37588602158](https://github.com/imadd23x/Lantern/actions/runs/37588602158)
+for source commit `8dc91d8eaa4ee408832f6459650238285551623d`.
 
 Coverage includes retained hotkey registrations on failure, disabled/metadata-only bindings,
 stable request selection without decisions, idle blockers/manual hiding/passive reveal, queue
@@ -493,7 +496,10 @@ and no printed permission grant even from an unexpected allow acknowledgement.
 The ZIP CRC passed. Python's generic extraction exposed AppleDouble metadata as files and failed
 the temporary copy's signature check; no such copy was installed. macOS `ditto` extraction passes
 deep strict signatures for app and relay. The supplied head, provider icons and A-Train resource
-match installed0.1.14 byte-for-byte. Agent settings hashes remain unchanged:
+match installed0.1.14 byte-for-byte. The verified app ZIP is `outputs/Lantern-0.2.0.zip`,
+SHA256 `9df0cfe60e5efc53ecc2b305076c22227b3fe96282e25b1c7a373566a4c68561`.
+The candidate source ZIP passes CRC and matches every tracked blob in its archived commit;
+`outputs/SHA256SUMS` records both archive digests. Agent settings hashes remain unchanged:
 Codex `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`;
 Claude `c5eefd580bab15712e8f580351933f1d2be7cb0398ea4491a0c513d7b2191fa0`.
 
@@ -508,3 +514,10 @@ The supported source is [Claude's status-line JSON](https://code.claude.com/docs
 not private messaging or credentials. Native-panel usage stays unavailable until valid data arrives.
 Next-login behavior, physical hover/focus, multi-display and exact inactive-tab navigation remain
 separate live checks; existing safe Claude navigation code is unchanged.
+
+The feature branch is published as [draft PR #1](https://github.com/imadd23x/Lantern/pull/1).
+Main and release tags remain unchanged pending native acceptance. The staged installer is
+`/private/tmp/lantern-install-0.2.0.py`; it has not run. It stages and verifies the new bundle,
+retains a unique 0.1.14/build15 rollback copy, compares hook hashes and restores the old bundle
+if replacement fails. Run it only after the installed app is observed without pending approvals
+and quit through its own menu. Remove any installed usage relay before a pre-0.2 rollback.
