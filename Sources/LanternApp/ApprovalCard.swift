@@ -40,11 +40,11 @@ struct ApprovalCard: View {
                 }
                     .buttonStyle(LanternButtonStyle(kind: .primary))
                     .disabled(request.event.detail.isEmpty || now >= request.expiresAt)
-                Button("Deny") { decide(.deny) }.buttonStyle(LanternButtonStyle(kind: .secondary))
+                Button("Deny") { decide(.deny) }.buttonStyle(LanternButtonStyle(kind: .danger))
                     .disabled(now >= request.expiresAt)
             }.controlSize(.regular).font(.system(size: 12, weight: .medium))
-            Button("Answer in agent ↗", action: answerInAgent).buttonStyle(.plain)
-                .font(.system(size: 10)).foregroundStyle(Palette.subtle)
+            Button("Answer in agent ↗", action: answerInAgent).buttonStyle(LanternButtonStyle(kind: .ghost))
+                .font(.system(size: 10)).frame(height: 24)
         }.padding(14).background(Palette.accent.opacity(0.045)).clipShape(RoundedRectangle(cornerRadius: 17))
             .overlay(RoundedRectangle(cornerRadius: 17).stroke(Palette.accent.opacity(0.17), lineWidth: 1))
     }

@@ -32,6 +32,11 @@ struct LanternReducedMotion: DynamicProperty {
 enum Palette {
     static let accent = Color(.sRGB, red: 6 / 255.0, green: 155 / 255.0, blue: 46 / 255.0, opacity: 1)
     static let background = Color(red: 0.065, green: 0.07, blue: 0.08)
+    static let raised = Color(red: 0.14, green: 0.15, blue: 0.16)
+    static let inset = Color.black.opacity(0.18)
+    static let accentText = Color(red: 0.25, green: 0.82, blue: 0.40)
+    static let warning = Color(red: 0.97, green: 0.71, blue: 0.34)
+    static let danger = Color(red: 1, green: 0.48, blue: 0.46)
     static let card = Color.white.opacity(0.045)
     static let subtle = Color.white.opacity(0.55)
     static let border = Color.white.opacity(0.09)
@@ -52,7 +57,7 @@ enum LanternMotion {
 
 /// Changes rendering only. SwiftUI Button still owns activation, cancellation and disabled behavior.
 struct LanternButtonStyle: ButtonStyle {
-    enum Kind { case primary, secondary, toolbar, row }
+    enum Kind { case primary, secondary, danger, ghost, toolbar, menuTrigger, menu, tab, switchRow, row }
     let kind: Kind
 
     func makeBody(configuration: Configuration) -> some View {
@@ -71,33 +76,43 @@ private struct ControlSurface: View {
     @LanternReducedMotion private var reducedMotion
 
     private var highlighted: Bool { enabled && (hovered || focused || pressed) }
-    private var radius: CGFloat { kind == .row ? 15 : 10 }
+    private var radius: CGFloat { kind == .row ? 15 : 9 }
     private var compactControl: Bool { controlSize == .small || controlSize == .mini }
+    private var unpadded: Bool { [.row, .toolbar, .menuTrigger, .menu, .tab, .switchRow].contains(kind) }
     private var fill: Color {
         switch kind {
-        case .primary: Palette.accent.opacity(highlighted ? 0.88 : 1)
-        case .secondary, .row: highlighted ? Color.white.opacity(0.085) : Palette.card
-        case .toolbar: Color.white.opacity(pressed ? 0.14 : highlighted ? 0.09 : 0)
+        case .primary: Palette.accent.opacity(pressed ? 0.92 : highlighted ? 0.96 : 1)
+        case .secondary, .danger, .row: highlighted ? Color.white.opacity(0.085) : Palette.card
+        case .menu: highlighted ? Palette.accent.opacity(0.14) : .clear
+        case .toolbar, .menuTrigger, .ghost, .tab, .switchRow:
+            Color.white.opacity(pressed ? 0.12 : highlighted ? 0.055 : 0)
         }
     }
     private var edge: Color {
-        focused && enabled ? Palette.accent.opacity(0.8)
-            : kind == .toolbar ? Color.white.opacity(highlighted ? 0.12 : 0)
-            : Color.white.opacity(highlighted ? 0.18 : 0.09)
+        if focused && enabled { return Palette.accent.opacity(0.8) }
+        if kind == .danger && highlighted { return Palette.danger.opacity(0.6) }
+        return unpadded && kind != .row ? .clear : Color.white.opacity(highlighted ? 0.18 : 0.09)
+    }
+    private var foreground: Color {
+        if kind == .primary { return .black }
+        if kind == .danger { return Palette.danger }
+        if [.toolbar, .menuTrigger, .ghost].contains(kind) && !highlighted { return Palette.subtle }
+        return .white
     }
 
     var body: some View {
         content
-            .padding(.horizontal, kind == .row || kind == .toolbar ? 0 : compactControl ? 10 : 12)
-            .padding(.vertical, kind == .row || kind == .toolbar ? 0 : compactControl ? 4 : 7)
-            .frame(minWidth: kind == .toolbar ? 28 : nil,
-                   minHeight: kind == .toolbar ? 28 : kind == .row ? nil : compactControl ? 24 : 32)
-            .foregroundStyle(kind == .primary ? Color.black : kind == .toolbar && !highlighted ? Palette.subtle : .white)
+            .padding(.horizontal, unpadded ? 0 : compactControl ? 10 : 12)
+            .padding(.vertical, unpadded ? 0 : compactControl ? 4 : 7)
+            .frame(minWidth: [.toolbar, .menuTrigger].contains(kind) ? 28 : nil,
+                   minHeight: [.toolbar, .menuTrigger].contains(kind) ? 28 : unpadded ? nil : compactControl ? 26 : 32)
+            .foregroundStyle(foreground)
             .background(fill, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous).stroke(edge, lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous).stroke(edge, lineWidth: focused ? 1.5 : 1))
             .contentShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
-            .opacity(enabled ? 1 : 0.42)
-            .scaleEffect(enabled && pressed && !reducedMotion ? (kind == .row ? 0.995 : 0.98) : 1)
+            .opacity(enabled ? 1 : 0.5)
+            .scaleEffect(enabled && pressed && !reducedMotion && kind != .menuTrigger && kind != .tab && kind != .switchRow
+                         ? (kind == .row || kind == .menu ? 0.995 : 0.98) : 1)
             .animation(LanternMotion.feedback(reduced: reducedMotion), value: pressed)
             .animation(LanternMotion.feedback(reduced: reducedMotion), value: highlighted)
             .onHover { hovered = $0 }

@@ -26,6 +26,8 @@ final class ShortcutInput: NSView {
     var onCommit: ((ShortcutBinding) -> Bool)?
     private var pending: ShortcutBinding?
     private var message: String?
+    private var hovered = false
+    private var tracking: NSTrackingArea?
     override var acceptsFirstResponder: Bool { true }
 
     override init(frame: NSRect) {
@@ -34,6 +36,14 @@ final class ShortcutInput: NSView {
         toolTip = "Click and press a modified key. Escape cancels."
     }
     required init?(coder: NSCoder) { nil }
+    override func updateTrackingAreas() {
+        super.updateTrackingAreas()
+        if let tracking { removeTrackingArea(tracking) }
+        let area = NSTrackingArea(rect: .zero, options: [.mouseEnteredAndExited, .activeInKeyWindow, .inVisibleRect], owner: self)
+        addTrackingArea(area); tracking = area
+    }
+    override func mouseEntered(with event: NSEvent) { hovered = true; needsDisplay = true }
+    override func mouseExited(with event: NSEvent) { hovered = false; needsDisplay = true }
     override func resetCursorRects() { addCursorRect(bounds, cursor: .pointingHand) }
     override func accessibilityPerformPress() -> Bool { begin(); return true }
     override func mouseDown(with event: NSEvent) { begin() }
@@ -78,8 +88,8 @@ final class ShortcutInput: NSView {
 
     override func draw(_ dirtyRect: NSRect) {
         let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: 9, yRadius: 9)
-        NSColor.white.withAlphaComponent(capturing ? 0.12 : 0.055).setFill(); path.fill()
-        (capturing ? NSColor(Palette.accent) : NSColor.white.withAlphaComponent(0.12)).setStroke(); path.stroke()
+        NSColor.white.withAlphaComponent(capturing ? 0.12 : hovered ? 0.085 : 0.055).setFill(); path.fill()
+        (capturing || window?.firstResponder === self ? NSColor(Palette.accent) : NSColor.white.withAlphaComponent(hovered ? 0.18 : 0.12)).setStroke(); path.stroke()
         let label = capturing ? message ?? "Press shortcut…" : binding?.label ?? "Unassigned"
         let text = NSAttributedString(string: label, attributes: [.font: NSFont.monospacedSystemFont(ofSize: 11, weight: .medium),
                                                                  .foregroundColor: NSColor.white])
