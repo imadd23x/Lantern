@@ -555,3 +555,31 @@ and actions returned promptly. An idle review window was ordered out, with no wi
 explicit reopen returned the compact pill. This demonstrates idle hide and compact reopen, not
 physical hover reveal. Build16 fresh/reset/missing quota renders and preserving preview passed.
 Installed0.1.14 is unchanged pending the safe upgrade; native login status/next-login remain pending.
+
+### 0.2.0/build18 visibility toggle and rollout gate
+
+After confirming physical Cmd-Option-H hides the private review, the user requested the same
+chord also Show. The visibility regression failed on always-Hide before delegating to the existing
+`toggleCompanionVisibility` path. Show returns compact, with the listener and queued request IDs
+preserved by existing real-socket lifecycle coverage. The stored raw action key remains `hide` for
+compatibility; its code name and UI title now describe visibility. No approval-path logic changed.
+
+Full 76-function/81-case suite, both packaged smoke fixtures, ZIP CRC, macOS extraction and deep
+strict signatures pass. Build18 ZIP SHA256:
+`6fc4b4e6b7a8e8125727fbb29ae54e5bd31ae784ff1c5d85bc2d28e0249aa8c9`.
+Supplied assets match installed0.1.14 exactly. Build17 app/source archives are retained.
+Private review was quit through its own menu shortcut before rollout.
+
+Live settings changed independently during the day. Both current JSON roots are valid, same-user
+regular files and retain all recognized Lantern hook events at the stable relay path. Codex hash
+remains `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`; Claude is now
+`28c7bf5ecb66b6701f26e65508f93c20209bc5006e0a4681c2e75ddd05172ec6`. The installer captures
+that current preserving baseline, rather than overwriting the user's changes. No live settings
+were written. Usage statusLine is absent; unsupported native-panel telemetry remains unavailable.
+
+Installed0.1.14 shows Connected, active Claude/Codex rows and Enabled sound. It initially had no
+approval; the fresh check immediately before Quit found four real Claude approvals. Quit was
+aborted and the app left running. User was asked to handle the queue and reply ready. Prepared
+installer `/private/tmp/lantern-install-0.2.0.py` targets the verified build18 extraction and has not
+run. Native login, installed visibility toggle, and final safe upgrade remain pending. Next-login,
+physical hover and unsteered physical typing are explicit residual checks.

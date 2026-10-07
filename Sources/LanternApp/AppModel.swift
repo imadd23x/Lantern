@@ -100,7 +100,7 @@ final class AppModel: ObservableObject {
 
     func performShortcut(_ action: ShortcutAction) {
         switch action {
-        case .hide: hideCompanion()
+        case .visibility: toggleCompanionVisibility()
         case .allowOnce:
             guard allowsGlobalApproval, let request = selectedApproval else { return }
             decide(request.id, .allow)

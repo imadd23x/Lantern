@@ -7,13 +7,13 @@ import LanternTestSupport
 @MainActor
 @Suite(.serialized)
 struct DesktopCommandTests {
-    @Test func hideShortcutAlwaysHidesWithoutTogglingShow() {
+    @Test func visibilityShortcutTogglesAndAlwaysReopensCompact() {
         let model = AppModel()
         model.showCompanion(expanded: true)
-        model.performShortcut(.hide)
+        model.performShortcut(.visibility)
         #expect(model.companionHidden && !model.expanded)
-        model.performShortcut(.hide)
-        #expect(model.companionHidden && !model.expanded)
+        model.performShortcut(.visibility)
+        #expect(!model.companionHidden && !model.expanded)
     }
 
     @Test func allowShortcutRequiresTheDisplayedRequestAndPreservesQueueAndPassiveFocus() async throws {

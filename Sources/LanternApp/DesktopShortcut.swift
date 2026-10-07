@@ -1,12 +1,13 @@
 import Foundation
 
 enum ShortcutAction: String, CaseIterable, Codable, Sendable {
-    case allowOnce, hide
+    case allowOnce
+    case visibility = "hide"
 
     var title: String {
         switch self {
         case .allowOnce: "Allow once"
-        case .hide: "Hide Lantern"
+        case .visibility: "Show or hide Lantern"
         }
     }
 }
@@ -43,6 +44,6 @@ struct ShortcutBinding: Codable, Equatable, Sendable {
 
     static let defaults: [ShortcutAction: Self] = [
         .allowOnce: Self(keyCode: 36, modifiers: .command, keyName: "Return"),
-        .hide: Self(keyCode: 4, modifiers: [.command, .option], keyName: "H"),
+        .visibility: Self(keyCode: 4, modifiers: [.command, .option], keyName: "H"),
     ]
 }

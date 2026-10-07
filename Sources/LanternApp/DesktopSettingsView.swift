@@ -38,7 +38,7 @@ struct DesktopSettingsView: View {
     private var shortcutSettings: some View {
         VStack(alignment: .leading, spacing: 16) {
             Toggle("Enable global shortcuts", isOn: $preferences.shortcutsEnabled).toggleStyle(.switch)
-            Text("Click a shortcut, then press your preferred combination. Escape cancels. Command–Return allows only the displayed, unexpired request. Command–Option–H hides Lantern. Allow is inactive in other apps when no actionable card is visible.")
+            Text("Click a shortcut, then press your preferred combination. Escape cancels. Command–Return allows only the displayed, unexpired request. Command–Option–H shows or hides the pill. Allow is inactive in other apps when no actionable card is visible.")
                 .font(.system(size: 12)).foregroundStyle(Palette.subtle)
             ForEach(ShortcutAction.allCases, id: \.self) { action in
                 if let binding = preferences.bindings[action] {

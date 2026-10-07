@@ -182,3 +182,18 @@ review found registration/latch churn, premature onAppear readiness and edit-pat
 bypass; all are addressed. User skipped extra external review; a fresh implementation review and
 full suite are running. The installed app/settings remain unchanged. Source changes are uncommitted
 pending final verification/package/native acceptance; do not install the older build16 candidate.
+
+User confirmed physical Cmd-Return and Cmd-Option-H Hide in build17. Socket ack was exact allow.
+User then requested the same visibility shortcut also unhide. Build18 delegates that action to the
+existing toggleCompanionVisibility path, preserves the raw stored key, and returns compact on Show.
+The visibility regression failed on the old always-Hide behavior before this fix. Final checks
+and safe installation are next; no fresh review needed for the existing helper delegation.
+
+Build18 final checkpoint: full76/81, both smoke fixtures, strict extracted signatures/CRC and exact
+supplied assets passed. ZIP SHA6fc4b4e. Private physical Allow ack and return-to-pill passed;
+user confirmed Hide, then requested toggle, now tested and packaged. Private review was quit.
+Live Claude settings changed independently; valid current hook baseline hash28c7bf5e is preserved.
+Installed0.1.14 remains Connected/Enabled. Fresh pre-Quit check detected four real Claude requests,
+so Quit was aborted. Async user ready question is pending; do not disconnect that queue. Installer
+is prepared for /private/tmp/lantern-release18-4my5idp6/Lantern.app, expected build18 and current
+hook hashes. Continue safe upgrade/native login/visibility, GitHub final rollout, stop heartbeat.

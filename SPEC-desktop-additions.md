@@ -11,7 +11,7 @@ observation is recorded as partial evidence, not proof of exact-chat routing.
 ## Acceptance registered before implementation
 
 1. User refined shortcuts on 2026-10-07 after native review: exactly Command+Return for
-   Allow once and Command+Option+H to hide (never toggle Show). Both remain configurable.
+   Allow once and Command+Option+H to toggle visibility (Show returns the compact pill). Both remain configurable.
    Allow is registered only for a visible, settled, selected actionable card, outside Settings/
    connection sheets and demo mode. Capture/re-check exact displayed request identity, nonempty
    proposal and deadline. A held key never drains a queue, including registration changes between
@@ -58,7 +58,7 @@ review is skipped for this unattended run; no external model CLI is authorized.
 
 ## Rollout / rollback
 
-Ship 0.2.0/build17 as native additions; retain the installed0.1.14 app. Back up any explicitly
+Ship 0.2.0/build18 as native additions; retain the installed0.1.14 app. Back up any explicitly
 activated usage statusLine, preserve both providers' existing hooks/trust, and install only with no
 live approval connections pending. Retain old app/tag/ZIPs. Publish current source and checks to
 the existing private imadd23x/Lantern repo. User-only OS approval or unsupported live telemetry

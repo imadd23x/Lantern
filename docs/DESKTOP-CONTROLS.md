@@ -10,7 +10,7 @@ The two defaults follow the user's refined choice:
 | Keys | Action |
 |---|---|
 | Command + Return | Allow the displayed request once |
-| Command + Option + H | Hide the pill |
+| Command + Option + H | Show / hide the pill |
 
 Allow is registered only while a selected, unexpired card with a proposal is visible and settled.
 It is disabled in Settings, connections sheets and demos. Holding the combination does not approve
@@ -21,7 +21,7 @@ focus and return to the pill after the last decision; a manually opened card sta
 Click a binding in Settings, press the new combination and release the key to save. Escape cancels.
 Recording pauses global actions and owns only an app-local release monitor. Plain and Shift-only
 combinations, invalid keys and duplicate active bindings are rejected. A failed native replacement
-retains the working registration and reports its error. Hide always hides; use the menu to Show.
+retains the working registration and reports its error. The visibility shortcut toggles Show/Hide and always reopens as a compact pill.
 
 ## Idle presentation
 
@@ -57,5 +57,5 @@ backup. Invalid or oversized usage data and an absent Lantern do not interrupt t
 Only the unchanged owned wrapper can be restored; an external edit requires fresh review.
 Remove the relay before rolling back to a pre-0.2.0 executable.
 
-Native review resumed after unlock. The two-shortcut refinement is under verification before
-installation; installed0.1.14 and both agent settings are unchanged. Current evidence is in VERIFICATION.md.
+Native review resumed after unlock. The refinement passes automated checks; safe installation is awaiting an empty live approval queue.
+Installed0.1.14 and both agent settings are unchanged. Current evidence is in VERIFICATION.md.
