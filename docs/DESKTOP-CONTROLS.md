@@ -57,5 +57,7 @@ backup. Invalid or oversized usage data and an absent Lantern do not interrupt t
 Only the unchanged owned wrapper can be restored; an external edit requires fresh review.
 Remove the relay before rolling back to a pre-0.2.0 executable.
 
-Native review resumed after unlock. The refinement passes automated checks; safe installation is awaiting an empty live approval queue.
-Installed0.1.14 and both agent settings are unchanged. Current evidence is in VERIFICATION.md.
+Installed0.2.0/build19 at `~/Applications/Lantern.app`, with signed0.1.14 rollback retained.
+Native listener/activity and login switch On are observed. Physical private Allow/Hide passed;
+installed visibility/Settings also passed user confirmation. Next-login/hover/typing remain manual checks.
+Current evidence and rollback location are in VERIFICATION.md.

@@ -604,3 +604,24 @@ confirmation is pending, since a per-window capture alone does not prove desktop
 Native launch again stalled (101 minutes) despite the supplied timeout, then ID-based rebind/actions
 returned promptly. Installed0.1.14 remains untouched; the user-ready reply for an empty live approval
 queue is still pending. Installer now points to the verified build19 extraction. No live config writes.
+
+### Installed0.2.0/build19 — 2026-10-07
+
+After the user's ready reply, a fresh full native check found an empty live approval queue; Quit
+was requested through Lantern's own menu shortcut. Private review was quit first. The guarded
+installer verified stopped process, release/stage/installed signatures, all installed files against
+extraction and current hook hashes. It retained signed0.1.14/build15 at
+`/Users/imad/Applications/Lantern Backups/0.1.14-build15-b58fd38e/Lantern.app`.
+No stale endpoint cleanup was needed. Installed version/build is0.2.0/19.
+
+Native restart was compact, then expansion showed Connected, actual Codex activity, retained head/
+icon/green styling and Enabled sound. Both hook hashes remain the preserving current baseline.
+Settings gear opened the focused Settings window. Native canonical-path guard enables Launch at
+login; switching it On produced no error or requires-approval text. Shortcuts shows the exact two
+requested defaults and no registration error. Usage shows both windows Unavailable and relay not
+configured, reflecting no supported live native-panel telemetry. No usage configuration was applied.
+
+The user confirmed installed Show/Hide restores the compact pill and active Settings stays above
+the companion. This provides desktop-stacking evidence beyond the per-window capture. Next-login behavior,
+physical top-edge hover and unsteered physical typing remain separate checks; no logout/reboot or
+paid agent turn was used. Earlier private physical Allow/Hide tests and exact allowance receipt stand.

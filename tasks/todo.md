@@ -144,7 +144,7 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Usage configuration — exact ownership/idempotence/restoration/concurrency tests and setup UI; boolean-vs-number ownership defect reproduced and fixed.
 - [x] Automated verification/package — full suite 68 functions/72 cases, final focused login tests, both smoke fixtures, ZIP CRC, extracted signatures and exact resource hashes.
 - [x] GitHub checks/archives — committed feature branch, green code CI, draft PR #1, verified exact source archive.
-- [ ] Native review and rollout — onscreen Settings/shortcuts/usage/idle checks, safe no-live-approval upgrade with 0.1.14 rollback, native login status.
+- [x] Native review and rollout — native Settings/usage, physical Allow/Hide, installed Show/Hide/Settings confirmation, safe empty-queue upgrade with signed rollback, native login On.
 - [ ] Complete final handoff and stop heartbeat after native rollout; OS/user-only checks remain explicitly documented.
 
 Open live check: installed Claude extension2.1.289 consumes unified usage events internally, but
@@ -202,3 +202,15 @@ User added Settings z-order fix: screenshot traces to companion .statusBar vs Se
 Build19 raises Settings just above the companion only while key/open, lowers on resign, and leaves
 presentation/approval state untouched. Static native configuration: no mirror unit test. Rebuild,
 relay smoke and actual visible native review required. Live approval ready reply is still pending.
+
+Installed0.2.0/build19 after ready + fresh empty-queue check, ordered native Quit and guarded swap.
+Backup: ~/Applications/Lantern Backups/0.1.14-build15-b58fd38e/Lantern.app. Strict signed bundles,
+exact installed files and unchanged current hook hashes passed. Restart compact; Connected/live
+Codex/Enabled observed. Native login switch On with no warning, exact two bindings/no error.
+Usage honestly unavailable, relay not installed. Async final installed toggle/Settings confirmation
+pending. Next-login/physical hover/typing remain manual residuals. No code changes required unless
+user reports a runtime failure; finish GitHub handoff/release and pause heartbeat after acceptance.
+
+User confirmed both installed visibility toggle/compact return and active Settings foreground.
+Native acceptance is complete within documented next-login/hover/typing and telemetry limitations.
+Finish docs-only commit, green final CI, merge/release/source archive and pause automation.
