@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Combine
 
 @MainActor
 final class DesktopSettingsController: NSObject, NSWindowDelegate {
@@ -7,10 +8,15 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
     private let shortcuts: ShortcutController
     private let login: LoginItemController
     private var window: NSWindow?
+    private var recordingChanged: AnyCancellable?
+    private var releaseMonitor: Any?
 
     init(model: AppModel, shortcuts: ShortcutController, login: LoginItemController) {
         self.model = model; self.shortcuts = shortcuts; self.login = login
         super.init()
+        recordingChanged = shortcuts.$recording.sink { [weak self] action in
+            self?.monitorRelease(recording: action != nil)
+        }
     }
 
     func show() {
@@ -34,7 +40,22 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
         NSApp.activate(ignoringOtherApps: true)
     }
 
-    func close() { window?.close() }
+    private func monitorRelease(recording: Bool) {
+        if let releaseMonitor { NSEvent.removeMonitor(releaseMonitor); self.releaseMonitor = nil }
+        guard recording else { return }
+        // App-local only: Command key equivalents may bypass NSView.keyUp.
+        releaseMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { [weak self] event in
+            MainActor.assumeIsolated {
+                if let window = self?.window, window.isKeyWindow,
+                   let input = window.firstResponder as? ShortcutInput, input.capturing {
+                    input.keyUp(with: event)
+                }
+            }
+            return event
+        }
+    }
+
+    func close() { shortcuts.recording = nil; monitorRelease(recording: false); window?.close() }
     func windowWillClose(_ notification: Notification) { shortcuts.recording = nil; model.isSettingsOpen = false }
     func windowDidResignKey(_ notification: Notification) { shortcuts.recording = nil }
     func windowDidBecomeKey(_ notification: Notification) { login.refresh() }

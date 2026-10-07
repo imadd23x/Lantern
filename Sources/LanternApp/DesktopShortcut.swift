@@ -1,15 +1,12 @@
 import Foundation
 
 enum ShortcutAction: String, CaseIterable, Codable, Sendable {
-    case visibility, attention, nextProvider, previousProvider, mute
+    case allowOnce, hide
 
     var title: String {
         switch self {
-        case .visibility: "Show or hide Lantern"
-        case .attention: "Next attention request"
-        case .nextProvider: "Next agent filter"
-        case .previousProvider: "Previous agent filter"
-        case .mute: "Mute or unmute alerts"
+        case .allowOnce: "Allow once"
+        case .hide: "Hide Lantern"
         }
     }
 }
@@ -45,10 +42,7 @@ struct ShortcutBinding: Codable, Equatable, Sendable {
     }
 
     static let defaults: [ShortcutAction: Self] = [
-        .visibility: Self(keyCode: 37, modifiers: .standard, keyName: "L"),
-        .attention: Self(keyCode: 0, modifiers: .standard, keyName: "A"),
-        .nextProvider: Self(keyCode: 30, modifiers: .standard, keyName: "]"),
-        .previousProvider: Self(keyCode: 33, modifiers: .standard, keyName: "["),
-        .mute: Self(keyCode: 46, modifiers: .standard, keyName: "M"),
+        .allowOnce: Self(keyCode: 36, modifiers: .command, keyName: "Return"),
+        .hide: Self(keyCode: 4, modifiers: [.command, .option], keyName: "H"),
     ]
 }

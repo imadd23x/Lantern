@@ -19,6 +19,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     private var interruptedApplication: NSRunningApplication?
     private var pointerTimer: Timer?
     private var hotspotEntry = PointerEntry(inside: false)
+    private var revealReadiness = PanelRevealReadiness()
     private var reducedMotion: Bool {
         CommandLine.arguments.contains("--reduce-motion") || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
     }
@@ -79,6 +80,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     func show() { layout(animated: false); panel.orderFrontRegardless() }
 
     func stop() {
+        model.approvalPresentationReady = false
         pointerTimer?.invalidate(); pointerTimer = nil; delayedLayout?.cancel()
         if let screenObserver { NotificationCenter.default.removeObserver(screenObserver) }
         if let motionObserver { NSWorkspace.shared.notificationCenter.removeObserver(motionObserver) }
@@ -94,6 +96,8 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     }
 
     private func present() {
+        revealReadiness.update(expanded: model.expanded, reduced: reducedMotion, now: ProcessInfo.processInfo.systemUptime)
+        model.approvalPresentationReady = false
         if !model.allowsKeyboardFocus { returnKeyboardFocus() }
         pillPan?.isEnabled = !model.expanded && !model.companionHidden && !model.showConnections
         delayedLayout?.cancel()
@@ -151,6 +155,8 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     }
 
     private func layout(animated: Bool) {
+        model.approvalPresentationReady = false
+        revealReadiness.update(expanded: model.expanded, reduced: reducedMotion, now: ProcessInfo.processInfo.systemUptime)
         let screen = anchor.flatMap { point in NSScreen.screens.first { $0.frame.contains(point) } }
             ?? NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main
         guard let screen else { return }
@@ -173,6 +179,10 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             Task { @MainActor [weak self] in
                 guard let self, self.layoutGeneration == generation else { return }
                 self.animating = false
+                let remaining = self.revealReadiness.remaining(at: ProcessInfo.processInfo.systemUptime)
+                if remaining > 0 { try? await Task.sleep(for: .seconds(remaining)) }
+                guard self.layoutGeneration == generation else { return }
+                self.model.approvalPresentationReady = self.panel.isVisible && self.model.expanded && !self.model.companionHidden
             }
         }
     }

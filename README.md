@@ -45,8 +45,8 @@ The release ZIP is created from verified unsynced staging and passes verificatio
 ## Desktop settings
 
 **Settings…** adds configurable global shortcuts, idle hide with hover reveal, pinning, native
-launch at login, and Claude usage indicators. Defaults: Control+Option+Command with L (visibility),
-A (next attention), [ / ] (provider filters), and M (mute). Shortcuts never approve requests.
+launch at login, and Claude usage indicators. Defaults: Command+Return allows the visible, selected request once;
+Command+Option+H hides the pill. No approval shortcut is active without an actionable card.
 The idle compact pill hides after 30 seconds; work, attention and interaction keep it visible.
 Manual Hide stays hidden until explicitly shown. Hover reveals an idle-hidden pill without focus.
 

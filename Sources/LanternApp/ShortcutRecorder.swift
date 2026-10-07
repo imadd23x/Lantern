@@ -70,6 +70,8 @@ final class ShortcutInput: NSView {
     override func keyUp(with event: NSEvent) {
         guard capturing, let pending, pending.keyCode == event.keyCode else { return }
         // Resume global registrations only after the recorded key has been released.
+        self.pending = nil
+        capturing = false
         _ = onCommit?(pending)
         window?.makeFirstResponder(nil)
     }

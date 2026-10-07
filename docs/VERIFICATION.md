@@ -521,3 +521,37 @@ Main and release tags remain unchanged pending native acceptance. The staged ins
 retains a unique 0.1.14/build15 rollback copy, compares hook hashes and restores the old bundle
 if replacement fails. Run it only after the installed app is observed without pending approvals
 and quit through its own menu. Remove any installed usage relay before a pre-0.2 rollback.
+
+### 0.2.0/build17 shortcut refinement after unlock
+
+The user narrowed global actions to Command+Return Allow once and Command+Option+H Hide.
+The prior five navigation actions are removed. Tests reproduced missing action APIs, a held chord
+at registration, precise expiry delayed by polling, and late callbacks after disable before fixes.
+The final full suite passed 76 functions / 81 parameterized cases (28 Core + 48 App functions).
+Both packaged activity and usage fixtures pass. Logs: `/private/tmp/lantern-0.2.0-build17-*.log`.
+
+Three bounded internal review cycles found and resolved latch clearing during queue/registration
+churn, premature card appearance, edit-path eligibility bypass, nonanimated relayout readiness and
+expiry registration timing. The final read-only review found no material scoped violations.
+Extra external review was explicitly skipped. Native registrations retain held references only to
+receive release; every callback re-checks current enabled/visible/displayed/deadline conditions.
+
+The build17 ZIP passes CRC, macOS extraction and deep strict signatures. SHA256:
+`6d95ec16bf5771172cee93bbec98bddd43f52d017140d448a4b3c0e49304ec14`.
+Head, both provider icons and A-Train remain byte-identical to installed0.1.14. Build16 ZIP/source
+copies are retained. New isolated review: `/private/tmp/lantern-build17-mpz41nko/review/Lantern Shortcut Review.app`,
+with private runtime/config directories and configuration/login writes disabled.
+
+Native Settings shows exactly the requested two defaults, with no visible registration error.
+Command-key recording now commits after release: CUA changed the isolated Allow binding to Cmd-K,
+then restored Cmd-Return; neither remained stuck in Recording. The private non-executing
+ShortcutCheck proposal showed its Cmd-Return badge. The user pressed Cmd-Return, confirmed return
+to the pill, and its socket client received exactly `allow`. Physical Hide was not clearly confirmed
+on the first attempt; a clarified second check is pending. Unsteered physical typing is not explicitly
+confirmed by that response. No real agent permission was clicked or granted by automation.
+
+The native-control launch took 86 minutes to return despite a timeout; subsequent ID-based bindings
+and actions returned promptly. An idle review window was ordered out, with no windows available;
+explicit reopen returned the compact pill. This demonstrates idle hide and compact reopen, not
+physical hover reveal. Build16 fresh/reset/missing quota renders and preserving preview passed.
+Installed0.1.14 is unchanged pending the safe upgrade; native login status/next-login remain pending.

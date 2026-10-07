@@ -5,7 +5,9 @@ import LanternTransport
 
 @MainActor
 final class AppModel: ObservableObject {
-    @Published private(set) var state = SessionState()
+    @Published private(set) var state = SessionState() {
+        didSet { scheduleApprovalExpiry() }
+    }
     @Published private(set) var claudeUsage = ClaudeUsageState()
     @Published private(set) var expanded = false
     @Published private(set) var companionHidden = false
@@ -31,6 +33,7 @@ final class AppModel: ObservableObject {
     var onSettingsRequest: (() -> Void)?
     private let server: HookServer
     private var timer: Timer?
+    private var approvalExpiry: Task<Void, Never>?
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
     private let navigator: AgentNavigator
@@ -79,26 +82,28 @@ final class AppModel: ObservableObject {
         state.approvals.first { $0.id == selectedRequestID } ?? state.approvals.first
     }
 
+    @Published var approvalPresentationReady = false
+    @Published private(set) var displayedApprovalID: String?
+
+    var allowsGlobalApproval: Bool {
+        guard desktopPreferences.shortcutsEnabled, desktopPreferences.bindings[.allowOnce]?.enabled == true,
+              !isDemo, expanded, !companionHidden, !showConnections, !isSettingsOpen,
+              approvalPresentationReady, let request = selectedApproval,
+              displayedApprovalID == request.id else { return false }
+        return !request.event.detail.isEmpty && clock() < request.expiresAt
+    }
+
+    func setDisplayedApproval(_ id: String, visible: Bool) {
+        if visible { displayedApprovalID = id }
+        else if displayedApprovalID == id { displayedApprovalID = nil }
+    }
+
     func performShortcut(_ action: ShortcutAction) {
         switch action {
-        case .visibility: toggleCompanionVisibility()
-        case .mute: quiet.toggle()
-        case .attention:
-            let requests = state.approvals
-            if !requests.isEmpty {
-                let current = requests.firstIndex { $0.id == selectedApproval?.id } ?? -1
-                let request = requests[(current + 1) % requests.count]
-                selectedRequestID = request.id; providerFilter = request.event.provider
-            } else if let session = sessions.first(where: { [.attention, .failed].contains($0.phase) }) {
-                providerFilter = session.id.provider
-            }
-            showCompanion(expanded: true)
-        case .nextProvider, .previousProvider:
-            let order: [AgentProvider?] = [nil, .codex, .claude]
-            let current = order.firstIndex { $0 == providerFilter } ?? 0
-            let direction = action == .nextProvider ? 1 : -1
-            providerFilter = order[(current + direction + order.count) % order.count]
-            showCompanion(expanded: true)
+        case .hide: hideCompanion()
+        case .allowOnce:
+            guard allowsGlobalApproval, let request = selectedApproval else { return }
+            decide(request.id, .allow)
         }
     }
 
@@ -156,7 +161,10 @@ final class AppModel: ObservableObject {
         }
     }
 
-    func stop() { timer?.invalidate(); timer = nil; server.stop(); connectionStatus = .disconnected }
+    func stop() {
+        timer?.invalidate(); timer = nil; approvalExpiry?.cancel(); approvalExpiry = nil
+        server.stop(); connectionStatus = .disconnected
+    }
 
     func setExpanded(_ value: Bool) {
         recordInteraction()
@@ -241,6 +249,18 @@ final class AppModel: ObservableObject {
             if disconnected.count > 256 { disconnected.removeAll(keepingCapacity: true) }
         }
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+    }
+
+    private func scheduleApprovalExpiry() {
+        approvalExpiry?.cancel(); approvalExpiry = nil
+        guard isListening, !isDemo, let deadline = state.approvals.map(\.expiresAt).min() else { return }
+        let delay = max(0, deadline - clock())
+        guard delay.isFinite else { return }
+        approvalExpiry = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled else { return }
+            self?.tick()
+        }
     }
 
     func tick() {

@@ -28,3 +28,21 @@ struct PointerEntry {
         return isInside && !inside
     }
 }
+
+/// A window relayout cannot restart or bypass the independently timed details reveal.
+struct PanelRevealReadiness {
+    private var expanded = false
+    private var deadline: TimeInterval = 0
+    mutating func update(expanded next: Bool, reduced: Bool, now: TimeInterval) {
+        if next && !expanded { deadline = now + (reduced ? 0 : LanternMotion.detailsSettlingInterval) }
+        if !next { deadline = now }
+        expanded = next
+    }
+    func remaining(at now: TimeInterval) -> TimeInterval { max(0, deadline - now) }
+}
+
+extension LanternMotion {
+    static let detailsRevealDelay: TimeInterval = 0.12
+    static let detailsRevealDuration: TimeInterval = 0.24
+    static let detailsSettlingInterval: TimeInterval = detailsRevealDelay + detailsRevealDuration + 0.04
+}

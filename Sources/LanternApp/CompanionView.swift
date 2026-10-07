@@ -18,7 +18,7 @@ struct CompanionView: View {
                 details.frame(width: PanelPlacement.expanded.width, height: PanelPlacement.expanded.height - 72)
                     .opacity(model.expanded ? 1 : 0)
                     .animation(reducedMotion ? nil : model.expanded
-                               ? .easeOut(duration: 0.24).delay(0.12) : .easeOut(duration: 0.1), value: model.expanded)
+                               ? .easeOut(duration: LanternMotion.detailsRevealDuration).delay(LanternMotion.detailsRevealDelay) : .easeOut(duration: 0.1), value: model.expanded)
                     .allowsHitTesting(model.expanded)
                     .accessibilityHidden(!model.expanded)
             }
@@ -67,8 +67,13 @@ struct CompanionView: View {
             if let request {
                 approvalQueue.padding(.horizontal, 20).padding(.top, 12)
                 ApprovalCard(request: request, now: model.now, decide: { decision in model.decide(request.id, decision) },
-                             answerInAgent: { model.answerInAgent(request.id) })
-                    .id(request.id).padding(.horizontal, 20).padding(.top, 9)
+                             answerInAgent: { model.answerInAgent(request.id) },
+                             allowShortcut: model.desktopPreferences.shortcutsEnabled && model.allowsGlobalApproval
+                                ? model.desktopPreferences.bindings[.allowOnce].flatMap { $0.enabled ? $0.label : nil } : nil)
+                    .id(request.id)
+                    .onAppear { model.setDisplayedApproval(request.id, visible: true) }
+                    .onDisappear { model.setDisplayedApproval(request.id, visible: false) }
+                    .padding(.horizontal, 20).padding(.top, 9)
             }
             Spacer(minLength: 10)
             footer

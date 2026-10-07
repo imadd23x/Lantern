@@ -10,11 +10,15 @@ observation is recorded as partial evidence, not proof of exact-chat routing.
 
 ## Acceptance registered before implementation
 
-1. Configurable global shortcuts: show/hide, next attention, next/previous provider filter, mute.
-   Default modifiers Control+Option+Command reduce ordinary editing conflicts. Unsafe plain or
-   shift-only keys and duplicate active bindings are rejected. Registration errors are visible;
-   failed edits retain a working binding. Commands never send Allow/Deny. Selections use stable
-   request IDs and one model source of truth. Explicit commands may reveal manually hidden UI.
+1. User refined shortcuts on 2026-10-07 after native review: exactly Command+Return for
+   Allow once and Command+Option+H to hide (never toggle Show). Both remain configurable.
+   Allow is registered only for a visible, settled, selected actionable card, outside Settings/
+   connection sheets and demo mode. Capture/re-check exact displayed request identity, nonempty
+   proposal and deadline. A held key never drains a queue, including registration changes between
+   cards. Plain Enter remains in the user's typing app. Automatic collapse/focus restoration stay
+   intact. Custom recording must receive Command-key release and cancel/remove its local monitor
+   when focus/capture ends. Unsafe bindings, duplicates and native registration failures remain
+   visible and preserve a working binding. The original five navigation shortcuts are removed.
 2. Auto-hide enabled with default30s configurable delay, pin off. Only an idle compact pill hides;
    working/thinking, attention/pending requests, expanded UI, hover, settings, menus or drags block
    hide and reset the deadline. Manual hide differs from idle hide and remains hidden on hover/
@@ -54,7 +58,7 @@ review is skipped for this unattended run; no external model CLI is authorized.
 
 ## Rollout / rollback
 
-Ship 0.2.0/build16 as native additions; retain the installed0.1.14 app. Back up any explicitly
+Ship 0.2.0/build17 as native additions; retain the installed0.1.14 app. Back up any explicitly
 activated usage statusLine, preserve both providers' existing hooks/trust, and install only with no
 live approval connections pending. Retain old app/tag/ZIPs. Publish current source and checks to
 the existing private imadd23x/Lantern repo. User-only OS approval or unsupported live telemetry

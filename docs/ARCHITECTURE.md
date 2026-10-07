@@ -138,3 +138,15 @@ transaction applies the preview. Setup checks the executable before preview and 
 UsageRelay streams stdin to the saved command while capturing at most 200KB for quota parsing;
 oversized/invalid data and socket absence do not interrupt that command's stdout/stderr/env/cwd/exit.
 No auth files, private experimental extension APIs or paid model turns supply usage.
+
+### Approval shortcut refinement
+
+The two global actions are Allow once and Hide. AppModel gates Allow on exact displayed/selected
+identity, proposal/deadline and settled visible presentation. PanelController marks readiness after
+its window/details morph; card appearance alone does not opt into approval. ShortcutController
+applies availability in synchronization and edits. ShortcutLifecycle preserves physical-press state
+and defers native reference removal until release, preventing held keys from draining a queue.
+CarbonShortcuts samples only the configured key and required modifiers on registration so an already
+held chord is not new intent. DesktopSettingsController owns the temporary app-local key-up monitor;
+[Apple's event-monitor guide](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/MonitoringEvents/MonitoringEvents.html)
+describes its scope, main-thread delivery and early removal. No global input monitor is installed.

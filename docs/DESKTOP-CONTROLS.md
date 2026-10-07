@@ -5,19 +5,23 @@ Preferences are stored in the app's UserDefaults; session proposals remain in me
 
 ## Shortcuts
 
-The default modifier chord is Control + Option + Command:
+The two defaults follow the user's refined choice:
 
-| Key | Action |
+| Keys | Action |
 |---|---|
-| L | Show / hide the pill |
-| A | Select the next request needing attention |
-| ] / [ | Next / previous agent filter |
-| M | Mute / unmute attention sounds |
+| Command + Return | Allow the displayed request once |
+| Command + Option + H | Hide the pill |
 
-Click a binding in Settings, press the new combination and release the key to save. Escape
-cancels. Recording temporarily unregisters global shortcuts. Plain and Shift-only combinations,
-invalid keys and duplicate active bindings are rejected. A failed native replacement retains
-the working registration and reports its error. Shortcuts never grant or deny permission.
+Allow is registered only while a selected, unexpired card with a proposal is visible and settled.
+It is disabled in Settings, connections sheets and demos. Holding the combination does not approve
+the next queued request; release and press again. A combination already held when a request arrives
+also needs a fresh press. Plain Enter remains in the typing app. Automatic approvals retain passive
+focus and return to the pill after the last decision; a manually opened card stays expanded.
+
+Click a binding in Settings, press the new combination and release the key to save. Escape cancels.
+Recording pauses global actions and owns only an app-local release monitor. Plain and Shift-only
+combinations, invalid keys and duplicate active bindings are rejected. A failed native replacement
+retains the working registration and reports its error. Hide always hides; use the menu to Show.
 
 ## Idle presentation
 
@@ -29,7 +33,7 @@ block the deadline. Finishing an interaction starts a full new idle interval.
 Automatic hide orders the panel out. A separate low-frequency pointer sampler detects entry
 at the hidden pill's top edge, using its current display-clamped frame. Hover and new work
 reveal it without taking keyboard focus. A manually hidden pill stays hidden until Show,
-Finder reopen or an explicit global presentation shortcut. Automatic approval expansion
+or Finder reopen. Automatic approval expansion
 retains the existing return-to-pill and passive focus behavior.
 
 ## Launch at login
@@ -53,5 +57,5 @@ backup. Invalid or oversized usage data and an absent Lantern do not interrupt t
 Only the unchanged owned wrapper can be restored; an external edit requires fresh review.
 Remove the relay before rolling back to a pre-0.2.0 executable.
 
-Implementation, 68 tests and release relay checks passed. Native review/installation remain pending
-because the Mac locked during the overnight run. Installed0.1.14 and both agent settings are unchanged.
+Native review resumed after unlock. The two-shortcut refinement is under verification before
+installation; installed0.1.14 and both agent settings are unchanged. Current evidence is in VERIFICATION.md.

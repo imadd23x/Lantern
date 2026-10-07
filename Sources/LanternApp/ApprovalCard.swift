@@ -6,6 +6,7 @@ struct ApprovalCard: View {
     let now: TimeInterval
     let decide: (HookDecision) -> Void
     let answerInAgent: () -> Void
+    var allowShortcut: String? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -31,7 +32,12 @@ struct ApprovalCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading).padding(11)
             }.frame(height: 122).background(.black.opacity(0.22)).clipShape(RoundedRectangle(cornerRadius: 10))
             HStack(spacing: 8) {
-                Button { decide(.allow) } label: { Label("Allow once", systemImage: "checkmark").frame(maxWidth: .infinity) }
+                Button { decide(.allow) } label: {
+                    HStack {
+                        Label("Allow once", systemImage: "checkmark")
+                        if let allowShortcut { Text(allowShortcut).font(.system(size: 10, design: .monospaced)).opacity(0.7) }
+                    }.frame(maxWidth: .infinity)
+                }
                     .buttonStyle(LanternButtonStyle(kind: .primary))
                     .disabled(request.event.detail.isEmpty || now >= request.expiresAt)
                 Button("Deny") { decide(.deny) }.buttonStyle(LanternButtonStyle(kind: .secondary))

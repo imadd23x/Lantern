@@ -172,3 +172,13 @@ overnight heartbeat rule expired at08:00 Dubai; do not create a replacement auto
 Next: after unlock, review an isolated final package, observe/quit the old app safely, install
 with rollback, verify native login/listener state, finish GitHub rollout and pause the heartbeat.
 Do not repeat unchanged local checks; documentation-only updates need whitespace/archive checks.
+
+Resumed after user unlock: build16 native General/Shortcuts/Usage layouts and private connection
+preview inspected. Fresh42%/17%, reset-passed and missing-window meters rendered correctly. User
+refined the shortcut scope to exactly Command+Return Allow once and Command+Option+H Hide.
+Build17 replaces the five navigation actions; original candidate ZIPs are retained as build16.
+Tests reproduce the missing API and held-at-registration behavior before implementation. Internal
+review found registration/latch churn, premature onAppear readiness and edit-path availability
+bypass; all are addressed. User skipped extra external review; a fresh implementation review and
+full suite are running. The installed app/settings remain unchanged. Source changes are uncommitted
+pending final verification/package/native acceptance; do not install the older build16 candidate.
