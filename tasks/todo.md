@@ -197,3 +197,8 @@ Installed0.1.14 remains Connected/Enabled. Fresh pre-Quit check detected four re
 so Quit was aborted. Async user ready question is pending; do not disconnect that queue. Installer
 is prepared for /private/tmp/lantern-release18-4my5idp6/Lantern.app, expected build18 and current
 hook hashes. Continue safe upgrade/native login/visibility, GitHub final rollout, stop heartbeat.
+
+User added Settings z-order fix: screenshot traces to companion .statusBar vs Settings .normal.
+Build19 raises Settings just above the companion only while key/open, lowers on resign, and leaves
+presentation/approval state untouched. Static native configuration: no mirror unit test. Rebuild,
+relay smoke and actual visible native review required. Live approval ready reply is still pending.

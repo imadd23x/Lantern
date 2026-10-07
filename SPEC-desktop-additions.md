@@ -58,8 +58,16 @@ review is skipped for this unattended run; no external model CLI is authorized.
 
 ## Rollout / rollback
 
-Ship 0.2.0/build18 as native additions; retain the installed0.1.14 app. Back up any explicitly
+Ship 0.2.0/build19 as native additions; retain the installed0.1.14 app. Back up any explicitly
 activated usage statusLine, preserve both providers' existing hooks/trust, and install only with no
 live approval connections pending. Retain old app/tag/ZIPs. Publish current source and checks to
 the existing private imadd23x/Lantern repo. User-only OS approval or unsupported live telemetry
 remains an explicit partial result, not a redefined success.
+
+## Settings ordering follow-up — 2026-10-07
+
+User screenshot shows the status-bar-level companion covering the normal-level Settings window.
+Settings must be above the companion when opened/key, then return to normal level when it resigns
+key so it does not cover unrelated apps. Preserve settings/approval focus guards, recording cleanup,
+existing companion presentation/queue/listener behavior. Verify through native review and user-visible
+ordering, rather than a test mirroring AppKit's level property.

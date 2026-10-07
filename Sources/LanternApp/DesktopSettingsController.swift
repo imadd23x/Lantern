@@ -36,6 +36,8 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
             self.window = window
         }
         model.isSettingsOpen = true
+        // The companion is status-bar level; normal-level Settings would remain behind it.
+        window?.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 1)
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -57,6 +59,12 @@ final class DesktopSettingsController: NSObject, NSWindowDelegate {
 
     func close() { shortcuts.recording = nil; monitorRelease(recording: false); window?.close() }
     func windowWillClose(_ notification: Notification) { shortcuts.recording = nil; model.isSettingsOpen = false }
-    func windowDidResignKey(_ notification: Notification) { shortcuts.recording = nil }
-    func windowDidBecomeKey(_ notification: Notification) { login.refresh() }
+    func windowDidResignKey(_ notification: Notification) {
+        shortcuts.recording = nil
+        window?.level = .normal
+    }
+    func windowDidBecomeKey(_ notification: Notification) {
+        window?.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 1)
+        login.refresh()
+    }
 }

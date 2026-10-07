@@ -583,3 +583,24 @@ aborted and the app left running. User was asked to handle the queue and reply r
 installer `/private/tmp/lantern-install-0.2.0.py` targets the verified build18 extraction and has not
 run. Native login, installed visibility toggle, and final safe upgrade remain pending. Next-login,
 physical hover and unsteered physical typing are explicit residual checks.
+
+### 0.2.0/build19 Settings ordering
+
+User's supplied screenshot reproduces the expanded companion covering Settings. The real path sets
+companion level `.statusBar`, while Settings retained `.normal`; `makeKeyAndOrderFront` cannot cross
+level ordering. [Apple's window-level reference](https://developer.apple.com/documentation/appkit/nswindow/level-swift.struct)
+defines that higher levels obscure lower levels. Settings now rises one level above the companion
+on Show/become-key and returns to normal on resign-key. No proposal, focus-grant or transport change.
+
+Release build and both packaged relay fixtures pass. ZIP CRC, macOS extraction and strict/deep
+signatures pass for build19; SHA256
+`ab63f53a7c4bc3f12e4c1e5624b9fc4cae1c292d6a16023634a5d8fbe964632d`.
+No unit test mirroring AppKit's property assignment was added; build18's full76/81 remains the logic
+regression result. GitHub checks will run the full final source. Isolated review is
+`/private/tmp/lantern-settings19-_a07x192/review/Lantern Settings Review.app`. Native gear click
+opened the focused Settings window with readable General controls; the user's physical ordering
+confirmation is pending, since a per-window capture alone does not prove desktop occlusion.
+
+Native launch again stalled (101 minutes) despite the supplied timeout, then ID-based rebind/actions
+returned promptly. Installed0.1.14 remains untouched; the user-ready reply for an empty live approval
+queue is still pending. Installer now points to the verified build19 extraction. No live config writes.
