@@ -464,3 +464,164 @@ assertion counts are unchanged. No production executable depends on the test sup
 Full local suite passes (46 functions / 50 cases); remote checks are the acceptance gate for this fix.
 Current remote results: https://github.com/imadd23x/Lantern/actions/workflows/checks.yml
 The installed 0.1.14 app and hook configuration are unchanged.
+
+### 0.2.0 desktop additions — 2026-10-07
+
+Implemented configurable native Carbon shortcuts/recording and shared request/provider selection;
+idle compact hide, pointer-entry reveal, pin and interaction blockers; native login controls with
+truthful OS status; validated five-hour/week usage and preserving local status-line relay/setup.
+Arc switch/progress references remain native adaptations with existing notices. No dependencies,
+auth-file access, experimental extension API calls or paid inference were added.
+
+Tests failed before each logic slice. Full local suite passed 68 functions / 72 parameterized cases
+(28 Core + 40 App) in `/private/tmp/lantern-0.2.0-tests.log`. A final one-line Settings key-window
+delegate refreshes the login status after returning from macOS; its three focused guard/login tests
+passed. Final release packaging and both smoke fixtures passed; the complete final code suite,
+packaging, smoke fixtures and whitespace checks also passed in
+[GitHub CI run 37588602158](https://github.com/imadd23x/Lantern/actions/runs/37588602158)
+for source commit `8dc91d8eaa4ee408832f6459650238285551623d`.
+
+Coverage includes retained hotkey registrations on failure, disabled/metadata-only bindings,
+stable request selection without decisions, idle blockers/manual hiding/passive reveal, queue
+restoration and expiry, native registration errors/approval states, canonical installed-path guards,
+usage missing/stale/reset/invalid windows, additive discriminator rejection, no-session/no-decision
+delivery, reversible absent/null wrapper snapshots, idempotence, exact backups and stale previews.
+Fresh review's boolean-vs-number wrapper defect was reproduced with a failing test and fixed using
+canonical JSON comparison. Review also produced temporary-app and missing-executable setup guards.
+
+Both packaged relay fixtures passed. The usage fixture verifies malformed/600KB stdin, early prior
+command exit, absent Lantern, stdin/stdout/stderr/environment/cwd/exit preservation, quota-only wire,
+and no printed permission grant even from an unexpected allow acknowledgement.
+
+The ZIP CRC passed. Python's generic extraction exposed AppleDouble metadata as files and failed
+the temporary copy's signature check; no such copy was installed. macOS `ditto` extraction passes
+deep strict signatures for app and relay. The supplied head, provider icons and A-Train resource
+match installed0.1.14 byte-for-byte. The verified app ZIP is `outputs/Lantern-0.2.0.zip`,
+SHA256 `9df0cfe60e5efc53ecc2b305076c22227b3fe96282e25b1c7a373566a4c68561`.
+The candidate source ZIP passes CRC and matches every tracked blob in its archived commit;
+`outputs/SHA256SUMS` records both archive digests. Agent settings hashes remain unchanged:
+Codex `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`;
+Claude `c5eefd580bab15712e8f580351933f1d2be7cb0398ea4491a0c513d7b2191fa0`.
+
+Native review/upgrade is **pending**, not a completed live validation. The isolated review bundle
+was prepared with private runtime/config paths and a distinct identity, but computer use returned
+that the Mac is locked; it cannot unlock the screen. Installed app remains0.1.14/build15. No new
+login registration or usage configuration was attempted. Finish the native review and safe upgrade
+after manual unlock; do not replace a running app with unknown live approvals.
+
+Claude extension2.1.289's native panel has no established documented public quota export.
+The supported source is [Claude's status-line JSON](https://code.claude.com/docs/en/statusline),
+not private messaging or credentials. Native-panel usage stays unavailable until valid data arrives.
+Next-login behavior, physical hover/focus, multi-display and exact inactive-tab navigation remain
+separate live checks; existing safe Claude navigation code is unchanged.
+
+The feature branch is published as [draft PR #1](https://github.com/imadd23x/Lantern/pull/1).
+Main and release tags remain unchanged pending native acceptance. The staged installer is
+`/private/tmp/lantern-install-0.2.0.py`; it has not run. It stages and verifies the new bundle,
+retains a unique 0.1.14/build15 rollback copy, compares hook hashes and restores the old bundle
+if replacement fails. Run it only after the installed app is observed without pending approvals
+and quit through its own menu. Remove any installed usage relay before a pre-0.2 rollback.
+
+### 0.2.0/build17 shortcut refinement after unlock
+
+The user narrowed global actions to Command+Return Allow once and Command+Option+H Hide.
+The prior five navigation actions are removed. Tests reproduced missing action APIs, a held chord
+at registration, precise expiry delayed by polling, and late callbacks after disable before fixes.
+The final full suite passed 76 functions / 81 parameterized cases (28 Core + 48 App functions).
+Both packaged activity and usage fixtures pass. Logs: `/private/tmp/lantern-0.2.0-build17-*.log`.
+
+Three bounded internal review cycles found and resolved latch clearing during queue/registration
+churn, premature card appearance, edit-path eligibility bypass, nonanimated relayout readiness and
+expiry registration timing. The final read-only review found no material scoped violations.
+Extra external review was explicitly skipped. Native registrations retain held references only to
+receive release; every callback re-checks current enabled/visible/displayed/deadline conditions.
+
+The build17 ZIP passes CRC, macOS extraction and deep strict signatures. SHA256:
+`6d95ec16bf5771172cee93bbec98bddd43f52d017140d448a4b3c0e49304ec14`.
+Head, both provider icons and A-Train remain byte-identical to installed0.1.14. Build16 ZIP/source
+copies are retained. New isolated review: `/private/tmp/lantern-build17-mpz41nko/review/Lantern Shortcut Review.app`,
+with private runtime/config directories and configuration/login writes disabled.
+
+Native Settings shows exactly the requested two defaults, with no visible registration error.
+Command-key recording now commits after release: CUA changed the isolated Allow binding to Cmd-K,
+then restored Cmd-Return; neither remained stuck in Recording. The private non-executing
+ShortcutCheck proposal showed its Cmd-Return badge. The user pressed Cmd-Return, confirmed return
+to the pill, and its socket client received exactly `allow`. Physical Hide was not clearly confirmed
+on the first attempt; a clarified second check is pending. Unsteered physical typing is not explicitly
+confirmed by that response. No real agent permission was clicked or granted by automation.
+
+The native-control launch took 86 minutes to return despite a timeout; subsequent ID-based bindings
+and actions returned promptly. An idle review window was ordered out, with no windows available;
+explicit reopen returned the compact pill. This demonstrates idle hide and compact reopen, not
+physical hover reveal. Build16 fresh/reset/missing quota renders and preserving preview passed.
+Installed0.1.14 is unchanged pending the safe upgrade; native login status/next-login remain pending.
+
+### 0.2.0/build18 visibility toggle and rollout gate
+
+After confirming physical Cmd-Option-H hides the private review, the user requested the same
+chord also Show. The visibility regression failed on always-Hide before delegating to the existing
+`toggleCompanionVisibility` path. Show returns compact, with the listener and queued request IDs
+preserved by existing real-socket lifecycle coverage. The stored raw action key remains `hide` for
+compatibility; its code name and UI title now describe visibility. No approval-path logic changed.
+
+Full 76-function/81-case suite, both packaged smoke fixtures, ZIP CRC, macOS extraction and deep
+strict signatures pass. Build18 ZIP SHA256:
+`6fc4b4e6b7a8e8125727fbb29ae54e5bd31ae784ff1c5d85bc2d28e0249aa8c9`.
+Supplied assets match installed0.1.14 exactly. Build17 app/source archives are retained.
+Private review was quit through its own menu shortcut before rollout.
+
+Live settings changed independently during the day. Both current JSON roots are valid, same-user
+regular files and retain all recognized Lantern hook events at the stable relay path. Codex hash
+remains `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`; Claude is now
+`28c7bf5ecb66b6701f26e65508f93c20209bc5006e0a4681c2e75ddd05172ec6`. The installer captures
+that current preserving baseline, rather than overwriting the user's changes. No live settings
+were written. Usage statusLine is absent; unsupported native-panel telemetry remains unavailable.
+
+Installed0.1.14 shows Connected, active Claude/Codex rows and Enabled sound. It initially had no
+approval; the fresh check immediately before Quit found four real Claude approvals. Quit was
+aborted and the app left running. User was asked to handle the queue and reply ready. Prepared
+installer `/private/tmp/lantern-install-0.2.0.py` targets the verified build18 extraction and has not
+run. Native login, installed visibility toggle, and final safe upgrade remain pending. Next-login,
+physical hover and unsteered physical typing are explicit residual checks.
+
+### 0.2.0/build19 Settings ordering
+
+User's supplied screenshot reproduces the expanded companion covering Settings. The real path sets
+companion level `.statusBar`, while Settings retained `.normal`; `makeKeyAndOrderFront` cannot cross
+level ordering. [Apple's window-level reference](https://developer.apple.com/documentation/appkit/nswindow/level-swift.struct)
+defines that higher levels obscure lower levels. Settings now rises one level above the companion
+on Show/become-key and returns to normal on resign-key. No proposal, focus-grant or transport change.
+
+Release build and both packaged relay fixtures pass. ZIP CRC, macOS extraction and strict/deep
+signatures pass for build19; SHA256
+`ab63f53a7c4bc3f12e4c1e5624b9fc4cae1c292d6a16023634a5d8fbe964632d`.
+No unit test mirroring AppKit's property assignment was added; build18's full76/81 remains the logic
+regression result. GitHub checks will run the full final source. Isolated review is
+`/private/tmp/lantern-settings19-_a07x192/review/Lantern Settings Review.app`. Native gear click
+opened the focused Settings window with readable General controls; the user's physical ordering
+confirmation is pending, since a per-window capture alone does not prove desktop occlusion.
+
+Native launch again stalled (101 minutes) despite the supplied timeout, then ID-based rebind/actions
+returned promptly. Installed0.1.14 remains untouched; the user-ready reply for an empty live approval
+queue is still pending. Installer now points to the verified build19 extraction. No live config writes.
+
+### Installed0.2.0/build19 — 2026-10-07
+
+After the user's ready reply, a fresh full native check found an empty live approval queue; Quit
+was requested through Lantern's own menu shortcut. Private review was quit first. The guarded
+installer verified stopped process, release/stage/installed signatures, all installed files against
+extraction and current hook hashes. It retained signed0.1.14/build15 at
+`/Users/imad/Applications/Lantern Backups/0.1.14-build15-b58fd38e/Lantern.app`.
+No stale endpoint cleanup was needed. Installed version/build is0.2.0/19.
+
+Native restart was compact, then expansion showed Connected, actual Codex activity, retained head/
+icon/green styling and Enabled sound. Both hook hashes remain the preserving current baseline.
+Settings gear opened the focused Settings window. Native canonical-path guard enables Launch at
+login; switching it On produced no error or requires-approval text. Shortcuts shows the exact two
+requested defaults and no registration error. Usage shows both windows Unavailable and relay not
+configured, reflecting no supported live native-panel telemetry. No usage configuration was applied.
+
+The user confirmed installed Show/Hide restores the compact pill and active Settings stays above
+the companion. This provides desktop-stacking evidence beyond the per-window capture. Next-login behavior,
+physical top-edge hover and unsteered physical typing remain separate checks; no logout/reboot or
+paid agent turn was used. Earlier private physical Allow/Hide tests and exact allowance receipt stand.

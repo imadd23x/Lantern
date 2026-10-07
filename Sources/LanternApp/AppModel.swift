@@ -5,25 +5,41 @@ import LanternTransport
 
 @MainActor
 final class AppModel: ObservableObject {
-    @Published private(set) var state = SessionState()
+    @Published private(set) var state = SessionState() {
+        didSet { scheduleApprovalExpiry() }
+    }
+    @Published private(set) var claudeUsage = ClaudeUsageState()
     @Published private(set) var expanded = false
     @Published private(set) var companionHidden = false
+    @Published private(set) var automaticallyHidden = false
     @Published private(set) var presentationIsAutomatic = false
     @Published var showConnections = false {
-        didSet { if showConnections { presentationIsAutomatic = false } }
+        didSet { recordInteraction(); if showConnections { presentationIsAutomatic = false } }
     }
     @Published var errorMessage: String?
+    @Published var providerFilter: AgentProvider?
+    @Published var selectedRequestID: String?
     @Published private(set) var connectionStatus: ConnectionStatus = .disconnected
     @Published private(set) var installedProviders: Set<AgentProvider> = []
     @Published private(set) var connectionWarnings: [AgentProvider: String] = [:]
     @Published var quiet = false
     @Published private(set) var now = Date().timeIntervalSince1970
     let isDemo: Bool
+    let desktopPreferences: DesktopPreferences
+    @Published var isSettingsOpen = false { didSet { recordInteraction() } }
+    var isMenuOpen = false { didSet { recordInteraction() } }
+    var isDragging = false { didSet { recordInteraction() } }
+    var isPointerInside = false { didSet { if oldValue != isPointerInside { recordInteraction() } } }
+    var onSettingsRequest: (() -> Void)?
     private let server: HookServer
     private var timer: Timer?
+    private var approvalExpiry: Task<Void, Never>?
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
     private let navigator: AgentNavigator
+    private let configurationURLs: [AgentProvider: URL]
+    private var lastInteraction: TimeInterval
+    private var preferencesSubscription: AnyCancellable?
     private let attentionSound = Bundle.module.url(forResource: "A-Train", withExtension: "mp3")
         .flatMap { NSSound(contentsOf: $0, byReference: false) }
     var onPresentationChange: (() -> Void)?
@@ -31,10 +47,24 @@ final class AppModel: ObservableObject {
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current,
          clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
-         navigator: AgentNavigator = .live) {
+         navigator: AgentNavigator = .live, desktopPreferences: DesktopPreferences? = nil,
+         configurationURLs: [AgentProvider: URL] = [:]) {
         self.clock = clock; now = clock()
+        lastInteraction = clock()
         self.navigator = navigator
+        self.configurationURLs = configurationURLs
+        self.desktopPreferences = desktopPreferences ?? DesktopPreferences()
         isDemo = demo; server = HookServer(directory: directory)
+        preferencesSubscription = self.desktopPreferences.objectWillChange.sink { [weak self] in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.recordInteraction()
+                if self.automaticallyHidden && (!self.desktopPreferences.autoHideEnabled || self.desktopPreferences.pinned) {
+                    self.revealOnHover()
+                }
+                self.objectWillChange.send()
+            }
+        }
     }
 
     var sessions: [AgentSession] {
@@ -48,8 +78,37 @@ final class AppModel: ObservableObject {
     var relayPath: String { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lantern-hook").path }
     var socketPath: String { server.socketPath }
     var isListening: Bool { connectionStatus == .connected }
+    var selectedApproval: PendingApproval? {
+        state.approvals.first { $0.id == selectedRequestID } ?? state.approvals.first
+    }
+
+    @Published var approvalPresentationReady = false
+    @Published private(set) var displayedApprovalID: String?
+
+    var allowsGlobalApproval: Bool {
+        guard desktopPreferences.shortcutsEnabled, desktopPreferences.bindings[.allowOnce]?.enabled == true,
+              !isDemo, expanded, !companionHidden, !showConnections, !isSettingsOpen,
+              approvalPresentationReady, let request = selectedApproval,
+              displayedApprovalID == request.id else { return false }
+        return !request.event.detail.isEmpty && clock() < request.expiresAt
+    }
+
+    func setDisplayedApproval(_ id: String, visible: Bool) {
+        if visible { displayedApprovalID = id }
+        else if displayedApprovalID == id { displayedApprovalID = nil }
+    }
+
+    func performShortcut(_ action: ShortcutAction) {
+        switch action {
+        case .visibility: toggleCompanionVisibility()
+        case .allowOnce:
+            guard allowsGlobalApproval, let request = selectedApproval else { return }
+            decide(request.id, .allow)
+        }
+    }
 
     func configurationURL(for provider: AgentProvider) -> URL {
+        if let override = configurationURLs[provider] { return override }
         let env = ProcessInfo.processInfo.environment
         let home = FileManager.default.homeDirectoryForCurrentUser
         let directory = provider == .codex
@@ -83,6 +142,11 @@ final class AppModel: ObservableObject {
                 Task { @MainActor [weak self] in self?.receive(event, id: id) }
             }, onDisconnect: { [weak self] id in
                 Task { @MainActor [weak self] in self?.connectionClosed(id) }
+            }, onUsage: { [weak self] snapshot in
+                Task { @MainActor [weak self] in
+                    guard let self else { return }
+                    try? self.claudeUsage.receive(snapshot, now: self.clock())
+                }
             })
             errorMessage = nil
             connectionStatus = .connected
@@ -97,21 +161,35 @@ final class AppModel: ObservableObject {
         }
     }
 
-    func stop() { timer?.invalidate(); timer = nil; server.stop(); connectionStatus = .disconnected }
+    func stop() {
+        timer?.invalidate(); timer = nil; approvalExpiry?.cancel(); approvalExpiry = nil
+        server.stop(); connectionStatus = .disconnected
+    }
 
     func setExpanded(_ value: Bool) {
+        recordInteraction()
         presentationIsAutomatic = false
         if value && !expanded { refreshConnections() }
         expanded = value; onPresentationChange?()
     }
 
     func hideCompanion() {
+        recordInteraction(); automaticallyHidden = false
         presentationIsAutomatic = false
         showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
     }
 
     func showCompanion(expanded: Bool = false) {
-        companionHidden = false; setExpanded(expanded)
+        automaticallyHidden = false; companionHidden = false; setExpanded(expanded)
+    }
+
+    func recordInteraction() { lastInteraction = clock() }
+
+    /// Automatic reveal never opts into keyboard focus or overrides an explicit Hide.
+    func revealOnHover() {
+        guard automaticallyHidden else { return }
+        recordInteraction(); automaticallyHidden = false; companionHidden = false
+        presentationIsAutomatic = true; onPresentationChange?()
     }
 
     var visibilityMenuTitle: String { companionHidden ? "Show Lantern" : "Hide Lantern" }
@@ -147,10 +225,12 @@ final class AppModel: ObservableObject {
 
     private func receive(_ event: AgentEvent, id: String) {
         if disconnected.remove(id) != nil { return }
+        now = clock(); recordInteraction()
         let hadApprovals = !state.approvals.isEmpty
         let cleared = state.apply(event, requestID: event.kind == .approval ? id : nil, now: now)
         for request in cleared { server.respond(to: request, with: .delegate) }
         let restored = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+        if workingCount > 0 || needsAttention { revealOnHover() }
         if [.approval, .attention, .failed].contains(event.kind) {
             if !companionHidden && !expanded && !restored {
                 presentationIsAutomatic = true
@@ -171,11 +251,30 @@ final class AppModel: ObservableObject {
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
     }
 
-    private func tick() {
+    private func scheduleApprovalExpiry() {
+        approvalExpiry?.cancel(); approvalExpiry = nil
+        guard isListening, !isDemo, let deadline = state.approvals.map(\.expiresAt).min() else { return }
+        let delay = max(0, deadline - clock())
+        guard delay.isFinite else { return }
+        approvalExpiry = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled else { return }
+            self?.tick()
+        }
+    }
+
+    func tick() {
         now = clock()
         let hadApprovals = !state.approvals.isEmpty
         for id in state.expire(now: now) { server.respond(to: id, with: .delegate) }
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
+        let eligible = desktopPreferences.autoHideEnabled && !desktopPreferences.pinned
+            && !companionHidden && !expanded && !showConnections && !isSettingsOpen
+            && !isMenuOpen && !isDragging && !isPointerInside && workingCount == 0 && !needsAttention
+        guard eligible else { lastInteraction = now; return }
+        guard now >= lastInteraction, now - lastInteraction >= desktopPreferences.idleDelay else { return }
+        automaticallyHidden = true; companionHidden = true; presentationIsAutomatic = true
+        onPresentationChange?()
     }
 
     private func restorePresentationIfQueueDrained(hadApprovals: Bool) -> Bool {
@@ -184,6 +283,7 @@ final class AppModel: ObservableObject {
         // Retain automatic focus policy through the closing animation and compact presentation.
         // A later explicit user presentation action opts back into normal keyboard interaction.
         expanded = false; onPresentationChange?()
+        recordInteraction()
         return true
     }
 

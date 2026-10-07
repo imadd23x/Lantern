@@ -2,7 +2,7 @@
 
 A small native macOS companion for **Imad's Codex desktop and Claude Code in VS Code**.
 Independent sessions, a queue of permission requests, and a companion using Imad's supplied masked toy head.
-Runs locally with no API key, telemetry, paid model calls, or third-party dependencies.
+Runs locally with no API key, network analytics, paid model calls, or third-party dependencies.
 
 ## Build and run
 
@@ -40,7 +40,22 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.1.14.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.2.0.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+
+## Desktop settings
+
+**Settings…** adds configurable global shortcuts, idle hide with hover reveal, pinning, native
+launch at login, and Claude usage indicators. Defaults: Command+Return allows the visible, selected request once;
+Command+Option+H shows or hides the pill. No approval shortcut is active without an actionable card.
+The idle compact pill hides after 30 seconds; work, attention and interaction keep it visible.
+Manual Hide stays hidden until explicitly shown. Hover reveals an idle-hidden pill without focus.
+
+Login and usage setup are available only from `~/Applications/Lantern.app` or `/Applications/Lantern.app`.
+Launch at login changes only when its switch is used; macOS may require approval in Login Items.
+Claude usage uses documented local status-line data, with separate five-hour and weekly windows.
+The native VS Code panel may supply none; unavailable/stale/reset-passed values remain explicit.
+Open **Settings → Usage → Review connection…** to preserve and wrap an existing status line.
+See [desktop controls](docs/DESKTOP-CONTROLS.md) for behavior and limitations.
 
 ## Connect the agents
 
@@ -83,7 +98,11 @@ inactive Claude tabs, the last-active Code window is shown; select a different e
 Open **Connections → Preview removal → Apply removal** for each provider. This removes only commands
 marked `lantern-managed-v1`, preserving other handlers and subsequent unrelated edits. A new verified backup
 is written alongside the settings file. Restart the agent session to stop loading the removed hooks.
-Quit Lantern to release every pending request without a decision. No background daemon or login item is installed.
+Quit Lantern to release every pending request without a decision. No background daemon is installed.
+Turn off **Settings → General → Launch at login** before removing the app. If usage relay is configured,
+remove it through **Settings → Usage → Remove relay…** before rolling back to a pre-0.2.0 app;
+the older relay cannot preserve the wrapped status-line command. Removal restores only an unchanged
+Lantern wrapper and retains other settings/hooks. Every change creates a verified backup.
 
 Configuration transactions refuse malformed shapes, symlink targets, failed backups and changes since preview.
 They coordinate Lantern writers with an advisory lock and replace settings by atomic rename. A non-cooperating

@@ -3,13 +3,12 @@ import LanternCore
 
 struct CompanionView: View {
     @ObservedObject var model: AppModel
-    @ViewState private var filter: AgentProvider?
-    @ViewState private var selectedRequest: String?
+    private var filter: AgentProvider? { model.providerFilter }
     @FocusState private var triggerFocused: Bool
     @LanternReducedMotion private var reducedMotion
 
     private var request: PendingApproval? {
-        model.state.approvals.first(where: { $0.id == selectedRequest }) ?? model.state.approvals.first
+        model.selectedApproval
     }
 
     var body: some View {
@@ -19,7 +18,7 @@ struct CompanionView: View {
                 details.frame(width: PanelPlacement.expanded.width, height: PanelPlacement.expanded.height - 72)
                     .opacity(model.expanded ? 1 : 0)
                     .animation(reducedMotion ? nil : model.expanded
-                               ? .easeOut(duration: 0.24).delay(0.12) : .easeOut(duration: 0.1), value: model.expanded)
+                               ? .easeOut(duration: LanternMotion.detailsRevealDuration).delay(LanternMotion.detailsRevealDelay) : .easeOut(duration: 0.1), value: model.expanded)
                     .allowsHitTesting(model.expanded)
                     .accessibilityHidden(!model.expanded)
             }
@@ -55,7 +54,7 @@ struct CompanionView: View {
                 Text(error).font(.system(size: 11)).foregroundStyle(.orange)
                     .padding(12).background(Palette.card).clipShape(RoundedRectangle(cornerRadius: 12)).padding(.horizontal, 20)
             }
-            ProviderFilter(selection: $filter, sessions: model.sessions)
+            ProviderFilter(selection: $model.providerFilter, sessions: model.sessions)
                 .padding(.horizontal, 20).padding(.bottom, 12)
             ScrollView {
                 LazyVStack(spacing: 7) {
@@ -68,8 +67,13 @@ struct CompanionView: View {
             if let request {
                 approvalQueue.padding(.horizontal, 20).padding(.top, 12)
                 ApprovalCard(request: request, now: model.now, decide: { decision in model.decide(request.id, decision) },
-                             answerInAgent: { model.answerInAgent(request.id) })
-                    .id(request.id).padding(.horizontal, 20).padding(.top, 9)
+                             answerInAgent: { model.answerInAgent(request.id) },
+                             allowShortcut: model.desktopPreferences.shortcutsEnabled && model.allowsGlobalApproval
+                                ? model.desktopPreferences.bindings[.allowOnce].flatMap { $0.enabled ? $0.label : nil } : nil)
+                    .id(request.id)
+                    .onAppear { model.setDisplayedApproval(request.id, visible: true) }
+                    .onDisappear { model.setDisplayedApproval(request.id, visible: false) }
+                    .padding(.horizontal, 20).padding(.top, 9)
             }
             Spacer(minLength: 10)
             footer
@@ -99,8 +103,15 @@ struct CompanionView: View {
                 .accessibilityValue(model.expanded ? "Expanded" : "Collapsed")
                 .help(model.expanded ? "Collapse Lantern" : "Expand Lantern")
             if model.expanded {
+                Button { model.desktopPreferences.pinned.toggle() } label: {
+                    Image(systemName: model.desktopPreferences.pinned ? "pin.fill" : "pin")
+                }.buttonStyle(LanternButtonStyle(kind: .toolbar))
+                    .accessibilityLabel(model.desktopPreferences.pinned ? "Unpin Lantern" : "Keep Lantern visible")
+                    .help(model.desktopPreferences.pinned ? "Unpin Lantern" : "Keep Lantern visible")
                 Button { model.showConnections = true } label: { Image(systemName: "slider.horizontal.3") }
                     .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open connections").help("Connections")
+                Button { model.onSettingsRequest?() } label: { Image(systemName: "gearshape") }
+                    .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Open Lantern settings").help("Settings")
             }
             Button { model.hideCompanion() } label: { Image(systemName: "xmark").font(.system(size: 10, weight: .medium)) }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar)).accessibilityLabel("Hide Lantern and keep listening")
@@ -122,7 +133,7 @@ struct CompanionView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 5) {
                         ForEach(Array(model.state.approvals.enumerated()), id: \.element.id) { index, approval in
-                            Button("\(index + 1)") { selectedRequest = approval.id }
+                            Button("\(index + 1)") { model.selectedRequestID = approval.id }
                                 .buttonStyle(.plain).font(.system(size: 10, weight: .semibold))
                                 .frame(width: 22, height: 22)
                                 .background(request?.id == approval.id ? Palette.accent.opacity(0.18) : Palette.card)
@@ -164,6 +175,7 @@ struct CompanionView: View {
                 .accessibilityLabel("Agent connection")
                 .accessibilityValue(model.connectionStatus.title)
                 .help(model.connectionStatus.title)
+            if model.desktopPreferences.usageDisplayEnabled { UsageIndicator(model: model).padding(.leading, 5) }
             Spacer()
             Button { model.quiet.toggle() } label: { Image(systemName: model.quiet ? "bell.slash" : "bell") }
                 .buttonStyle(LanternButtonStyle(kind: .toolbar))

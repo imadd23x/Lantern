@@ -30,3 +30,16 @@ import Testing
     #expect(frame.midX == bounds.midX)
     #expect(frame.maxY == bounds.maxY - 8)
 }
+
+@Test func detailsRevealReadinessSurvivesRelayoutAndRapidReversal() {
+    var readiness = PanelRevealReadiness()
+    readiness.update(expanded: true, reduced: false, now: 100)
+    readiness.update(expanded: true, reduced: false, now: 100.1) // Observer relayout during opening.
+    #expect(readiness.remaining(at: 100.1) > 0.29)
+    readiness.update(expanded: false, reduced: false, now: 100.2)
+    readiness.update(expanded: true, reduced: false, now: 100.2)
+    #expect(readiness.remaining(at: 100.3) > 0.29)
+    readiness.update(expanded: false, reduced: true, now: 100.3)
+    readiness.update(expanded: true, reduced: true, now: 100.3)
+    #expect(readiness.remaining(at: 100.3) == 0)
+}

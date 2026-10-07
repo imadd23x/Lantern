@@ -17,6 +17,9 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     private var pillPan: NSPanGestureRecognizer?
     private var pillDrag: PanelDrag?
     private var interruptedApplication: NSRunningApplication?
+    private var pointerTimer: Timer?
+    private var hotspotEntry = PointerEntry(inside: false)
+    private var revealReadiness = PanelRevealReadiness()
     private var reducedMotion: Bool {
         CommandLine.arguments.contains("--reduce-motion") || NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
     }
@@ -66,11 +69,35 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             forName: NSWorkspace.accessibilityDisplayOptionsDidChangeNotification, object: nil, queue: .main) { [weak self] _ in
                 Task { @MainActor [weak self] in self?.layout(animated: false) }
             }
+        // This observer survives ordering the panel out; it never installs an input surface or event tap.
+        let timer = Timer(timeInterval: 0.15, repeats: true) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.samplePointer() }
+        }
+        pointerTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     func show() { layout(animated: false); panel.orderFrontRegardless() }
 
+    func stop() {
+        model.approvalPresentationReady = false
+        pointerTimer?.invalidate(); pointerTimer = nil; delayedLayout?.cancel()
+        if let screenObserver { NotificationCenter.default.removeObserver(screenObserver) }
+        if let motionObserver { NSWorkspace.shared.notificationCenter.removeObserver(motionObserver) }
+    }
+
+    private func samplePointer() {
+        let pointer = NSEvent.mouseLocation
+        model.isPointerInside = panel.isVisible && panel.frame.contains(pointer)
+        guard model.automaticallyHidden else { return }
+        if hotspotEntry.entered(isInside: PanelPlacement.revealHotspot(for: panel.frame).contains(pointer)) {
+            model.revealOnHover()
+        }
+    }
+
     private func present() {
+        revealReadiness.update(expanded: model.expanded, reduced: reducedMotion, now: ProcessInfo.processInfo.systemUptime)
+        model.approvalPresentationReady = false
         if !model.allowsKeyboardFocus { returnKeyboardFocus() }
         pillPan?.isEnabled = !model.expanded && !model.companionHidden && !model.showConnections
         delayedLayout?.cancel()
@@ -81,6 +108,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             layoutGeneration += 1; animating = false
             panel.orderOut(nil)
             layout(animated: false)
+            hotspotEntry = PointerEntry(inside: PanelPlacement.revealHotspot(for: panel.frame).contains(NSEvent.mouseLocation))
         } else {
             if panel.isVisible && holdClose && !reducedMotion {
                 // Arc's settled close fades details before shrinking; a quick reversal skips the hold.
@@ -105,6 +133,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
     @objc private func dragPill(_ gesture: NSPanGestureRecognizer) {
         switch gesture.state {
         case .began:
+            model.isDragging = true
             delayedLayout?.cancel()
             layoutGeneration += 1
             animating = false
@@ -114,7 +143,7 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
                                  initialTranslation: gesture.translation(in: nil))
         case .changed, .ended: break
         default:
-            pillDrag = nil
+            pillDrag = nil; model.isDragging = false
             return
         }
         if let drag = pillDrag {
@@ -122,10 +151,12 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             let pointer = panel.convertPoint(toScreen: gesture.location(in: nil))
             panel.setFrameOrigin(drag.origin(at: pointer))
         }
-        if gesture.state == .ended { pillDrag = nil }
+        if gesture.state == .ended { pillDrag = nil; model.isDragging = false }
     }
 
     private func layout(animated: Bool) {
+        model.approvalPresentationReady = false
+        revealReadiness.update(expanded: model.expanded, reduced: reducedMotion, now: ProcessInfo.processInfo.systemUptime)
         let screen = anchor.flatMap { point in NSScreen.screens.first { $0.frame.contains(point) } }
             ?? NSScreen.screens.first(where: { $0.safeAreaInsets.top > 0 }) ?? NSScreen.main
         guard let screen else { return }
@@ -133,6 +164,9 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
         let desired = anchor ?? CGPoint(x: screen.frame.midX, y: bounds.maxY - 8)
         let frame = PanelPlacement.frame(size: model.expanded ? PanelPlacement.expanded : PanelPlacement.compact,
                                          anchor: desired, bounds: bounds)
+        if model.automaticallyHidden {
+            hotspotEntry = PointerEntry(inside: PanelPlacement.revealHotspot(for: frame).contains(NSEvent.mouseLocation))
+        }
         layoutGeneration += 1
         let generation = layoutGeneration
         animating = true
@@ -145,12 +179,17 @@ final class PanelController: NSObject, NSWindowDelegate, NSGestureRecognizerDele
             Task { @MainActor [weak self] in
                 guard let self, self.layoutGeneration == generation else { return }
                 self.animating = false
+                let remaining = self.revealReadiness.remaining(at: ProcessInfo.processInfo.systemUptime)
+                if remaining > 0 { try? await Task.sleep(for: .seconds(remaining)) }
+                guard self.layoutGeneration == generation else { return }
+                self.model.approvalPresentationReady = self.panel.isVisible && self.model.expanded && !self.model.companionHidden
             }
         }
     }
 
     func windowDidMove(_ notification: Notification) {
         guard !animating, panel.isVisible else { return }
+        model.recordInteraction()
         let screen = panel.screen ?? NSScreen.main
         guard let screen else { return }
         let point = CGPoint(x: panel.frame.midX, y: panel.frame.maxY)

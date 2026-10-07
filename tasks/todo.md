@@ -132,3 +132,85 @@ computer-use tool; a syntax-checked `outputs/Trust-Lantern.command` launcher was
 - [x] Replace gold with #069b2e and inspect the final green approval card, compact and expanded head.
 - [x] Verify native sample row/handoff preserve Code's workspace, selected chat, tabs and existing window.
 - [x] Install with rollback, unchanged hooks and observed live activity; archive matching source/checksums.
+
+## Overnight desktop additions — 2026-10-07
+
+- [x] Desktop preferences and safe bindings — two tests failed before implementation, now pass; unsafe/duplicate keys rejected and preferences persist.
+- [x] Native shortcut driver and Settings — registration errors, user editing, shared selection; compiled and regression-tested.
+- [x] Idle presentation — deterministic deadlines/manual hide/focus/pending-request tests; independent pointer-entry hotspot wired.
+- [x] Native login item — installed-path/identity/demo guards tested, truthful OS states; native registration still awaits rollout.
+- [x] Usage state — invalid/missing/stale/reset/partial window tests passed.
+- [x] Usage transport/relay — real delivery has no decisions/sessions/presentation changes; executable fixture preserves prior command on malformed/600KB input, early exit, absent server and unexpected allow ack.
+- [x] Usage configuration — exact ownership/idempotence/restoration/concurrency tests and setup UI; boolean-vs-number ownership defect reproduced and fixed.
+- [x] Automated verification/package — full suite 68 functions/72 cases, final focused login tests, both smoke fixtures, ZIP CRC, extracted signatures and exact resource hashes.
+- [x] GitHub checks/archives — committed feature branch, green code CI, draft PR #1, verified exact source archive.
+- [x] Native review and rollout — native Settings/usage, physical Allow/Hide, installed Show/Hide/Settings confirmation, safe empty-queue upgrade with signed rollback, native login On.
+- [ ] Complete final handoff and stop heartbeat after native rollout; OS/user-only checks remain explicitly documented.
+
+Open live check: installed Claude extension2.1.289 consumes unified usage events internally, but
+no documented public export or statusLine emission has been established for native panel sessions.
+Inspect supported telemetry before claiming live quota integration. Do not scrape auth/log files.
+
+Overnight continuation: heartbeat `finish-lantern-overnight`, every30min until08:00 Dubai,
+stop on completion. Fresh design review completed; its eight substantive findings are accepted.
+Installed extension's `usage_EXPERIMENTAL_MAY_CHANGE_DO_NOT_RELY_ON_THIS_API_YET` and private
+panel_usage_update messaging are not used as Lantern integrations. Official status-line telemetry
+remains the supported relay path; native-panel live data is an explicit compatibility check.
+
+Current checkpoint: feature source `8dc91d8` passed the complete local suite (68/72), final focused
+login/installation tests, release packaging and both smoke fixtures. GitHub run37588602158 is green;
+[draft PR #1](https://github.com/imadd23x/Lantern/pull/1) is attached to the task. The 0.2.0 ZIP
+passes CRC and macOS extraction/deep strict signatures. Head/icons/A-Train and both hook hashes
+are unchanged. The source ZIP is checked against every tracked blob; SHA256SUMS covers both ZIPs.
+
+Native review is blocked by the locked Mac. CUA `getApp` took until07:21 UTC to return the lock
+failure; do not retry before the user's unlock reply. An async unlock question is pending.
+Installed0.1.14/build15 is untouched. No login registration or live usage setup was attempted.
+The prepared rollback installer `/private/tmp/lantern-install-0.2.0.py` has not run. Preserve
+main/release tags until native acceptance and a safe no-live-approval upgrade. The bounded
+overnight heartbeat rule expired at08:00 Dubai; do not create a replacement automation.
+Next: after unlock, review an isolated final package, observe/quit the old app safely, install
+with rollback, verify native login/listener state, finish GitHub rollout and pause the heartbeat.
+Do not repeat unchanged local checks; documentation-only updates need whitespace/archive checks.
+
+Resumed after user unlock: build16 native General/Shortcuts/Usage layouts and private connection
+preview inspected. Fresh42%/17%, reset-passed and missing-window meters rendered correctly. User
+refined the shortcut scope to exactly Command+Return Allow once and Command+Option+H Hide.
+Build17 replaces the five navigation actions; original candidate ZIPs are retained as build16.
+Tests reproduce the missing API and held-at-registration behavior before implementation. Internal
+review found registration/latch churn, premature onAppear readiness and edit-path availability
+bypass; all are addressed. User skipped extra external review; a fresh implementation review and
+full suite are running. The installed app/settings remain unchanged. Source changes are uncommitted
+pending final verification/package/native acceptance; do not install the older build16 candidate.
+
+User confirmed physical Cmd-Return and Cmd-Option-H Hide in build17. Socket ack was exact allow.
+User then requested the same visibility shortcut also unhide. Build18 delegates that action to the
+existing toggleCompanionVisibility path, preserves the raw stored key, and returns compact on Show.
+The visibility regression failed on the old always-Hide behavior before this fix. Final checks
+and safe installation are next; no fresh review needed for the existing helper delegation.
+
+Build18 final checkpoint: full76/81, both smoke fixtures, strict extracted signatures/CRC and exact
+supplied assets passed. ZIP SHA6fc4b4e. Private physical Allow ack and return-to-pill passed;
+user confirmed Hide, then requested toggle, now tested and packaged. Private review was quit.
+Live Claude settings changed independently; valid current hook baseline hash28c7bf5e is preserved.
+Installed0.1.14 remains Connected/Enabled. Fresh pre-Quit check detected four real Claude requests,
+so Quit was aborted. Async user ready question is pending; do not disconnect that queue. Installer
+is prepared for /private/tmp/lantern-release18-4my5idp6/Lantern.app, expected build18 and current
+hook hashes. Continue safe upgrade/native login/visibility, GitHub final rollout, stop heartbeat.
+
+User added Settings z-order fix: screenshot traces to companion .statusBar vs Settings .normal.
+Build19 raises Settings just above the companion only while key/open, lowers on resign, and leaves
+presentation/approval state untouched. Static native configuration: no mirror unit test. Rebuild,
+relay smoke and actual visible native review required. Live approval ready reply is still pending.
+
+Installed0.2.0/build19 after ready + fresh empty-queue check, ordered native Quit and guarded swap.
+Backup: ~/Applications/Lantern Backups/0.1.14-build15-b58fd38e/Lantern.app. Strict signed bundles,
+exact installed files and unchanged current hook hashes passed. Restart compact; Connected/live
+Codex/Enabled observed. Native login switch On with no warning, exact two bindings/no error.
+Usage honestly unavailable, relay not installed. Async final installed toggle/Settings confirmation
+pending. Next-login/physical hover/typing remain manual residuals. No code changes required unless
+user reports a runtime failure; finish GitHub handoff/release and pause heartbeat after acceptance.
+
+User confirmed both installed visibility toggle/compact return and active Settings foreground.
+Native acceptance is complete within documented next-login/hover/typing and telemetry limitations.
+Finish docs-only commit, green final CI, merge/release/source archive and pause automation.
