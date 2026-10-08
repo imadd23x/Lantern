@@ -286,7 +286,7 @@ No required implementation, local verification or installation work remains for 
 - [x] Replace the gear-menu subtitle with "Your desktop guardian".
 - [x] Reproduce and remove the shortcut label crash on Settings → Agent connections.
 - [x] Regression checks and repeated isolated native focus/recording/connection review.
-- [ ] Signed patch package, safe upgrade with rollback and preserved hooks, GitHub checks.
+- [x] Signed patch package, safe upgrade with rollback and preserved hooks, GitHub checks.
 
 Scope: shortcut label rendering and static subtitle only. Retain keyboard capture/release,
 approval identity/expiry/queue, passive focus, native connection backup/transactions and current design.
@@ -312,3 +312,9 @@ Codex55afa1a2 unchanged. Installed Guardian caption, live Codex/Connected, both 
 paths, both hooks, exact shortcut defaults and login On observed. Left compact and listening.
 No real approval, paid inference or agent configuration write occurred. Private review is quit.
 Code/artifact are final; finish docs, GitHub checks and source archive without repeating unchanged package tests.
+
+Completed guardian patch handoff: source80e5c7e passed GitHub push37774403626 and PR37774409373.
+PR #2 includes the reproduced crash, native-label fix and current installed evidence. Final source archive
+is regenerated and compared with every tracked blob at the closing documentation commit. Installed26
+and app ZIP remain unchanged by docs. Main/release publication remains a review choice; no further
+implementation, installation or local runtime work remains for these two requested changes.

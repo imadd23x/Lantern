@@ -41,7 +41,14 @@ Installed native verification: compact startup, Connected/live Codex row, guardi
 Settings→Connections paths with the process alive, both installed hook sets, exact default bindings,
 login On and idle5min retained. The app is left compact and listening. No real permission was clicked,
 paid inference started, or agent configuration written. Earlier physical hover/typing/next-login
-limitations remain separate from this verified crash path. Final GitHub evidence follows the patch commit.
+limitations remain separate from this verified crash path.
+
+GitHub checks passed at patch80e5c7e: [push](https://github.com/imadd23x/Lantern/actions/runs/37774403626)
+and [PR](https://github.com/imadd23x/Lantern/actions/runs/37774409373). [PR #2](https://github.com/imadd23x/Lantern/pull/2)
+is ready for review. Review of the scoped diff found the capture/release callbacks unchanged, the native
+label unable to steal clicks, and no new permission/configuration/transport behavior. Final documentation
+does not change the tested executable; the source archive is tied to the final commit and checked against
+all tracked blobs. Main/release publication remains a review choice.
 
 ## 0.3.0/build25 — 2026-10-07
 
