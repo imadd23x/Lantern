@@ -19,23 +19,47 @@ struct ShortcutRecorder: NSViewRepresentable {
 }
 
 final class ShortcutInput: NSView {
-    var binding: ShortcutBinding?
-    var capturing = false { didSet { if !capturing { pending = nil; message = nil } } }
+    var binding: ShortcutBinding? { didSet { updateLabel() } }
+    var capturing = false {
+        didSet {
+            if !capturing { pending = nil; message = nil }
+            updateLabel()
+        }
+    }
     var onBegin: (() -> Void)?
     var onCancel: (() -> Void)?
     var onCommit: ((ShortcutBinding) -> Bool)?
     private var pending: ShortcutBinding?
-    private var message: String?
+    private var message: String? { didSet { updateLabel() } }
+    private let textLabel = ShortcutLabel(labelWithString: "Unassigned")
     private var hovered = false
     private var tracking: NSTrackingArea?
     override var acceptsFirstResponder: Bool { true }
 
     override init(frame: NSRect) {
         super.init(frame: frame)
+        textLabel.font = .systemFont(ofSize: 11, weight: .medium)
+        textLabel.textColor = .white
+        textLabel.alignment = .center
+        textLabel.lineBreakMode = .byTruncatingMiddle
+        textLabel.maximumNumberOfLines = 1
+        textLabel.setAccessibilityElement(false)
+        addSubview(textLabel)
         setAccessibilityElement(true); setAccessibilityRole(.button)
         toolTip = "Click and press a modified key. Escape cancels."
     }
     required init?(coder: NSCoder) { nil }
+    override func layout() {
+        super.layout()
+        let height = min(18, bounds.height)
+        textLabel.frame = NSRect(x: 8, y: (bounds.height - height) / 2,
+                                 width: max(0, bounds.width - 16), height: height)
+    }
+    private func updateLabel() {
+        textLabel.stringValue = capturing ? message ?? "Press shortcut…" : binding?.label ?? "Unassigned"
+        setAccessibilityValue(capturing ? "Recording" : binding?.label ?? "Unassigned")
+        needsDisplay = true
+    }
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         if let tracking { removeTrackingArea(tracking) }
@@ -90,10 +114,12 @@ final class ShortcutInput: NSView {
         let path = NSBezierPath(roundedRect: bounds.insetBy(dx: 1, dy: 1), xRadius: 9, yRadius: 9)
         NSColor.white.withAlphaComponent(capturing ? 0.12 : hovered ? 0.085 : 0.055).setFill(); path.fill()
         (capturing || window?.firstResponder === self ? NSColor(Palette.accent) : NSColor.white.withAlphaComponent(hovered ? 0.18 : 0.12)).setStroke(); path.stroke()
-        let label = capturing ? message ?? "Press shortcut…" : binding?.label ?? "Unassigned"
-        let text = NSAttributedString(string: label, attributes: [.font: NSFont.monospacedSystemFont(ofSize: 11, weight: .medium),
-                                                                 .foregroundColor: NSColor.white])
-        let size = text.size()
-        text.draw(at: NSPoint(x: max(4, (bounds.width - size.width) / 2), y: (bounds.height - size.height) / 2))
+        // AppKit's label owns font fallback and text layout. Custom attributed-string measurement
+        // aborted in CoreText when this recorder redrew after Settings lost key status.
     }
+}
+
+/// Text remains part of the recorder's hit target and accessibility button, not a second control.
+private final class ShortcutLabel: NSTextField {
+    override func hitTest(_ point: NSPoint) -> NSView? { nil }
 }
