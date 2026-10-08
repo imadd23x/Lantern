@@ -11,7 +11,7 @@ struct SettingsMenu: View {
                 LanternEmblem().frame(width: 30, height: 30)
                 VStack(alignment: .leading, spacing: 3) {
                     Text("Lantern").font(.system(size: 13, weight: .semibold))
-                    Text("Your desktop companion").font(.system(size: 11)).foregroundStyle(Palette.subtle)
+                    Text("Your desktop guardian").font(.system(size: 11)).foregroundStyle(Palette.subtle)
                 }
             }.padding(10)
             Divider().overlay(Palette.border)
