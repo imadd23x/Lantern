@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1 — 2026-10-08
+
+- Fixed a crash when Agent connections takes focus from the Shortcuts tab: shortcut text now uses a native macOS label.
+- Changed the gear-menu subtitle to "Your desktop guardian".
+
 ## 0.3.0 — 2026-10-07
 
 - Arc-inspired native tabs, gear menu, buttons, switches, status badges and empty states.

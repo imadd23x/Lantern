@@ -1,5 +1,12 @@
 # Native UI refinement — local component library
 
+## 0.3.1 native recorder text
+
+The Arc-styled recorder keeps its existing hover/focus surface and key capture view. A native
+NSTextField now owns centered shortcut text and font fallback, replacing attributed-string size/draw
+calls that aborted during inactive Settings redraw. Its label cannot take mouse events away from
+the recorder. Menu typography is unchanged; the subtitle now says "Your desktop guardian".
+
 ## 0.1.9 green accent and head cleanup
 
 The user chose #069b2e as the app accent. `Palette.accent` stores its exact sRGB channels (6,155,46)

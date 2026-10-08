@@ -280,3 +280,35 @@ tracked blobs; SHA256SUMS covers both. Final documentation closes this checkpoin
 archive at the final documentation commit. Local app/build25 is already verified and unchanged by docs.
 Main/release publication remains a review choice; the feature branch and installed result are ready.
 No required implementation, local verification or installation work remains for this refinement.
+
+## Guardian subtitle and Settings crash — 2026-10-08
+
+- [x] Replace the gear-menu subtitle with "Your desktop guardian".
+- [x] Reproduce and remove the shortcut label crash on Settings → Agent connections.
+- [x] Regression checks and repeated isolated native focus/recording/connection review.
+- [ ] Signed patch package, safe upgrade with rollback and preserved hooks, GitHub checks.
+
+Scope: shortcut label rendering and static subtitle only. Retain keyboard capture/release,
+approval identity/expiry/queue, passive focus, native connection backup/transactions and current design.
+Crash reports from installed25 (2026-10-08 15:02:58 Dubai) and isolated25 (15:08:25) both terminate
+at ShortcutInput.draw line96, NSAttributedString.size → CoreText ApplyFont → nil dictionary object.
+The isolated Shortcuts/Connections focus loop reproduces the same abort before any configuration write.
+Hypothesis: custom attributed-string measurement on inactive redraw is unsafe on this host; use the
+native label renderer while retaining the existing capture view and Arc surface. Verify readable glyphs,
+record/release/cancel and repeated focus transitions before installation. Rollback retains signed25;
+do not quit a real pending approval or unlink an owned/live endpoint. No unrelated source/config changes.
+
+Patch checkpoint: 0.3.1/build26 uses a native NSTextField for shortcut text, keeps the recorder as its
+mouse/key/accessibility target, and retains custom Arc surface drawing. Full74/79, relay smoke, ZIP CRC,
+strict signatures and five retained assets pass. The offscreen rendering check also passed before the
+fix; it is coverage for readable/clickable labels, not evidence of reproducing the intermittent abort.
+The red evidence is the actual isolated25 crash, matching the installed report. Patched focus handoffs,
+record CmdK/release and Escape/cancel pass through CUA; long rapid loops stopped on targeting/focus
+guards while the app stayed alive, so do not claim a completed20-cycle stress test.
+
+Installed26 over stopped/crashed25, removing only the proven unowned/refused stale socket. Signed rollback:
+~/Applications/Lantern Backups/0.3.0-build25-833cd66d/Lantern.app. Preserved current Claude hash06f4c844;
+Codex55afa1a2 unchanged. Installed Guardian caption, live Codex/Connected, both Settings→Connections
+paths, both hooks, exact shortcut defaults and login On observed. Left compact and listening.
+No real approval, paid inference or agent configuration write occurred. Private review is quit.
+Code/artifact are final; finish docs, GitHub checks and source archive without repeating unchanged package tests.

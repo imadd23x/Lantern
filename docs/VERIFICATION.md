@@ -1,6 +1,49 @@
 # Verification evidence — Lantern
 
-## Current release: 0.3.0/build25 — 2026-10-07
+## Current release: 0.3.1/build26 — 2026-10-08
+
+The user reported a quit after opening Agent connections from Settings. Installed25's crash report
+at15:02:58 Dubai and isolated25's reproducible report at15:08:25 share the same main-thread abort:
+ShortcutInput.draw line96 → NSAttributedString.size → CoreText ApplyFont → NSInvalidArgumentException,
+"attempt to insert nil object". This crash bypassed normal socket cleanup and explains the stale
+endpoint found after the quit. No agent configuration action was needed to reproduce it.
+
+ShortcutInput now delegates text rendering to a native NSTextField using a system font. Its original
+capture view still owns hit testing, accessibility, recording, release and cancellation; custom Arc
+hover/focus surface drawing remains. The menu subtitle is "Your desktop guardian".
+
+Full **74 test functions / 79 parameterized cases** pass. Added checks cover readable glyphs during
+inactive/focus/recording changes in a transparent offscreen bitmap, and clicks targeting the recorder
+instead of its label. The offscreen renderer test also passed before the patch, so it does not claim
+to reproduce the intermittent native crash. The red evidence is the actual old-build native abort.
+Existing exact-once key release, held shortcut, approval identity/expiry/queue and focus tests pass.
+
+Isolated26: subtitle observed; several complete Shortcuts/Connections handoffs survived; General also
+opened Connections. Recording CmdK committed after release, and Escape kept that binding. No matching
+new crash report appeared. Rapid20-cycle attempts stopped on target/focus guards or missed activation,
+with the app still running; they are not reported as a completed stress test. A split recording/key
+attempt lost focus and canceled; the same-app action/observation sequence committed correctly.
+
+Release compilation, both packaged relay contracts, ZIP CRC and strict/deep extracted signatures pass.
+Five supplied artwork/audio resources remain byte-identical to installed25. App ZIP SHA256:
+`9d8f10b4061af826818ddb3096575d60a916b12c0adaa7c0265cc6386ebdaea4`.
+
+Production had stopped after the crash. The guarded upgrade proved its stale socket same-user,
+unowned and connection-refused before removing only that inode. Installed26 and signed rollback were
+verified against the extracted app. Rollback:
+`/Users/imad/Applications/Lantern Backups/0.3.0-build25-833cd66d/Lantern.app`.
+Current configuration stayed byte-identical; Claude had independently changed since yesterday:
+
+- Codex: `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`.
+- Claude: `06f4c844e470cd60ee3c7f10bb3e51114c377a41943c08da84685faccd7c5cbf`.
+
+Installed native verification: compact startup, Connected/live Codex row, guardian subtitle, both
+Settings→Connections paths with the process alive, both installed hook sets, exact default bindings,
+login On and idle5min retained. The app is left compact and listening. No real permission was clicked,
+paid inference started, or agent configuration written. Earlier physical hover/typing/next-login
+limitations remain separate from this verified crash path. Final GitHub evidence follows the patch commit.
+
+## 0.3.0/build25 — 2026-10-07
 
 Full local regressions passed: **72 test functions / 77 parameterized cases**. The sandbox initially
 denied test Unix sockets; the same suite passed with local socket permissions. New layout tests cover

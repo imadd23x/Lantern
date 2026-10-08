@@ -43,7 +43,7 @@ The UI reads the actual OS status, including registration failure and approval r
 If macOS requires approval, use **Open Login Items** and approve Lantern yourself. Review
 and demo builds cannot register. No reboot or logout is used for verification.
 
-Installed 0.3.0/build25 at `~/Applications/Lantern.app`, with signed 0.2.0 and earlier rollback bundles retained.
+Installed 0.3.1/build26 at `~/Applications/Lantern.app`, with signed 0.3.0 and earlier rollback bundles retained.
 Native listener/activity, retained two shortcut defaults and login switch On are observed.
 Private non-executing Allow returned exactly allow and collapsed to the pill. Earlier physical
 Allow/visibility and foreground Settings acceptance stand; next-login, new physical hover and
