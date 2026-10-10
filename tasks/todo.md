@@ -318,3 +318,22 @@ PR #2 includes the reproduced crash, native-label fix and current installed evid
 is regenerated and compared with every tracked blob at the closing documentation commit. Installed26
 and app ZIP remain unchanged by docs. Main/release publication remains a review choice; no further
 implementation, installation or local runtime work remains for these two requested changes.
+
+## Approval sync and private portable download — 2026-10-10
+
+- [x] Trace installed Claude/native hook schemas without account files, transcripts or paid inference.
+- [x] Fix request-owned Carbon tokens, stale/held releases and delayed presses across cards or menus.
+- [x] Cancel an orphaned Claude relay through every transport phase with a shared monotonic deadline.
+- [x] Run 78 Swift tests (83 parameterized cases); old compiled relay fails parent-cancellation regression, patched relay passes receive/send/sibling/partial-reply checks.
+- [x] Final fresh internal review found no further approval contract failure; external review offered and declined.
+- [x] Package 0.3.2/build27 for arm64 and x86_64; strict signature, extraction and personal-path audit pass.
+- [ ] Packaged smoke, isolated native review and safe installed update.
+- [ ] GitHub private release/checks and exact source archive.
+- [ ] User choice on keeping Claude's Lantern Allow versus accurately mirrored VS Code-only approvals.
+
+Current supported PermissionRequest has no tool-use ID. Parent liveness is only cancellation
+evidence, not a VS Code approval callback. Public mods provide exact decision IDs but no supported
+identity bridge to the existing anonymous permission hook or native permission-dialog race.
+Do not guess from matching commands, ordering or one visible card. Keep both existing agent
+connections/settings unchanged; the repo remains private with all five supplied resources.
+No public conversion, history rewrite, vendor patch or usage feature is authorized.

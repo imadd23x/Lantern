@@ -1,8 +1,21 @@
 # Lantern
 
-A small native macOS companion for **Imad's Codex desktop and Claude Code in VS Code**.
-Independent sessions, a queue of permission requests, and a companion using Imad's supplied masked toy head.
+A native macOS desktop guardian for **Codex desktop and Claude Code in VS Code**.
+Independent sessions, a queue of permission requests, and the supplied masked toy head.
 Runs locally with no API key, network analytics, paid model calls, or third-party dependencies.
+
+## Install
+
+Download the app ZIP from this private repository's [Releases](https://github.com/imadd23x/Lantern/releases),
+extract it and put **Lantern.app** in `~/Applications` or `/Applications` before connecting agents.
+The app includes Apple Silicon and Intel executables and requires macOS 15+; no developer tools
+are needed to run it. See [the installation guide](docs/INSTALL.md) for local setup and updates.
+The source ZIP is for development and does not contain a ready-to-run application.
+
+The app download contains no account settings, agent hooks, trust records or session data.
+Configure each Mac locally through **Agent connections**. This personal build remains private
+and retains the supplied artwork and A-Train alert. It is ad-hoc signed, not notarized;
+macOS may require its normal **Open Anyway** approval on first launch.
 
 ## Build and run
 
@@ -25,12 +38,12 @@ and a deliberately hidden panel stays hidden (pending requests appear on the men
 Quiet mode turns off the attention sound. Installed hooks are recognized after reopening; session
 rows appear on fresh activity. Installation is distinct from agent trust/reload and live hook delivery.
 The head gently bobs while an agent works; a green outline/glow indicates attention. Its white mask
-eyes remain as supplied, per Imad's choice. Reduce Motion disables decorative movement. The original
+eyes remain as supplied. Reduce Motion disables decorative movement. The original
 PNG is bundled unchanged and a native outline mask clips away its baked checkerboard. No photo tile
 or external image dependency is displayed. The original procedural green pet is a missing-asset fallback.
 
 The app's accent is #069b2e. Head clipping includes an inward sampling margin so the screenshot's
-antialiased background does not leave a light fringe. Current editable source: `/Users/imad/Documents/Codex/Lantern`.
+antialiased background does not leave a light fringe.
 
 Provider filters include session counts and keyboard navigation. Status badges follow real agent events;
 only active work pulses. Selection, hover and press feedback respect reduced motion. These native
@@ -41,7 +54,7 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.3.1.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.3.2.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Desktop settings
 
@@ -87,6 +100,13 @@ fails the request stays in Lantern. Successful handoff, timeout, connection loss
 or quit returns no permission decision, allowing the agent's normal approval path to continue.
 The response window is 110 seconds. A hook's original sandbox/rules remain owned by its agent;
 Lantern does not modify them. Requests with no tool input must be reviewed in the agent.
+
+Claude's current standard approval hook does not expose a tool-use ID or an immediate callback
+when VS Code wins the permission decision. A card can therefore remain until the original hook
+closes, the turn ends or the 110-second deadline passes. Lantern does not dismiss another queued
+request by guessing from a similar command. Answer a request on one surface at a time.
+Orphaned Claude approval relays close their own connection when their original parent exits;
+parent liveness does not identify a decision made in VS Code.
 
 Click a Codex session to open its chat via the Codex deep link. Claude rows bring the already running
 VS Code window forward, preserving its selected chat and workspace. No folder is opened, no session

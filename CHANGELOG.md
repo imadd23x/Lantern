@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2 — 2026-10-10
+
+- Fixed shortcut ownership across queued approvals, stale callbacks, held keys and menu/settings transitions.
+- Orphaned Claude approval hooks cancel their own connection during connect, send and receive; partial replies and other requests stay intact.
+- Added a private portable Apple Silicon/Intel app package, personal build-path checks and a short installation guide.
+- Known limitation: a decision made in VS Code can leave its anonymous Claude approval hook pending. This release does not infer or claim immediate host-decision sync.
+
 ## 0.3.1 — 2026-10-08
 
 - Fixed a crash when Agent connections takes focus from the Shortcuts tab: shortcut text now uses a native macOS label.
