@@ -2,22 +2,32 @@ import AppKit
 import Testing
 @testable import LanternApp
 
+@Test func retiredShortcutCannotLatchAKeyForTheNextApproval() {
+    var lifecycle = ShortcutLifecycle()
+    lifecycle.registered(1, for: .allowOnce)
+    let removed = lifecycle.remove(1)
+    #expect(removed)
+    let stale = lifecycle.press(1)
+    #expect(stale == nil)
+    #expect(!lifecycle.isPressed(.allowOnce))
+}
+
 @Test func heldShortcutSurvivesSuspensionUntilItsRelease() {
     var lifecycle = ShortcutLifecycle()
     lifecycle.registered(1, for: .allowOnce)
-    let first = lifecycle.press(.allowOnce)
-    #expect(first)
+    let first = lifecycle.press(1)
+    #expect(first == .allowOnce)
     let removed = lifecycle.remove(1)
     #expect(!removed) // Retain the native registration to receive release.
     #expect(lifecycle.isPressed(.allowOnce))
-    let repeated = lifecycle.press(.allowOnce)
-    #expect(!repeated)
-    let released = lifecycle.release(.allowOnce)
+    let repeated = lifecycle.press(1)
+    #expect(repeated == nil)
+    let released = lifecycle.release(1)
     #expect(released == [1])
     lifecycle.registered(2, for: .allowOnce)
-    let next = lifecycle.press(.allowOnce)
-    let repeatNext = lifecycle.press(.allowOnce)
-    #expect(next && !repeatNext)
+    let next = lifecycle.press(2)
+    let repeatNext = lifecycle.press(2)
+    #expect(next == .allowOnce && repeatNext == nil)
     let stopped = lifecycle.stop()
     #expect(stopped == [2] && !lifecycle.isPressed(.allowOnce))
 }
@@ -25,11 +35,25 @@ import Testing
 @Test func shortcutAlreadyHeldAtRegistrationCannotApproveANewRequest() {
     var lifecycle = ShortcutLifecycle()
     lifecycle.registered(1, for: .allowOnce, alreadyPressed: true)
-    let repeatBeforeRelease = lifecycle.press(.allowOnce)
-    #expect(!repeatBeforeRelease)
-    _ = lifecycle.release(.allowOnce)
-    let freshPress = lifecycle.press(.allowOnce)
-    #expect(freshPress)
+    let repeatBeforeRelease = lifecycle.press(1)
+    #expect(repeatBeforeRelease == nil)
+    _ = lifecycle.release(1)
+    let freshPress = lifecycle.press(1)
+    #expect(freshPress == .allowOnce)
+}
+
+@Test func staleReleaseCannotReleaseTheNextRequestsHeldPress() {
+    var lifecycle = ShortcutLifecycle()
+    lifecycle.registered(1, for: .allowOnce)
+    _ = lifecycle.remove(1)
+    lifecycle.registered(2, for: .allowOnce)
+    _ = lifecycle.press(2)
+    _ = lifecycle.release(1)
+    let repeated = lifecycle.press(2)
+    #expect(lifecycle.isPressed(.allowOnce) && repeated == nil)
+    _ = lifecycle.release(2)
+    let fresh = lifecycle.press(2)
+    #expect(fresh == .allowOnce)
 }
 
 @MainActor

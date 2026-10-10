@@ -4,7 +4,7 @@ import Combine
 @MainActor
 final class ShortcutRegistry: ObservableObject {
     @Published private(set) var errors: [ShortcutAction: String] = [:]
-    private var active: [ShortcutAction: (binding: ShortcutBinding, token: Int)] = [:]
+    private var active: [ShortcutAction: (binding: ShortcutBinding, token: Int, context: String?)] = [:]
     private let register: (ShortcutAction, ShortcutBinding) -> Int?
     private let unregister: (Int) -> Void
 
@@ -13,9 +13,13 @@ final class ShortcutRegistry: ObservableObject {
     }
 
     func activeBinding(for action: ShortcutAction) -> ShortcutBinding? { active[action]?.binding }
+    func activeContext(for action: ShortcutAction) -> String? { active[action]?.context }
+    func owns(_ token: Int, for action: ShortcutAction, context: String?) -> Bool {
+        active[action]?.token == token && active[action]?.context == context
+    }
 
     @discardableResult
-    func apply(_ binding: ShortcutBinding, for action: ShortcutAction) -> Bool {
+    func apply(_ binding: ShortcutBinding, for action: ShortcutAction, context: String? = nil) -> Bool {
         if !binding.enabled {
             if let old = active.removeValue(forKey: action) { unregister(old.token) }
             errors.removeValue(forKey: action)
@@ -25,8 +29,13 @@ final class ShortcutRegistry: ObservableObject {
             errors[action] = "Use a readable key with Command, Control or Option."
             return false
         }
+        // A different proposal must never inherit the preceding proposal's token.
+        if let old = active[action], old.context != context {
+            active.removeValue(forKey: action)
+            unregister(old.token)
+        }
         if let old = active[action], old.binding.keyCode == binding.keyCode, old.binding.modifiers == binding.modifiers {
-            active[action] = (binding, old.token)
+            active[action] = (binding, old.token, context)
             errors.removeValue(forKey: action)
             return true
         }
@@ -39,7 +48,7 @@ final class ShortcutRegistry: ObservableObject {
             return false
         }
         if let old = active[action] { unregister(old.token) }
-        active[action] = (binding, token)
+        active[action] = (binding, token, context)
         errors.removeValue(forKey: action)
         return true
     }

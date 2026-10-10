@@ -9,9 +9,10 @@ private func lanternHotKeyHandler(_: EventHandlerCallRef?, event: EventRef?, con
                                    nil, MemoryLayout<EventHotKeyID>.size, nil, &identifier)
     guard status == noErr, identifier.signature == CarbonShortcuts.signature else { return OSStatus(eventNotHandledErr) }
     let owner = Unmanaged<CarbonShortcuts>.fromOpaque(context).takeUnretainedValue()
-    let actionID = identifier.id
+    let token = identifier.id
     let pressed = GetEventKind(event) == UInt32(kEventHotKeyPressed)
-    MainActor.assumeIsolated { owner.receive(actionID, pressed: pressed) }
+    let timestamp = GetEventTime(event)
+    MainActor.assumeIsolated { owner.receive(token, pressed: pressed, at: timestamp) }
     return noErr
 }
 
@@ -19,15 +20,15 @@ private func lanternHotKeyHandler(_: EventHandlerCallRef?, event: EventRef?, con
 @MainActor
 final class CarbonShortcuts {
     nonisolated static let signature: UInt32 = 0x4C414E54
-    private let onAction: (ShortcutAction) -> Void
+    var onAction: ((ShortcutAction, Int, TimeInterval) -> Void)?
     var onRelease: (() -> Void)?
     private var handler: EventHandlerRef?
-    private var references: [Int: EventHotKeyRef] = [:]
+    private var references: [Int: (native: EventHotKeyRef, keyCode: CGKeyCode)] = [:]
     private var lifecycle = ShortcutLifecycle()
     private var nextToken = 0
+    private var releaseTimer: Timer?
 
-    init(onAction: @escaping (ShortcutAction) -> Void) {
-        self.onAction = onAction
+    init() {
         var specifications = [
             EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed)),
             EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyReleased))
@@ -41,54 +42,79 @@ final class CarbonShortcuts {
 
     func register(_ action: ShortcutAction, binding: ShortcutBinding) -> Int? {
         guard handler != nil, binding.isSafe, binding.enabled, !isPressed(action),
-              let index = ShortcutAction.allCases.firstIndex(of: action) else { return nil }
+              nextToken < UInt32.max else { return nil }
         var modifiers: UInt32 = 0
         if binding.modifiers.contains(.command) { modifiers |= UInt32(cmdKey) }
         if binding.modifiers.contains(.option) { modifiers |= UInt32(optionKey) }
         if binding.modifiers.contains(.control) { modifiers |= UInt32(controlKey) }
         if binding.modifiers.contains(.shift) { modifiers |= UInt32(shiftKey) }
         var reference: EventHotKeyRef?
-        let identifier = EventHotKeyID(signature: Self.signature, id: UInt32(index + 1))
+        nextToken += 1 // Never reuse a native event identity, including failed registrations.
+        let identifier = EventHotKeyID(signature: Self.signature, id: UInt32(nextToken))
         guard RegisterEventHotKey(UInt32(binding.keyCode), modifiers, identifier, GetApplicationEventTarget(),
                                   0, &reference) == noErr, let reference else { return nil }
-        nextToken += 1
-        references[nextToken] = reference
+        references[nextToken] = (reference, CGKeyCode(binding.keyCode))
         // A request arriving during an existing modified press must wait for release.
-        let flags = CGEventSource.flagsState(.combinedSessionState)
-        let required: [(ShortcutModifiers, CGEventFlags)] = [(.command, .maskCommand), (.option, .maskAlternate),
-                                                              (.control, .maskControl), (.shift, .maskShift)]
-        let modifiersDown = required.allSatisfy { binding.modifiers.contains($0.0) == flags.contains($0.1) }
-        let held = modifiersDown && CGEventSource.keyState(.combinedSessionState, key: CGKeyCode(binding.keyCode))
+        let held = CGEventSource.keyState(.combinedSessionState, key: CGKeyCode(binding.keyCode))
         lifecycle.registered(nextToken, for: action, alreadyPressed: held)
+        reconcileReleaseTimer()
         return nextToken
     }
 
     func unregister(_ token: Int) {
         guard lifecycle.remove(token), let reference = references.removeValue(forKey: token) else { return }
-        UnregisterEventHotKey(reference)
+        UnregisterEventHotKey(reference.native)
     }
 
     func stop() {
         for token in lifecycle.stop() {
-            if let reference = references.removeValue(forKey: token) { UnregisterEventHotKey(reference) }
+            if let reference = references.removeValue(forKey: token) { UnregisterEventHotKey(reference.native) }
         }
+        releaseTimer?.invalidate(); releaseTimer = nil
         onRelease = nil
+        onAction = nil
         if let handler { RemoveEventHandler(handler) }
         handler = nil
     }
 
-    fileprivate func receive(_ identifier: UInt32, pressed: Bool) {
-        let actions = ShortcutAction.allCases
-        guard identifier > 0, identifier <= actions.count else { return }
-        let action = actions[Int(identifier) - 1]
+    fileprivate func receive(_ identifier: UInt32, pressed: Bool, at timestamp: TimeInterval) {
+        let token = Int(identifier)
+        guard references[token] != nil else { return }
         if pressed {
-            guard lifecycle.press(action) else { return }
-            onAction(action)
+            guard let action = lifecycle.press(token) else { return }
+            reconcileReleaseTimer()
+            onAction?(action, token, timestamp)
         } else {
-            for token in lifecycle.release(action) {
-                if let reference = references.removeValue(forKey: token) { UnregisterEventHotKey(reference) }
+            release(token)
+        }
+    }
+
+    private func release(_ token: Int) {
+        let wasHeld = lifecycle.heldTokens.contains(token)
+        for retired in lifecycle.release(token) {
+            if let reference = references.removeValue(forKey: retired) { UnregisterEventHotKey(reference.native) }
+        }
+        reconcileReleaseTimer()
+        if wasHeld { onRelease?() }
+    }
+
+    /// Carbon may omit key-up when registered during a press. Sample only held
+    /// registered keys, and stop sampling as soon as those keys have been released.
+    private func reconcileReleaseTimer() {
+        if lifecycle.heldTokens.isEmpty {
+            releaseTimer?.invalidate(); releaseTimer = nil
+        } else if releaseTimer == nil {
+            releaseTimer = Timer(timeInterval: 0.05, repeats: true) { [weak self] _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    for token in self.lifecycle.heldTokens {
+                        guard let reference = self.references[token],
+                              !CGEventSource.keyState(.combinedSessionState, key: reference.keyCode) else { continue }
+                        self.release(token)
+                    }
+                }
             }
-            onRelease?()
+            RunLoop.main.add(releaseTimer!, forMode: .common)
         }
     }
 }

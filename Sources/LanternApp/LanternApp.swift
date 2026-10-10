@@ -34,8 +34,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         panel = PanelController(model: model)
         connectionsController = ConnectionsController(model: model)
-        let shortcuts = ShortcutController(preferences: model.desktopPreferences, onAction: model.performShortcut,
+        let shortcuts = ShortcutController(preferences: model.desktopPreferences,
+            onAction: { [weak model] action, time in model?.performShortcut(action, at: time) },
             isAvailable: { [weak model] in $0 != .allowOnce || model?.allowsGlobalApproval == true },
+            context: { [weak model] in $0 == .allowOnce ? model?.displayedApprovalID : nil },
             availabilityChanges: model.objectWillChange)
         self.shortcuts = shortcuts
         settings = DesktopSettingsController(model: model, shortcuts: shortcuts, login: .live(isDemo: model.isDemo))
