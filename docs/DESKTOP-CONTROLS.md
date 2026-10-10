@@ -43,9 +43,18 @@ The UI reads the actual OS status, including registration failure and approval r
 If macOS requires approval, use **Open Login Items** and approve Lantern yourself. Review
 and demo builds cannot register. No reboot or logout is used for verification.
 
-Installed 0.3.1/build26 at `~/Applications/Lantern.app`, with signed 0.3.0 and earlier rollback bundles retained.
-Native listener/activity, retained two shortcut defaults and login switch On are observed.
+Installed 0.3.2/build27 at `~/Applications/Lantern.app`, with signed 0.3.1 and earlier rollback bundles retained.
+Native listener/activity and both retained hook connections are observed in 0.3.2.
+The two shortcut defaults and login switch On were observed before this patch; preferences
+and login code are unchanged, and next-login remains unverified.
 Private non-executing Allow returned exactly allow and collapsed to the pill. Earlier physical
 Allow/visibility and foreground Settings acceptance stand; next-login, new physical hover and
 unsteered typing remain separate manual checks.
 Current evidence and rollback location are in VERIFICATION.md.
+
+The 0.3.2 shortcut fix assigns a unique native token and visible-request context per
+registration, rejects delayed presses across presentation/menu/settings intervals, and
+reconciles release of held configured keys. Pure and real queue tests pass. The current
+native review establishes sample clicks and collapse; a physical back-to-back shortcut
+check remains pending. See SPEC-approval-sync.md for its exact intent contract and the
+separate unresolved Claude host-decision identity limitation.

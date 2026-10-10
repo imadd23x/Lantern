@@ -327,8 +327,8 @@ implementation, installation or local runtime work remains for these two request
 - [x] Run 78 Swift tests (83 parameterized cases); old compiled relay fails parent-cancellation regression, patched relay passes receive/send/sibling/partial-reply checks.
 - [x] Final fresh internal review found no further approval contract failure; external review offered and declined.
 - [x] Package 0.3.2/build27 for arm64 and x86_64; strict signature, extraction and personal-path audit pass.
-- [ ] Packaged smoke, isolated native review and safe installed update.
-- [ ] GitHub private release/checks and exact source archive.
+- [x] Packaged smoke, isolated native click/queue review and safe installed update.
+- [x] GitHub private release/checks and exact source archive.
 - [ ] User choice on keeping Claude's Lantern Allow versus accurately mirrored VS Code-only approvals.
 
 Current supported PermissionRequest has no tool-use ID. Parent liveness is only cancellation
@@ -337,3 +337,16 @@ identity bridge to the existing anonymous permission hook or native permission-d
 Do not guess from matching commands, ordering or one visible card. Keep both existing agent
 connections/settings unchanged; the repo remains private with all five supplied resources.
 No public conversion, history rewrite, vendor patch or usage feature is authorized.
+
+Completed patch handoff: 0.3.2/build27 is installed, compact and listening. Both
+configuration hashes are unchanged and both providers show Hooks installed. Real Codex
+activity is observed. Signed rollback: ~/Applications/Lantern Backups/0.3.1-build26-db747f8/Lantern.app.
+The isolated review is quit. Both samples returned their own Allow; the first was clicked
+by the user before the first snapshot (confirmed), the second by CUA, and the queue drained
+to a pill. CUA's synthetic shortcut established no native key result. Physical sequential
+shortcuts and new live Claude approval behavior remain unverified; do not claim otherwise.
+Private release v0.3.2 targets db747f8, with all 103 source blobs checked and matching remote
+app/source digests. Push38082863424 and PR38082867422 checks passed. Main is not merged;
+use the release app asset for installation. No repeated local build/test is needed for this
+closing documentation. Immediate native Claude decision sync still requires the user's
+surface choice; Lantern's existing Allow button remains intact meanwhile.

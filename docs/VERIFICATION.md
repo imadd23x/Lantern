@@ -1,6 +1,46 @@
 # Verification evidence — Lantern
 
-## Current release: 0.3.1/build26 — 2026-10-08
+## Current release: 0.3.2/build27 — completed 2026-10-11
+
+Source: f96ea49 (request-owned shortcuts and cancellable relays), db747f8 (private
+portable packaging). Full Swift run passes 78 functions / 83 parameterized cases.
+The old compiled relay fails the orphaned-parent check; the new compiled and packaged
+relay passes cancellation during receive/send, sibling independence and partial replies.
+Packaged absent-app/malformed-input and both-provider Allow/Deny/Delegate checks pass.
+The final fresh approval code review found no further contract-breaking issue; additional
+external review was offered and declined.
+
+Both arm64 and x86_64 slices, strict signatures, extracted ZIP and all five supplied
+asset byte comparisons pass. Executables contain no personal home/source paths; no
+local account/settings/trust/session files enter the bundle. Intel execution is unverified.
+App SHA256: 3d9bb8a2b72e6b55273291afa854b238f484b79f1cc0c179c6b2b1ccdad50dcd.
+Source ZIP matches all 103 tracked blobs at db747f8; SHA256:
+1d2d0c93fe12be20a6efa3fc066c9ce6b673946fc28867be896d03857b64ad2e.
+GitHub uploaded digests match. Push38082863424 and PR38082867422 passed.
+[Private download](https://github.com/imadd23x/Lantern/releases/tag/v0.3.2) is published;
+repository visibility is verified private. Main remains unmerged; use the app release asset.
+
+Installed at ~/Applications/Lantern.app after confirming no real pending approval,
+successful quit, no listener/socket and no process using the old executable. Signed
+rollback is ~/Applications/Lantern Backups/0.3.1-build26-db747f8/Lantern.app. Both config
+hashes are unchanged. Installed native UI recognizes both providers' hooks and receives
+real Codex activity; it is left compact and listening.
+
+Isolated native review has separate identity/runtime/preferences and distinct test keys.
+Both non-executing sample connections returned their own Allow, then the card collapsed.
+The user confirmed clicking the first sample before inspection; CUA clicked the second.
+CUA's synthetic key press established no native shortcut result. Review is quit.
+Physical back-to-back shortcuts and new live Claude approval behavior remain unverified.
+No real command approval, agent setting write, paid inference, public conversion,
+history rewrite or vendor patch occurred.
+
+Known unresolved scope: current Claude PermissionRequest has no tool-use ID or immediate
+native-decision callback. Neither parent lifetime nor matching command text safely identifies
+VS Code decisions for identical parallel requests. Supported mod APIs provide no bridge
+preserving both approval surfaces. The user's surface choice is pending; retain Lantern's
+existing Allow button. Intermittent missing Claude activity was not reproduced.
+
+## Guardian patch: 0.3.1/build26 — 2026-10-08
 
 The user reported a quit after opening Agent connections from Settings. Installed25's crash report
 at15:02:58 Dubai and isolated25's reproducible report at15:08:25 share the same main-thread abort:
