@@ -27,17 +27,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var panel: PanelController?
     private var shortcuts: ShortcutController?
     private var settings: DesktopSettingsController?
+    private var connectionsController: ConnectionsController?
     private var item: NSStatusItem?
     private var stateSubscription: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         panel = PanelController(model: model)
-        let shortcuts = ShortcutController(preferences: model.desktopPreferences, onAction: model.performShortcut,
+        connectionsController = ConnectionsController(model: model)
+        let shortcuts = ShortcutController(preferences: model.desktopPreferences,
+            onAction: { [weak model] action, time in model?.performShortcut(action, at: time) },
             isAvailable: { [weak model] in $0 != .allowOnce || model?.allowsGlobalApproval == true },
+            context: { [weak model] in $0 == .allowOnce ? model?.displayedApprovalID : nil },
             availabilityChanges: model.objectWillChange)
         self.shortcuts = shortcuts
         settings = DesktopSettingsController(model: model, shortcuts: shortcuts, login: .live(isDemo: model.isDemo))
-        model.onSettingsRequest = { [weak self] in self?.settings?.show() }
+        model.onSettingsRequest = { [weak self] section in self?.settings?.show(section: section) }
         item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item?.button?.image = NSImage(systemSymbolName: "lamp.desk.fill", accessibilityDescription: "Lantern agent companion")
         item?.menu = makeMenu()
@@ -60,7 +64,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.addItem(withTitle: model.visibilityMenuTitle, action: #selector(toggleVisibility), keyEquivalent: "")
         menu.addItem(withTitle: "Settings…", action: #selector(openSettings), keyEquivalent: "")
         menu.addItem(withTitle: "Keep visible", action: #selector(pin(_:)), keyEquivalent: "")
-        menu.addItem(withTitle: "Connections…", action: #selector(connections), keyEquivalent: ",")
+        menu.addItem(withTitle: "Agent connections", action: #selector(connections), keyEquivalent: ",")
         menu.addItem(withTitle: "Quiet mode", action: #selector(quiet(_:)), keyEquivalent: "")
         menu.addItem(.separator())
         menu.addItem(withTitle: "Quit Lantern", action: #selector(quit), keyEquivalent: "q")
@@ -77,7 +81,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func menuWillOpen(_ menu: NSMenu) { model.isMenuOpen = true }
     func menuDidClose(_ menu: NSMenu) { model.isMenuOpen = false }
-    func applicationWillTerminate(_ notification: Notification) { settings?.close(); shortcuts?.stop(); panel?.stop(); model.stop() }
+    func applicationWillTerminate(_ notification: Notification) { connectionsController?.close(); settings?.close(); shortcuts?.stop(); panel?.stop(); model.stop() }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         model.showCompanion()
         return false
@@ -85,7 +89,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     @objc private func toggleVisibility() { model.toggleCompanionVisibility() }
     @objc private func openSettings() { settings?.show() }
     @objc private func pin(_ sender: NSMenuItem) { model.desktopPreferences.pinned.toggle() }
-    @objc private func connections() { model.showConnections = true; model.showCompanion(expanded: true) }
+    @objc private func connections() { model.showConnections = true }
     @objc private func quiet(_ sender: NSMenuItem) {
         model.quiet.toggle(); sender.state = model.quiet ? .on : .off
     }

@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.3.2 — 2026-10-10
+
+- Fixed shortcut ownership across queued approvals, stale callbacks, held keys and menu/settings transitions.
+- Orphaned Claude approval hooks cancel their own connection during connect, send and receive; partial replies and other requests stay intact.
+- Added a private portable Apple Silicon/Intel app package, personal build-path checks and a short installation guide.
+- Known limitation: a decision made in VS Code can leave its anonymous Claude approval hook pending. This release does not infer or claim immediate host-decision sync.
+
+## 0.3.1 — 2026-10-08
+
+- Fixed a crash when Agent connections takes focus from the Shortcuts tab: shortcut text now uses a native macOS label.
+- Changed the gear-menu subtitle to "Your desktop guardian".
+
+## 0.3.0 — 2026-10-07
+
+- Arc-inspired native tabs, gear menu, buttons, switches, status badges and empty states.
+- Compact Connections and Settings windows; the session window grows with its contents and scrolls at a height limit.
+- Expanded header can be dragged anywhere without a grip icon.
+- Supplied Green Lantern emblem replaces the sparkle; head, agent icons and A-Train cue retained.
+- Removed header pin/connections icons, long shortcut explanation and the entire usage feature.
+- Connections opens as a separate rounded card, preserving the companion's corner transparency.
+
+## 0.2.0 — 2026-10-07
+
+- Command–Return Allow once and Command–Option–H show/hide shortcuts.
+- Idle hide with hover reveal, launch at login and foreground Settings.
+- Optional Claude usage telemetry, subsequently removed in 0.3.0 at the user's request.
+
 ## 0.1.14 — 2026-10-07
 
 Use the supplied A-Train.mp3 clip for attention alerts. Bundle the original audio locally,

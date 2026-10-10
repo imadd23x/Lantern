@@ -36,6 +36,24 @@ import Testing
 }
 
 @MainActor
+@Test func approvalContextChangesRetireNativeIdentityEvenWithTheSameChord() throws {
+    var next = 0
+    var tokens: Set<Int> = []
+    let registry = ShortcutRegistry(register: { _, _ in
+        guard tokens.isEmpty else { return nil }
+        next += 1; tokens.insert(next); return next
+    }, unregister: { tokens.remove($0) })
+    let binding = try #require(ShortcutBinding.defaults[.allowOnce])
+    #expect(registry.apply(binding, for: .allowOnce, context: "A"))
+    // Before synchronization, the old registration cannot act on a new visible card.
+    #expect(!registry.owns(1, for: .allowOnce, context: "B"))
+    #expect(registry.apply(binding, for: .allowOnce, context: "B"))
+    #expect(tokens == [2])
+    #expect(!registry.owns(1, for: .allowOnce, context: "B"))
+    #expect(registry.owns(2, for: .allowOnce, context: "B"))
+}
+
+@MainActor
 @Test func failedShortcutReplacementRetainsTheWorkingRegistration() throws {
     var tokens: Set<Int> = []
     var next = 0

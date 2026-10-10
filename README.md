@@ -1,8 +1,21 @@
 # Lantern
 
-A small native macOS companion for **Imad's Codex desktop and Claude Code in VS Code**.
-Independent sessions, a queue of permission requests, and a companion using Imad's supplied masked toy head.
+A native macOS desktop guardian for **Codex desktop and Claude Code in VS Code**.
+Independent sessions, a queue of permission requests, and the supplied masked toy head.
 Runs locally with no API key, network analytics, paid model calls, or third-party dependencies.
+
+## Install
+
+Download the app ZIP from this private repository's [Releases](https://github.com/imadd23x/Lantern/releases),
+extract it and put **Lantern.app** in `~/Applications` or `/Applications` before connecting agents.
+The app includes Apple Silicon and Intel executables and requires macOS 15+; no developer tools
+are needed to run it. See [the installation guide](docs/INSTALL.md) for local setup and updates.
+The source ZIP is for development and does not contain a ready-to-run application.
+
+The app download contains no account settings, agent hooks, trust records or session data.
+Configure each Mac locally through **Agent connections**. This personal build remains private
+and retains the supplied artwork and A-Train alert. It is ad-hoc signed, not notarized;
+macOS may require its normal **Open Anyway** approval on first launch.
 
 ## Build and run
 
@@ -17,19 +30,20 @@ open outputs/Lantern.app
 
 The app starts compact below the notch/menu bar. Click the companion to expand or collapse; Escape
 also collapses. Drag anywhere on the compact pill to move it; a drag does not click embedded controls.
-The expanded header retains a grip. Position is remembered and kept on a visible screen.
+Drag anywhere on the expanded header too; there is no grip icon. Position is remembered and kept
+on a visible screen. The expanded window grows with its session list, then scrolls at its height limit.
 Click **×** or **Hide Lantern** in the menu to hide it while it keeps listening. The same menu command
 becomes **Show Lantern** while hidden. Alerts expand a visible panel without activating your app,
 and a deliberately hidden panel stays hidden (pending requests appear on the menu-bar icon).
 Quiet mode turns off the attention sound. Installed hooks are recognized after reopening; session
 rows appear on fresh activity. Installation is distinct from agent trust/reload and live hook delivery.
 The head gently bobs while an agent works; a green outline/glow indicates attention. Its white mask
-eyes remain as supplied, per Imad's choice. Reduce Motion disables decorative movement. The original
+eyes remain as supplied. Reduce Motion disables decorative movement. The original
 PNG is bundled unchanged and a native outline mask clips away its baked checkerboard. No photo tile
 or external image dependency is displayed. The original procedural green pet is a missing-asset fallback.
 
 The app's accent is #069b2e. Head clipping includes an inward sampling margin so the screenshot's
-antialiased background does not leave a light fringe. Current editable source: `/Users/imad/Documents/Codex/Lantern`.
+antialiased background does not leave a light fringe.
 
 Provider filters include session counts and keyboard navigation. Status badges follow real agent events;
 only active work pulses. Selection, hover and press feedback respect reduced motion. These native
@@ -40,26 +54,25 @@ Extract the release ZIP to a stable, unsynced local folder (for example `~/Appli
 hook commands contain its full executable path. This workspace is in synced Documents; File Provider
 reapplies FinderInfo after packaging, which can invalidate strict signature checks on the workspace copy.
 The release ZIP is created from verified unsynced staging and passes verification when extracted locally.
-`outputs/Lantern-0.2.0.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
+`outputs/Lantern-0.3.2.zip` is the portable build; `outputs/SHA256SUMS` records its digest.
 
 ## Desktop settings
 
-**Settings…** adds configurable global shortcuts, idle hide with hover reveal, pinning, native
-launch at login, and Claude usage indicators. Defaults: Command+Return allows the visible, selected request once;
+The expanded panel's gear opens a compact destination menu. General and Shortcuts open
+content-sized Settings tabs; Agent connections opens a separate rounded setup window. **Settings…**
+in the menu bar opens General. Preferences include configurable global shortcuts, idle hide with
+hover reveal, keeping the pill visible, and native launch at login. Defaults: Command+Return allows the visible, selected request once;
 Command+Option+H shows or hides the pill. No approval shortcut is active without an actionable card.
 The idle compact pill hides after 30 seconds; work, attention and interaction keep it visible.
 Manual Hide stays hidden until explicitly shown. Hover reveals an idle-hidden pill without focus.
 
-Login and usage setup are available only from `~/Applications/Lantern.app` or `/Applications/Lantern.app`.
+Login setup is available only from `~/Applications/Lantern.app` or `/Applications/Lantern.app`.
 Launch at login changes only when its switch is used; macOS may require approval in Login Items.
-Claude usage uses documented local status-line data, with separate five-hour and weekly windows.
-The native VS Code panel may supply none; unavailable/stale/reset-passed values remain explicit.
-Open **Settings → Usage → Review connection…** to preserve and wrap an existing status line.
 See [desktop controls](docs/DESKTOP-CONTROLS.md) for behavior and limitations.
 
 ## Connect the agents
 
-1. Launch the packaged app and open **Connections** using its sliders button or menu.
+1. Launch the packaged app and open **Agent connections** from the gear menu or Settings.
 2. Pick Codex or Claude Code and click **Preview connection**.
 3. Compare **Proposed settings** and **Current settings**, then click **Back up and connect**.
 4. For Codex, review/trust the exact definitions using `/hooks` in Codex CLI. Start a new desktop
@@ -88,6 +101,13 @@ or quit returns no permission decision, allowing the agent's normal approval pat
 The response window is 110 seconds. A hook's original sandbox/rules remain owned by its agent;
 Lantern does not modify them. Requests with no tool input must be reviewed in the agent.
 
+Claude's current standard approval hook does not expose a tool-use ID or an immediate callback
+when VS Code wins the permission decision. A card can therefore remain until the original hook
+closes, the turn ends or the 110-second deadline passes. Lantern does not dismiss another queued
+request by guessing from a similar command. Answer a request on one surface at a time.
+Orphaned Claude approval relays close their own connection when their original parent exits;
+parent liveness does not identify a decision made in VS Code.
+
 Click a Codex session to open its chat via the Codex deep link. Claude rows bring the already running
 VS Code window forward, preserving its selected chat and workspace. No folder is opened, no session
 is resumed/recreated and Code is not launched when unavailable. If you use several Code windows or
@@ -99,10 +119,7 @@ Open **Connections → Preview removal → Apply removal** for each provider. Th
 marked `lantern-managed-v1`, preserving other handlers and subsequent unrelated edits. A new verified backup
 is written alongside the settings file. Restart the agent session to stop loading the removed hooks.
 Quit Lantern to release every pending request without a decision. No background daemon is installed.
-Turn off **Settings → General → Launch at login** before removing the app. If usage relay is configured,
-remove it through **Settings → Usage → Remove relay…** before rolling back to a pre-0.2.0 app;
-the older relay cannot preserve the wrapped status-line command. Removal restores only an unchanged
-Lantern wrapper and retains other settings/hooks. Every change creates a verified backup.
+Turn off **Settings → General → Launch at login** before removing the app.
 
 Configuration transactions refuse malformed shapes, symlink targets, failed backups and changes since preview.
 They coordinate Lantern writers with an advisory lock and replace settings by atomic rename. A non-cooperating

@@ -18,8 +18,7 @@ public final class HookServer: @unchecked Sendable {
     }
 
     public func start(onEvent: @escaping @Sendable (AgentEvent, String) -> Void,
-                      onDisconnect: @escaping @Sendable (String) -> Void,
-                      onUsage: @escaping @Sendable (ClaudeUsageSnapshot) -> Void = { _ in }) throws {
+                      onDisconnect: @escaping @Sendable (String) -> Void) throws {
         try lock.withLock {
             guard listener < 0 else { throw TransportError.occupied }
             let fm = FileManager.default
@@ -48,7 +47,7 @@ public final class HookServer: @unchecked Sendable {
                 throw TransportError.system(errno)
             }
             listener = fd
-            Thread.detachNewThread { [self] in acceptLoop(fd: fd, onEvent: onEvent, onDisconnect: onDisconnect, onUsage: onUsage) }
+            Thread.detachNewThread { [self] in acceptLoop(fd: fd, onEvent: onEvent, onDisconnect: onDisconnect) }
         }
     }
 
@@ -73,8 +72,7 @@ public final class HookServer: @unchecked Sendable {
     }
 
     private func acceptLoop(fd: Int32, onEvent: @escaping @Sendable (AgentEvent, String) -> Void,
-                            onDisconnect: @escaping @Sendable (String) -> Void,
-                            onUsage: @escaping @Sendable (ClaudeUsageSnapshot) -> Void) {
+                            onDisconnect: @escaping @Sendable (String) -> Void) {
         defer { close(fd) }
         while lock.withLock({ listener == fd }) {
             let client = accept(fd, nil, nil)
@@ -93,21 +91,15 @@ public final class HookServer: @unchecked Sendable {
                 defer {
                     peer.closeOwnedDescriptor()
                     _ = lock.withLock { peers.removeValue(forKey: id) }
-                    // Telemetry closes normally after its acknowledgement. Only a pending
-                    // approval needs cancellation; actor scheduling must not discard telemetry.
+                    // Only an accepted pending approval needs cancellation on relay disconnect.
                     if pendingApproval { onDisconnect(id) }
                 }
                 do {
                     SocketIO.configure(client, timeout: 2)
                     let data = try SocketIO.readLine(client, timeout: 2)
                     let root = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-                    if root?["type"] != nil {
-                        let envelope = try JSONDecoder().decode(ClaudeUsageEnvelope.self, from: data)
-                        try envelope.validate()
-                        onUsage(envelope.snapshot)
-                        peer.finish(.delegate)
-                        return
-                    }
+                    // Unknown typed envelopes must never fall back to activity/permission parsing.
+                    guard root?["type"] == nil else { peer.finish(.delegate); return }
                     let event = try JSONDecoder().decode(AgentEvent.self, from: data)
                     try event.validate()
                     pendingApproval = event.kind == .approval

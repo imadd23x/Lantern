@@ -54,13 +54,15 @@ struct DesktopCommandTests {
         try await wait(model, count: 1)
         model.setDisplayedApproval(try #require(model.selectedApproval).id, visible: true)
         model.approvalPresentationReady = true
-        for blocked in 0..<3 {
+        for blocked in 0..<5 {
             if blocked == 0 { model.isSettingsOpen = true }
             if blocked == 1 { model.showConnections = true }
-            if blocked == 2 { model.hideCompanion() }
+            if blocked == 2 { model.isSettingsMenuOpen = true }
+            if blocked == 3 { model.hideCompanion() }
+            if blocked == 4 { model.isMenuOpen = true }
             model.performShortcut(.allowOnce)
             #expect(model.state.approvals.count == 1)
-            model.isSettingsOpen = false; model.showConnections = false
+            model.isSettingsOpen = false; model.showConnections = false; model.isSettingsMenuOpen = false; model.isMenuOpen = false
         }
         model.showCompanion(expanded: true)
         fixture.time += SessionState.approvalLifetime + 1
@@ -68,6 +70,44 @@ struct DesktopCommandTests {
         #expect(!model.allowsGlobalApproval && model.state.approvals.count == 1)
         model.tick()
         #expect(try await relay.value == .delegate)
+    }
+
+    @Test func queuedKeyPressFromPreviousCardCannotApproveTheNextCard() async throws {
+        let fixture = Fixture()
+        defer { fixture.stop() }
+        let model = fixture.model
+        model.start()
+        let a = startHookExchange(fixture.event("a"), socketPath: model.socketPath, timeout: 5)
+        try await wait(model, count: 1)
+        let first = try #require(model.selectedApproval)
+        model.setDisplayedApproval(first.id, visible: true)
+        model.approvalPresentationReady = true
+        let oldPress = fixture.keyTime
+        let b = startHookExchange(fixture.event("b"), socketPath: model.socketPath, timeout: 5)
+        try await wait(model, count: 2)
+        model.decide(first.id, .delegate) // Original host wins, not Lantern.
+        #expect(try await a.value == .delegate)
+        fixture.keyTime += 1
+        let second = try #require(model.selectedApproval)
+        model.setDisplayedApproval(second.id, visible: true)
+        model.performShortcut(.allowOnce, at: oldPress)
+        #expect(model.state.approvals.count == 1)
+        // A press during a new presentation animation is stale even for the same ID.
+        model.approvalPresentationReady = false
+        let duringAnimation = fixture.keyTime
+        fixture.keyTime += 1
+        model.approvalPresentationReady = true
+        model.performShortcut(.allowOnce, at: duringAnimation)
+        #expect(model.state.approvals.count == 1)
+        model.isMenuOpen = true
+        let duringMenu = fixture.keyTime
+        fixture.keyTime += 1
+        model.isMenuOpen = false
+        model.performShortcut(.allowOnce, at: duringMenu)
+        #expect(model.state.approvals.count == 1)
+        model.performShortcut(.allowOnce, at: fixture.keyTime)
+        #expect(try await b.value == .allow)
+        #expect(!model.expanded)
     }
 
     @Test func missingProposalNeverEnablesGlobalAllow() async throws {
@@ -138,10 +178,12 @@ struct DesktopCommandTests {
         let directory = URL(fileURLWithPath: "/private/tmp/lantern-allow-key-" + UUID().uuidString)
         let suite = "lantern-allow-key-" + UUID().uuidString
         var time: TimeInterval = 1000
+        var keyTime: TimeInterval = 10
         private let started = ProcessInfo.processInfo.systemUptime
         lazy var defaults = UserDefaults(suiteName: suite)!
         lazy var model: AppModel = {
             let model = AppModel(directory: directory, clock: { [unowned self] in self.time + ProcessInfo.processInfo.systemUptime - self.started },
+                eventClock: { [unowned self] in self.keyTime },
                 desktopPreferences: DesktopPreferences(defaults: defaults),
                 configurationURLs: [.codex: directory.appendingPathComponent("codex.json"), .claude: directory.appendingPathComponent("claude.json")])
             model.quiet = true

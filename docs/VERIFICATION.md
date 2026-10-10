@@ -1,5 +1,151 @@
 # Verification evidence — Lantern
 
+## Current release: 0.3.2/build27 — completed 2026-10-11
+
+Source: f96ea49 (request-owned shortcuts and cancellable relays), db747f8 (private
+portable packaging). Full Swift run passes 78 functions / 83 parameterized cases.
+The old compiled relay fails the orphaned-parent check; the new compiled and packaged
+relay passes cancellation during receive/send, sibling independence and partial replies.
+Packaged absent-app/malformed-input and both-provider Allow/Deny/Delegate checks pass.
+The final fresh approval code review found no further contract-breaking issue; additional
+external review was offered and declined.
+
+Both arm64 and x86_64 slices, strict signatures, extracted ZIP and all five supplied
+asset byte comparisons pass. Executables contain no personal home/source paths; no
+local account/settings/trust/session files enter the bundle. Intel execution is unverified.
+App SHA256: 3d9bb8a2b72e6b55273291afa854b238f484b79f1cc0c179c6b2b1ccdad50dcd.
+Source ZIP matches all 103 tracked blobs at db747f8; SHA256:
+1d2d0c93fe12be20a6efa3fc066c9ce6b673946fc28867be896d03857b64ad2e.
+GitHub uploaded digests match. Push38082863424 and PR38082867422 passed.
+[Private download](https://github.com/imadd23x/Lantern/releases/tag/v0.3.2) is published;
+repository visibility is verified private. Main remains unmerged; use the app release asset.
+
+Installed at ~/Applications/Lantern.app after confirming no real pending approval,
+successful quit, no listener/socket and no process using the old executable. Signed
+rollback is ~/Applications/Lantern Backups/0.3.1-build26-db747f8/Lantern.app. Both config
+hashes are unchanged. Installed native UI recognizes both providers' hooks and receives
+real Codex activity; it is left compact and listening.
+
+Isolated native review has separate identity/runtime/preferences and distinct test keys.
+Both non-executing sample connections returned their own Allow, then the card collapsed.
+The user confirmed clicking the first sample before inspection; CUA clicked the second.
+CUA's synthetic key press established no native shortcut result. Review is quit.
+Physical back-to-back shortcuts and new live Claude approval behavior remain unverified.
+No real command approval, agent setting write, paid inference, public conversion,
+history rewrite or vendor patch occurred.
+
+Known unresolved scope: current Claude PermissionRequest has no tool-use ID or immediate
+native-decision callback. Neither parent lifetime nor matching command text safely identifies
+VS Code decisions for identical parallel requests. Supported mod APIs provide no bridge
+preserving both approval surfaces. The user's surface choice is pending; retain Lantern's
+existing Allow button. Intermittent missing Claude activity was not reproduced.
+
+## Guardian patch: 0.3.1/build26 — 2026-10-08
+
+The user reported a quit after opening Agent connections from Settings. Installed25's crash report
+at15:02:58 Dubai and isolated25's reproducible report at15:08:25 share the same main-thread abort:
+ShortcutInput.draw line96 → NSAttributedString.size → CoreText ApplyFont → NSInvalidArgumentException,
+"attempt to insert nil object". This crash bypassed normal socket cleanup and explains the stale
+endpoint found after the quit. No agent configuration action was needed to reproduce it.
+
+ShortcutInput now delegates text rendering to a native NSTextField using a system font. Its original
+capture view still owns hit testing, accessibility, recording, release and cancellation; custom Arc
+hover/focus surface drawing remains. The menu subtitle is "Your desktop guardian".
+
+Full **74 test functions / 79 parameterized cases** pass. Added checks cover readable glyphs during
+inactive/focus/recording changes in a transparent offscreen bitmap, and clicks targeting the recorder
+instead of its label. The offscreen renderer test also passed before the patch, so it does not claim
+to reproduce the intermittent native crash. The red evidence is the actual old-build native abort.
+Existing exact-once key release, held shortcut, approval identity/expiry/queue and focus tests pass.
+
+Isolated26: subtitle observed; several complete Shortcuts/Connections handoffs survived; General also
+opened Connections. Recording CmdK committed after release, and Escape kept that binding. No matching
+new crash report appeared. Rapid20-cycle attempts stopped on target/focus guards or missed activation,
+with the app still running; they are not reported as a completed stress test. A split recording/key
+attempt lost focus and canceled; the same-app action/observation sequence committed correctly.
+
+Release compilation, both packaged relay contracts, ZIP CRC and strict/deep extracted signatures pass.
+Five supplied artwork/audio resources remain byte-identical to installed25. App ZIP SHA256:
+`9d8f10b4061af826818ddb3096575d60a916b12c0adaa7c0265cc6386ebdaea4`.
+
+Production had stopped after the crash. The guarded upgrade proved its stale socket same-user,
+unowned and connection-refused before removing only that inode. Installed26 and signed rollback were
+verified against the extracted app. Rollback:
+`/Users/imad/Applications/Lantern Backups/0.3.0-build25-833cd66d/Lantern.app`.
+Current configuration stayed byte-identical; Claude had independently changed since yesterday:
+
+- Codex: `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`.
+- Claude: `06f4c844e470cd60ee3c7f10bb3e51114c377a41943c08da84685faccd7c5cbf`.
+
+Installed native verification: compact startup, Connected/live Codex row, guardian subtitle, both
+Settings→Connections paths with the process alive, both installed hook sets, exact default bindings,
+login On and idle5min retained. The app is left compact and listening. No real permission was clicked,
+paid inference started, or agent configuration written. Earlier physical hover/typing/next-login
+limitations remain separate from this verified crash path.
+
+GitHub checks passed at patch80e5c7e: [push](https://github.com/imadd23x/Lantern/actions/runs/37774403626)
+and [PR](https://github.com/imadd23x/Lantern/actions/runs/37774409373). [PR #2](https://github.com/imadd23x/Lantern/pull/2)
+is ready for review. Review of the scoped diff found the capture/release callbacks unchanged, the native
+label unable to steal clicks, and no new permission/configuration/transport behavior. Final documentation
+does not change the tested executable; the source archive is tied to the final commit and checked against
+all tracked blobs. Main/release publication remains a review choice.
+
+## 0.3.0/build25 — 2026-10-07
+
+Full local regressions passed: **72 test functions / 77 parameterized cases**. The sandbox initially
+denied test Unix sockets; the same suite passed with local socket permissions. New layout tests cover
+short/growing/capped lists, readable approval allocation and header/content drag boundaries. The
+existing shortcut safety matrix now includes an open gear menu. Unknown typed messages, including
+old telemetry envelopes, return Delegate without session or approval callbacks.
+
+Final release compilation, packaged Allow/Deny/Delegate contracts for both providers, ZIP CRC and
+deep/strict extracted signatures passed. Supplied head, Codex/Claude icons and A-Train are byte-identical
+to installed build19. App ZIP SHA256:
+`406fa50eefde64e4495fdf8d47a14b6e1f9c402a3c487906ad2342a9d4759be4`.
+
+Isolated native review used private runtime/configuration directories and disabled global shortcut
+registration to avoid conflict with the installed app. Observed: Arc gear destinations, native AX
+switches, selected tab states, Escape/keyboard navigation, empty state/emblem, compact Connections
+(310 points), preview expansion (630 points), and readable General/Shortcuts footers. Settings first
+failed to grow with the old preference callback; that candidate was rejected. Direct content geometry
+passed both tab directions in the final build. A real coordinate click after closing Settings restored
+tab keyboard navigation; End selected Claude. An accessibility-only action bypassed mouse focus and
+was not used as evidence for physical-click behavior.
+
+Earlier candidate list review showed two rows at311 points, nine rows at the640-point cap with scroll,
+and five filtered rows at518 points. Expanded-header pan preserved expansion and stored its new position;
+the final build also preserved expansion after drag. The non-executing `ArcLayoutCheck — sample`
+approval returned exactly `allow` and automatically restored the compact pill. No command was executed,
+real approval granted, agent navigation triggered, or agent configuration applied during review.
+
+Safe upgrade: the fresh installed approval queue was empty immediately before native Quit. The guarded
+transaction verified a stopped process, strict release/stage/installed signatures and every installed
+file against the extracted release. Signed rollback:
+`/Users/imad/Applications/Lantern Backups/0.2.0-build19-b729e846/Lantern.app`.
+Both current hook files remained byte-identical:
+
+- Codex: `55afa1a23c58eeb767e50bc48161f61afe24f2edbebcec87fe7be48a72b4d779`.
+- Claude: `28c7bf5ecb66b6701f26e65508f93c20209bc5006e0a4681c2e75ddd05172ec6`.
+
+Installed0.3.0 restarted compact, then received actual Codex activity in a242-point one-row window.
+Both agents showed Hooks installed; Settings retained idle hide at5 minutes, login On and exactly
+Command–Return / Command–Option–H with no registration errors. Sound remained Enabled. The updated
+app is left running compact. No owned status-line wrapper was present; no live configuration was written.
+
+Limits: per-window screenshots do not prove desktop compositing/occlusion. Removing the attached sheet
+and keeping both windows transparent addresses the square-parent path; physical desktop corner review
+remains distinct. Newly styled physical hover, unsteered typing, next-login and multi-display hardware
+behavior are not claimed. Earlier user acceptance of shortcut/focus behavior stands; existing policy and
+lifecycle tests passed. Historical evidence below is retained as dated history, not current capability.
+
+GitHub implementation checks passed at source19ad6b8: [push](https://github.com/imadd23x/Lantern/actions/runs/37650664324)
+and [PR](https://github.com/imadd23x/Lantern/actions/runs/37650672576). [PR #2](https://github.com/imadd23x/Lantern/pull/2)
+contains the focused control, window/retirement and evidence commits. Review covered correctness,
+readability, architecture, security and performance against SPEC-arc-interface.md; no material scoped
+findings remain. No new external dependency, service or permission grant was introduced. Final docs-only
+handoff changes do not require repeating unchanged local runtime tests; the source ZIP is regenerated
+from the final commit and compared with every tracked blob. Main/release publication remains a review choice.
+
 2026-10-05. Results below distinguish observed local behavior from live host activation.
 
 ## Observed checks

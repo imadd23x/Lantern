@@ -222,3 +222,131 @@ are verified; native login On/Connected/live Codex/Enabled observed; both hook h
 Usage relay remains optional and unapplied for the unsupported native VS Code telemetry path.
 No required feature work remains; next-login/physical hover/unsteered typing are manual residuals.
 Final release/source archives are tied to the immutable v0.2.0 release; do not re-run unchanged checks.
+
+## Arc interface refinement — 2026-10-07
+
+- [x] Retire usage end to end; preserve hooks and confirm no installed status-line wrapper.
+- [x] Shared native Arc controls, semantic badges, emblem and compact gear menu.
+- [x] Content-sized Settings/Connections/companion, rounded surfaces and expanded-header drag.
+- [x] Regression tests, release smoke/signatures, isolated native interaction review.
+- [x] Safe upgrade with rollback, unchanged configuration and final GitHub handoff.
+
+Arc checkpoint: branch codex/arc-interface from clean main3cf4d0a. Usage removed from production
+Core/App/Hook/Transport and active docs/fixtures; unknown-envelope fail-closed test retained.
+Live hook hashes55afa1a2/28c7bf5e unchanged, neither contains an owned usage status-line wrapper.
+72 functions/77 parameterized cases passed with local socket permissions (sandboxed sockets denied).
+Content-size/header-drag tests failed before PanelLayout implementation; menu blocks global Allow.
+
+Native review: /private/tmp/lantern-arc20-ybpt77q_/Lantern Arc Review.app,
+bundleID local.imad.Lantern.arc-review20, private runtime/codex/claude directories. Review defaults
+have autoHide/global shortcuts off, so the installed app keeps its registrations. Supplied transparent
+emblem cutout generated via built-in editor, bundled template in exact accent. User head/icons/sound unchanged.
+Build20 review: empty396px, two rows311px, nine rows640px/scroll, Codex filter518px, expanded title
+pan moved and persisted x1410/top1282 without collapse. Arc menu/Connections310px/preview630px/Done
+worked; native semantic badges and truthful states visible. End selected Claude after explicit reopen.
+
+Settings refinement: content-sized tab window catches a native failure — initial preference callback
+only supplied400 and didn't update after General selection, clipping footer. Build21/22 rejected for
+that outcome; temporary numeric diagnostics in build23 reproduced it and are now removed. Build24
+uses onGeometryChange on actual content instead; review must pass both tab directions before rollout.
+CompanionHostingView.needsPanelToBecomeKey lets manual clicks regain key after Settings; automatic
+panel.canBecomeKey gate still preserves passive focus. Native verification of final focus/approval pending.
+
+Production remains installed0.2.0/build19. Do not install stale candidate ZIPs. Prepared signed build24
+package is being built; review update script /private/tmp/lantern-arc-review-update.py preserves each
+old private app, verifies stopped process, and only removes a proven unowned/refused private test socket.
+Private review was quit through CmdQ after build23 trace; confirm before update. Latest receipt is
+outputs/arc-review.json (update it after final bundle), docs/VERIFICATION still needs final evidence.
+Next: review build24 Settings resize/footer, private socket approval and header drag; tests/smoke/signatures;
+commit/push/PR then fresh real empty queue / signed build19 rollback / safe installation and release.
+
+Final native/install checkpoint: build25 full72/77 passed, packaged relay smoke/signatures/CRC and retained
+assets passed. Direct content geometry fixed Settings; final Connections310/preview630 and both Settings
+footers passed. Real coordinate click after Settings regained keyboard navigation; AX-only activation
+does not establish native mouse focus. Non-executing sample returned exact allow and collapsed. No real
+approval or configuration action was performed. Expanded header remains draggable without collapse.
+
+Installed0.3.0/build25 after fresh empty real queue, ordered Quit and guarded verified swap. Signed19
+rollback: ~/Applications/Lantern Backups/0.2.0-build19-b729e846/Lantern.app. Both live hook hashes unchanged;
+no owned usage wrapper. Compact restart/real Codex/242-point one-row view/both installed hooks observed.
+Retained idle5min, login On, two expected bindings and Enabled sound; no registration errors. Production
+is left compact and listening. Code is final; GitHub commit/PR/checks and source archive remain.
+No need to rerun unchanged local tests/package. Physical composited corners/new hover/typing/next-login
+are explicit residuals, not blockers invented for otherwise complete implementation. Automation remains paused.
+
+Completed handoff: implementation source19ad6b8 passed push37650664324 and PR37650672576 checks.
+PR #2: https://github.com/imadd23x/Lantern/pull/2. App ZIP SHA406fa50e, source ZIP checked against all97
+tracked blobs; SHA256SUMS covers both. Final documentation closes this checkpoint; regenerate the source
+archive at the final documentation commit. Local app/build25 is already verified and unchanged by docs.
+Main/release publication remains a review choice; the feature branch and installed result are ready.
+No required implementation, local verification or installation work remains for this refinement.
+
+## Guardian subtitle and Settings crash — 2026-10-08
+
+- [x] Replace the gear-menu subtitle with "Your desktop guardian".
+- [x] Reproduce and remove the shortcut label crash on Settings → Agent connections.
+- [x] Regression checks and repeated isolated native focus/recording/connection review.
+- [x] Signed patch package, safe upgrade with rollback and preserved hooks, GitHub checks.
+
+Scope: shortcut label rendering and static subtitle only. Retain keyboard capture/release,
+approval identity/expiry/queue, passive focus, native connection backup/transactions and current design.
+Crash reports from installed25 (2026-10-08 15:02:58 Dubai) and isolated25 (15:08:25) both terminate
+at ShortcutInput.draw line96, NSAttributedString.size → CoreText ApplyFont → nil dictionary object.
+The isolated Shortcuts/Connections focus loop reproduces the same abort before any configuration write.
+Hypothesis: custom attributed-string measurement on inactive redraw is unsafe on this host; use the
+native label renderer while retaining the existing capture view and Arc surface. Verify readable glyphs,
+record/release/cancel and repeated focus transitions before installation. Rollback retains signed25;
+do not quit a real pending approval or unlink an owned/live endpoint. No unrelated source/config changes.
+
+Patch checkpoint: 0.3.1/build26 uses a native NSTextField for shortcut text, keeps the recorder as its
+mouse/key/accessibility target, and retains custom Arc surface drawing. Full74/79, relay smoke, ZIP CRC,
+strict signatures and five retained assets pass. The offscreen rendering check also passed before the
+fix; it is coverage for readable/clickable labels, not evidence of reproducing the intermittent abort.
+The red evidence is the actual isolated25 crash, matching the installed report. Patched focus handoffs,
+record CmdK/release and Escape/cancel pass through CUA; long rapid loops stopped on targeting/focus
+guards while the app stayed alive, so do not claim a completed20-cycle stress test.
+
+Installed26 over stopped/crashed25, removing only the proven unowned/refused stale socket. Signed rollback:
+~/Applications/Lantern Backups/0.3.0-build25-833cd66d/Lantern.app. Preserved current Claude hash06f4c844;
+Codex55afa1a2 unchanged. Installed Guardian caption, live Codex/Connected, both Settings→Connections
+paths, both hooks, exact shortcut defaults and login On observed. Left compact and listening.
+No real approval, paid inference or agent configuration write occurred. Private review is quit.
+Code/artifact are final; finish docs, GitHub checks and source archive without repeating unchanged package tests.
+
+Completed guardian patch handoff: source80e5c7e passed GitHub push37774403626 and PR37774409373.
+PR #2 includes the reproduced crash, native-label fix and current installed evidence. Final source archive
+is regenerated and compared with every tracked blob at the closing documentation commit. Installed26
+and app ZIP remain unchanged by docs. Main/release publication remains a review choice; no further
+implementation, installation or local runtime work remains for these two requested changes.
+
+## Approval sync and private portable download — 2026-10-10
+
+- [x] Trace installed Claude/native hook schemas without account files, transcripts or paid inference.
+- [x] Fix request-owned Carbon tokens, stale/held releases and delayed presses across cards or menus.
+- [x] Cancel an orphaned Claude relay through every transport phase with a shared monotonic deadline.
+- [x] Run 78 Swift tests (83 parameterized cases); old compiled relay fails parent-cancellation regression, patched relay passes receive/send/sibling/partial-reply checks.
+- [x] Final fresh internal review found no further approval contract failure; external review offered and declined.
+- [x] Package 0.3.2/build27 for arm64 and x86_64; strict signature, extraction and personal-path audit pass.
+- [x] Packaged smoke, isolated native click/queue review and safe installed update.
+- [x] GitHub private release/checks and exact source archive.
+- [ ] User choice on keeping Claude's Lantern Allow versus accurately mirrored VS Code-only approvals.
+
+Current supported PermissionRequest has no tool-use ID. Parent liveness is only cancellation
+evidence, not a VS Code approval callback. Public mods provide exact decision IDs but no supported
+identity bridge to the existing anonymous permission hook or native permission-dialog race.
+Do not guess from matching commands, ordering or one visible card. Keep both existing agent
+connections/settings unchanged; the repo remains private with all five supplied resources.
+No public conversion, history rewrite, vendor patch or usage feature is authorized.
+
+Completed patch handoff: 0.3.2/build27 is installed, compact and listening. Both
+configuration hashes are unchanged and both providers show Hooks installed. Real Codex
+activity is observed. Signed rollback: ~/Applications/Lantern Backups/0.3.1-build26-db747f8/Lantern.app.
+The isolated review is quit. Both samples returned their own Allow; the first was clicked
+by the user before the first snapshot (confirmed), the second by CUA, and the queue drained
+to a pill. CUA's synthetic shortcut established no native key result. Physical sequential
+shortcuts and new live Claude approval behavior remain unverified; do not claim otherwise.
+Private release v0.3.2 targets db747f8, with all 103 source blobs checked and matching remote
+app/source digests. Push38082863424 and PR38082867422 checks passed. Main is not merged;
+use the release app asset for installation. No repeated local build/test is needed for this
+closing documentation. Immediate native Claude decision sync still requires the user's
+surface choice; Lantern's existing Allow button remains intact meanwhile.

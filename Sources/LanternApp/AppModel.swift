@@ -8,15 +8,24 @@ final class AppModel: ObservableObject {
     @Published private(set) var state = SessionState() {
         didSet { scheduleApprovalExpiry() }
     }
-    @Published private(set) var claudeUsage = ClaudeUsageState()
-    @Published private(set) var expanded = false
-    @Published private(set) var companionHidden = false
+    @Published private(set) var expanded = false {
+        didSet { if expanded != oldValue { approvalIntentAfter = eventClock() } }
+    }
+    @Published private(set) var companionHidden = false {
+        didSet { if companionHidden != oldValue { approvalIntentAfter = eventClock() } }
+    }
     @Published private(set) var automaticallyHidden = false
     @Published private(set) var presentationIsAutomatic = false
     @Published var showConnections = false {
-        didSet { recordInteraction(); if showConnections { presentationIsAutomatic = false } }
+        didSet {
+            if showConnections != oldValue { approvalIntentAfter = eventClock() }
+            recordInteraction(); if showConnections { presentationIsAutomatic = false }
+        }
     }
     @Published var errorMessage: String?
+    @Published var isSettingsMenuOpen = false {
+        didSet { if isSettingsMenuOpen != oldValue { approvalIntentAfter = eventClock() }; recordInteraction() }
+    }
     @Published var providerFilter: AgentProvider?
     @Published var selectedRequestID: String?
     @Published private(set) var connectionStatus: ConnectionStatus = .disconnected
@@ -26,16 +35,24 @@ final class AppModel: ObservableObject {
     @Published private(set) var now = Date().timeIntervalSince1970
     let isDemo: Bool
     let desktopPreferences: DesktopPreferences
-    @Published var isSettingsOpen = false { didSet { recordInteraction() } }
-    var isMenuOpen = false { didSet { recordInteraction() } }
+    @Published var isSettingsOpen = false {
+        didSet { if isSettingsOpen != oldValue { approvalIntentAfter = eventClock() }; recordInteraction() }
+    }
+    @Published var isMenuOpen = false {
+        didSet { if isMenuOpen != oldValue { approvalIntentAfter = eventClock() }; recordInteraction() }
+    }
     var isDragging = false { didSet { recordInteraction() } }
     var isPointerInside = false { didSet { if oldValue != isPointerInside { recordInteraction() } } }
-    var onSettingsRequest: (() -> Void)?
+    var onSettingsRequest: ((SettingsSection) -> Void)?
     private let server: HookServer
     private var timer: Timer?
     private var approvalExpiry: Task<Void, Never>?
     private var disconnected: Set<String> = []
     private let clock: () -> TimeInterval
+    private let eventClock: () -> TimeInterval
+    private var displayedApprovalAt: TimeInterval = .infinity
+    private var approvalReadyAt: TimeInterval = .infinity
+    private var approvalIntentAfter: TimeInterval = 0
     private let navigator: AgentNavigator
     private let configurationURLs: [AgentProvider: URL]
     private var lastInteraction: TimeInterval
@@ -47,15 +64,17 @@ final class AppModel: ObservableObject {
 
     init(demo: Bool = false, directory: URL = RuntimeDirectory.current,
          clock: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 },
+         eventClock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
          navigator: AgentNavigator = .live, desktopPreferences: DesktopPreferences? = nil,
          configurationURLs: [AgentProvider: URL] = [:]) {
-        self.clock = clock; now = clock()
+        self.clock = clock; self.eventClock = eventClock; now = clock()
         lastInteraction = clock()
         self.navigator = navigator
         self.configurationURLs = configurationURLs
         self.desktopPreferences = desktopPreferences ?? DesktopPreferences()
         isDemo = demo; server = HookServer(directory: directory)
         preferencesSubscription = self.desktopPreferences.objectWillChange.sink { [weak self] in
+            if let self { self.approvalIntentAfter = self.eventClock() }
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 self.recordInteraction()
@@ -73,6 +92,11 @@ final class AppModel: ObservableObject {
             return $0.updatedAt > $1.updatedAt
         }
     }
+    var visibleSessions: [AgentSession] { sessions.filter { providerFilter == nil || $0.id.provider == providerFilter } }
+    var expandedSize: CGSize {
+        PanelLayout.size(sessionCount: visibleSessions.count, approval: selectedApproval != nil,
+                         notice: errorMessage != nil, demo: isDemo)
+    }
     var workingCount: Int { sessions.filter { [.thinking, .working].contains($0.phase) }.count }
     var needsAttention: Bool { !state.approvals.isEmpty || sessions.contains { [.attention, .failed].contains($0.phase) } }
     var relayPath: String { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lantern-hook").path }
@@ -82,27 +106,35 @@ final class AppModel: ObservableObject {
         state.approvals.first { $0.id == selectedRequestID } ?? state.approvals.first
     }
 
-    @Published var approvalPresentationReady = false
+    @Published var approvalPresentationReady = false {
+        didSet {
+            if approvalPresentationReady != oldValue { approvalReadyAt = approvalPresentationReady ? eventClock() : .infinity }
+        }
+    }
     @Published private(set) var displayedApprovalID: String?
 
     var allowsGlobalApproval: Bool {
         guard desktopPreferences.shortcutsEnabled, desktopPreferences.bindings[.allowOnce]?.enabled == true,
-              !isDemo, expanded, !companionHidden, !showConnections, !isSettingsOpen,
+              !isDemo, expanded, !companionHidden, !showConnections, !isSettingsOpen, !isSettingsMenuOpen, !isMenuOpen,
               approvalPresentationReady, let request = selectedApproval,
               displayedApprovalID == request.id else { return false }
         return !request.event.detail.isEmpty && clock() < request.expiresAt
     }
 
     func setDisplayedApproval(_ id: String, visible: Bool) {
-        if visible { displayedApprovalID = id }
-        else if displayedApprovalID == id { displayedApprovalID = nil }
+        if visible {
+            if displayedApprovalID != id { displayedApprovalAt = eventClock() }
+            displayedApprovalID = id
+        } else if displayedApprovalID == id { displayedApprovalID = nil; displayedApprovalAt = .infinity }
     }
 
-    func performShortcut(_ action: ShortcutAction) {
+    func performShortcut(_ action: ShortcutAction, at timestamp: TimeInterval? = nil) {
         switch action {
         case .visibility: toggleCompanionVisibility()
         case .allowOnce:
-            guard allowsGlobalApproval, let request = selectedApproval else { return }
+            let pressTime = timestamp ?? eventClock()
+            guard pressTime.isFinite, pressTime >= max(displayedApprovalAt, approvalReadyAt, approvalIntentAfter),
+                  allowsGlobalApproval, let request = selectedApproval else { return }
             decide(request.id, .allow)
         }
     }
@@ -142,11 +174,6 @@ final class AppModel: ObservableObject {
                 Task { @MainActor [weak self] in self?.receive(event, id: id) }
             }, onDisconnect: { [weak self] id in
                 Task { @MainActor [weak self] in self?.connectionClosed(id) }
-            }, onUsage: { [weak self] snapshot in
-                Task { @MainActor [weak self] in
-                    guard let self else { return }
-                    try? self.claudeUsage.receive(snapshot, now: self.clock())
-                }
             })
             errorMessage = nil
             connectionStatus = .connected
@@ -176,7 +203,7 @@ final class AppModel: ObservableObject {
     func hideCompanion() {
         recordInteraction(); automaticallyHidden = false
         presentationIsAutomatic = false
-        showConnections = false; expanded = false; companionHidden = true; onPresentationChange?()
+        showConnections = false; isSettingsMenuOpen = false; expanded = false; companionHidden = true; onPresentationChange?()
     }
 
     func showCompanion(expanded: Bool = false) {
@@ -270,7 +297,7 @@ final class AppModel: ObservableObject {
         _ = restorePresentationIfQueueDrained(hadApprovals: hadApprovals)
         let eligible = desktopPreferences.autoHideEnabled && !desktopPreferences.pinned
             && !companionHidden && !expanded && !showConnections && !isSettingsOpen
-            && !isMenuOpen && !isDragging && !isPointerInside && workingCount == 0 && !needsAttention
+            && !isMenuOpen && !isSettingsMenuOpen && !isDragging && !isPointerInside && workingCount == 0 && !needsAttention
         guard eligible else { lastInteraction = now; return }
         guard now >= lastInteraction, now - lastInteraction >= desktopPreferences.idleDelay else { return }
         automaticallyHidden = true; companionHidden = true; presentationIsAutomatic = true
